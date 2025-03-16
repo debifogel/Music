@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "Manager": {
+    "manager-client": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/manager",
+            "outputPath": "dist/manager-client",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -59,10 +59,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "Manager:build:production"
+              "buildTarget": "manager-client:build:production"
             },
             "development": {
-              "buildTarget": "Manager:build:development"
+              "buildTarget": "manager-client:build:development"
             }
           },
           "defaultConfiguration": "development"
