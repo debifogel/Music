@@ -26,5 +26,6 @@ namespace MusicServer.Data.Data
         {
             optionsBuilder.UseSqlServer(_configuration["DbConnectionString"]);
         }
+
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,9 +17,6 @@ namespace MusicServer.Core.Classes
         public bool IsBlocked { get; set; }
         public DateTime RegistrationDate { get; set; }
         public DateTime? LastLogin { get; set; }
-        public List<Song> Songs { get; set; } = new(); // רשימת שירים של המשתמש
-        public List<Folder> Folders { get; set; } = new(); // רשימת תיקיות של המשתמש
-        public List<PlayList> Playlists { get; set; } = new(); // רשימת רשימות השמעה של המשתמש
     }
     
 

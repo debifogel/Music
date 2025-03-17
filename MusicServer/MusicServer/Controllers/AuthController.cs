@@ -17,9 +17,10 @@ namespace MusicServer.Api.Controllers
         private readonly IConfiguration _configuration;
         private readonly IUserService _userService;
 
-        public AuthController(IConfiguration configuration)
+        public AuthController(IConfiguration configuration,IUserService userService)
         {
             _configuration = configuration;
+            _userService = userService;
         }
 
         [HttpPost("Login/")]
@@ -55,16 +56,19 @@ namespace MusicServer.Api.Controllers
         [HttpPost("register/")]
         public async Task<IActionResult> RegisterUser(UserDto user)
         {
-            await _userService.AddUserAsync(new User()
+            var newuser = new User()
             {
                 Email = user.Email,
                 Password = user.Password, // Remember to hash passwords in a real app
                 RegistrationDate = DateTime.Now,
+                LastLogin = DateTime.Now,
                 Username = user.Username,
-                IsAdmin=false
-                
-            });
-            return await LoginAsync(new LoginModel() { Email = user.Email, Password = user.Password });
+                IsAdmin = false,
+                IsBlocked = false
+
+            };
+           var User= await _userService.AddUserAsync(newuser);
+            return await LoginAsync(new LoginModel() { Email = User.Email, Password = User.Password });
         }
 
     }
