@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import awsUploadService from '@/Services/awsUploadService';
+import awsUploadService from '@/Services/awsService'; // יש לוודא שהשירות מתאים
 import { Input } from '@mui/material';
 
 const AwsUpload: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [uploadStatus, setUploadStatus] = useState<string>('');
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
-  const accessKeyId = process.env.REACT_APP_AWS_ACCESS_KEY_ID || '';
-  const secretAccessKey = process.env.REACT_APP_AWS_SECRET_ACCESS_KEY || '';
   const bucketName = process.env.REACT_APP_AWS_BUCKET_NAME || '';
   const region = process.env.REACT_APP_AWS_REGION || '';
 
@@ -19,25 +18,29 @@ const AwsUpload: React.FC = () => {
     }
   };
 
-  const handleUpload = () => {
+  const handleUpload = async () => {
     if (!selectedFile) {
-      alert('בחר קובץ להעלאה.');
+      setUploadError('בחר קובץ להעלאה.');
       return;
     }
 
     setUploadStatus('מעלה...');
     setUploadProgress(0);
+    setUploadError(null);
 
-    awsUploadService
-      .uploadFile(selectedFile, { accessKeyId, secretAccessKey, bucketName, region }, (progress) => {
+    try {
+      if (!bucketName || !region) {
+        throw new Error("משתני סביבה חסרים")
+      }
+      await awsUploadService.uploadFile(selectedFile, (progress: number) => {
         setUploadProgress(progress);
-      })
-      .then((status: string) => {
-        setUploadStatus(status);
-      })
-      .catch((error) => {
-        setUploadStatus(error);
       });
+      setUploadStatus('העלאה הצליחה!');
+    } catch (error: any) {
+      console.error('שגיאה בהעלאה:', error);
+      setUploadError(error.message || 'שגיאה בהעלאה.');
+      setUploadStatus('שגיאה בהעלאה.');
+    }
   };
 
   return (
@@ -53,6 +56,7 @@ const AwsUpload: React.FC = () => {
         </div>
       )}
       {uploadStatus && <p>סטטוס: {uploadStatus}</p>}
+      {uploadError && <p style={{ color: 'red' }}>שגיאה: {uploadError}</p>}
     </div>
   );
 };
