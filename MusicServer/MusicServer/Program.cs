@@ -11,10 +11,7 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAuthentication(options =>
 {
@@ -60,21 +57,32 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 });
-builder.Services.AddScoped<IUserService,UserService>();
-builder.Services.AddScoped<IFolderService,FolderService>();
-builder.Services.AddScoped<ILogService,LogService>();
-builder.Services.AddScoped<ISongService,SongService>();
-builder.Services.AddScoped<IPlayListService,PlayListService>();
-builder.Services.AddScoped<IPlayListRepository,PLayListRepository>();
-builder.Services.AddScoped<ILogRepository,LogRepository>();
-builder.Services.AddScoped<ISongRepository,SongRepository>();
-builder.Services.AddScoped<IUserRepository,UserRepository>();
-builder.Services.AddScoped<IFolderRepository,FolderRepository>();
-builder.Services.AddScoped<IManager,Manager>();
 
+builder.Services.AddControllers();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IFolderService, FolderService>();
+builder.Services.AddScoped<ILogService, LogService>();
+builder.Services.AddScoped<ISongService, SongService>();
+builder.Services.AddScoped<IPlayListService, PlayListService>();
+builder.Services.AddScoped<IPlayListRepository, PLayListRepository>();
+builder.Services.AddScoped<ILogRepository, LogRepository>();
+builder.Services.AddScoped<ISongRepository, SongRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IFolderRepository, FolderRepository>();
+builder.Services.AddScoped<IManager, Manager>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddDbContext<IData, DataContext>();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("manager", policy => policy.RequireRole("manager"));
+    options.AddPolicy("User", policy => policy.RequireRole("user", "manager"));
+});
+builder.Services.AddCors(opt => opt.AddPolicy("Mypolicy", policy =>
+{
+    policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+}));
 var app = builder.Build();
+app.UseDeveloperExceptionPage();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -82,12 +90,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.UseAuthentication();
-
 app.UseHttpsRedirection();
-
+app.UseCors(policy =>
+    policy.AllowAnyOrigin()
+          .AllowAnyMethod()
+          .AllowAnyHeader());
+app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();

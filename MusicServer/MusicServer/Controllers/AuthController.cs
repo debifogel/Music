@@ -26,6 +26,7 @@ namespace MusicServer.Api.Controllers
         [HttpPost("Login/")]
         public async Task<IActionResult> LoginAsync([FromBody] LoginModel loginModel)
         {
+            Console.WriteLine("you in the login the req is: " + loginModel);
             var user = await _userService.GetUserByEmailAsync(loginModel.Email);
             // Important: In a real application, NEVER store passwords in plain text.
             // Always hash and compare hashed passwords.
@@ -35,7 +36,9 @@ namespace MusicServer.Api.Controllers
             {
                 new Claim(ClaimTypes.Name,user.Username ),
                 new Claim(ClaimTypes.NameIdentifier,user.UserId.ToString() ),
-                new Claim(ClaimTypes.Role,user.IsAdmin?"manager":"user")
+                new Claim(ClaimTypes.Role,user.IsAdmin?"manager":"user"),
+                new Claim(ClaimTypes.Email,user.Email),
+                
             };
 
                 var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetValue<string>("JWT:Key")));

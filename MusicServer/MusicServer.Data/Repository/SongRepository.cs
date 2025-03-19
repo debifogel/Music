@@ -43,10 +43,11 @@ namespace MusicServer.Data.Repository
         }
 
        
-
+        //what with the name
         public async Task<IEnumerable<Song>> GetAllPublicSongsByUserName(string name)
         {
-            return await _context.Songs.Where(s => s.IsPrivate == false).ToListAsync();
+            var userid = (await _context.Users.FirstAsync(u => u.Username == name)).UserId;
+            return await _context.Songs.Where(s => s.IsPrivate == false&&s.UserId==userid).ToListAsync();
         }
 
         public async Task<IEnumerable<Song>> GetAllSongs()
