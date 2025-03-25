@@ -1,22 +1,26 @@
 import AWS from 'aws-sdk';
 
-// Load environment variables
-const S3_BUCKET = import.meta.env.VITE_S3_BUCKET || "" ;
-const REGION = import.meta.env.VITE_S3_REGION || "" ;
-const ACCESS_KEY = import.meta.env.VITE_AWS_ACCESS_KEY  || ""
-const SECRET_KEY = import.meta.env.VITE_AWS_SECRET_KEY || "" ;
-const FOLDER_NAME = import.meta.env.VITE_FOLDER_NAME ;
-console.log(import.meta.env);
+// 1️⃣ יצירת פונקציה להחזרת הקונפיגורציה
+const getAWSConfig = () => {
+    const accessKeyId = import.meta.env.VITE_ACCESS_KEY;
+    const secretAccessKey = import.meta.env.VITE_SECRET_KEY;
+    const region = import.meta.env.VITE_REGION;
 
-// Configure AWS SDK
-AWS.config.update({
-    accessKeyId: ACCESS_KEY,
-    secretAccessKey: SECRET_KEY,
-    region: REGION,
-});
+    if (!accessKeyId || !secretAccessKey || !region) {
+        throw new Error("Missing AWS credentials. Please check your .env file.");
+    }
+
+    return {
+        accessKeyId,
+        secretAccessKey,
+        region,
+    };
+};
+
+// 2️⃣ טעינת הגדרות AWS
+AWS.config.update(getAWSConfig());
 
 const s3 = new AWS.S3();
-
 interface UploadResponse {
     Location: string;
     Key: string;
@@ -24,50 +28,75 @@ interface UploadResponse {
 }
 
 const S3Service = {
-    // Upload file to S3
+    // 3️⃣ פונקציה להעלאת קובץ
     uploadFile: async (file: File, fileName: string, progress?: (progressEvent: AWS.S3.ManagedUpload.Progress) => void): Promise<UploadResponse> => {
-        const params: AWS.S3.PutObjectRequest = {
-            Bucket: S3_BUCKET,
-            Key: FOLDER_NAME+fileName, // This should include the full path, e.g., "folderName/fileName.ext" if you want to upload to a folder
-            Body: file,
-            ContentType: 'audio/m4a',
-            };
-        const upload = s3.upload(params);
+        const bucketName = import.meta.env.VITE_S3_BUCKET;
+        const folderName = import.meta.env.VITE_FOLDER_NAME || "";
 
+        if (!bucketName) {
+            throw new Error("Missing S3 bucket name in environment variables.");
+        }
+
+        const params: AWS.S3.PutObjectRequest = {
+            Bucket: bucketName,
+            Key: `${folderName}${fileName}`,
+            Body: file,
+            ContentType: file.type,
+        };
+
+        console.log("Uploading to S3:", params);
+
+        const upload = s3.upload(params);
         if (progress) {
-            upload.on('httpUploadProgress', progress);
+            upload.on("httpUploadProgress", progress);
         }
 
         return upload.promise() as Promise<UploadResponse>;
     },
 
-    // Download file from S3
+    // 4️⃣ יצירת URL להורדת קובץ
     getFileUrl: (fileName: string): string => {
-        return `https://${S3_BUCKET}.s3.${REGION}.amazonaws.com/${fileName}`;
+        const bucketName = import.meta.env.VITE_S3_BUCKET;
+        const region = import.meta.env.VITE_REGION;
+        if (!bucketName || !region) {
+            throw new Error("Missing S3 bucket or region.");
+        }
+
+        return `https://${bucketName}.s3.${region}.amazonaws.com/${fileName}`;
     },
 
-    // Delete file from S3
+    // 5️⃣ מחיקת קובץ מה-S3
     deleteFile: async (fileName: string): Promise<AWS.S3.DeleteObjectOutput> => {
+        const bucketName = import.meta.env.VITE_S3_BUCKET;
+        if (!bucketName) {
+            throw new Error("Missing S3 bucket.");
+        }
+
         const params: AWS.S3.DeleteObjectRequest = {
-            Bucket: S3_BUCKET,
+            Bucket: bucketName,
             Key: fileName,
         };
+
         return s3.deleteObject(params).promise();
     },
-// פונקציה ליצירת Pre-signed URL
-generatePresignedUrl: ( objectKey: string): string => {
-    const params = {
-        Bucket: S3_BUCKET,
-        Key: objectKey,
-        Expires: 60 * 5 // תוקף ה-URL (בדקות)
-    };
 
-    // יצירת ה-Pre-signed URL
+    // 6️⃣ יצירת URL זמני לגישה לקובץ
+    generatePresignedUrl: (objectKey: string): string => {
+        const bucketName = import.meta.env.VITE_S3_BUCKET;
+        if (!bucketName) {
+            throw new Error("Missing S3 bucket.");
+        }
 
-    const url= s3.getSignedUrl('getObject', params);
-    console.log(url)
-    return url
-}
+        const params = {
+            Bucket: bucketName,
+            Key: objectKey,
+            Expires: 60 * 5, // תוקף של 5 דקות
+        };
+
+        const url = s3.getSignedUrl("getObject", params);
+        console.log("Generated Pre-signed URL:", url);
+        return url;
+    },
 };
 
 export default S3Service;
