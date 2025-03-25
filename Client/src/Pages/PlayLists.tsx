@@ -63,26 +63,26 @@ function  PlayLists()  {
       console.error("dont add the playlist")
     }
   }
-  const handleDelete=(id:number)=>
-  {
-    try{
-      playlistService.deletePlaylist(id).then(()=>route("/playlists"))
-      }
-      catch{
-        console.error("dont delete the playlist")
+  // const handleDelete=(id:number)=>
+  // {
+  //   try{
+  //     playlistService.deletePlaylist(id).then(()=>route("/playlists"))
+  //     }
+  //     catch{
+  //       console.error("dont delete the playlist")
 
-      }
-  }
-  const handleUpdate=(id:number)=>
-    {
-      try{
-        playlistService.renamePlaylist(id,playName).then(()=>route("/playlists"))
-        }
-        catch{
-          console.error("dont update the playlist")
+  //     }
+  // }
+  // const handleUpdate=(id:number)=>
+  //   {
+  //     try{
+  //       playlistService.renamePlaylist(id,playName).then(()=>route("/playlists"))
+  //       }
+  //       catch{
+  //         console.error("dont update the playlist")
   
-        }
-    }
+  //       }
+  //   }
     if (loading) return <CircularProgress />;
     return (
       <>
