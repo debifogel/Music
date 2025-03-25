@@ -15,7 +15,7 @@ interface SongDto {
   title: string;
   artist: string;
   genre: string;
-  filePath: string;
+  filePath?: string;
   isPrivate: boolean;
 }
 

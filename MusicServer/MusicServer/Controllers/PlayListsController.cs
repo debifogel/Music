@@ -26,7 +26,7 @@ namespace MusicServer.Api.Controllers
         {
             var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
             var playlists = await _playlistService.GetAllPlaylistsByUserId(userId);
-            return Ok(_mapper.Map<PlayListDto>(playlists));
+            return Ok(_mapper.Map<List<PlayListDto>>(playlists));
         }
 
         [HttpGet("{id}")]
@@ -88,10 +88,10 @@ namespace MusicServer.Api.Controllers
         }
 
         [HttpGet("songs/{id}")]
-        public async Task<IActionResult> GetSongsInPlaylist(int id)
+        public async Task<IActionResult> GetAllSongsInPlaylist(int id)
         {
             var songs = await _playlistService.GetAllSongsByPlaylistId(id);
-            return Ok(_mapper.Map<SongDto>( songs));
+            return Ok(_mapper.Map<List<SongDto>>( songs));
         }
     }
 }

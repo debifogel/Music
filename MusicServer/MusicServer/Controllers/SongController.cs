@@ -6,6 +6,7 @@ using System.Security.Claims;
 using MusicServer.Core.Post;
 using MusicServer.Core.Dto;
 using AutoMapper;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace MusicServer.Api.Controllers
 {
@@ -27,7 +28,7 @@ namespace MusicServer.Api.Controllers
         {
             var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
             var songs = await _songService.GetAllSongsByUserId(userId);
-            return Ok(_mapper.Map<SongDto>(songs));
+            return Ok(_mapper.Map<List<SongDto>>(songs));
         }
 
         [HttpGet("public/{name}")]
@@ -35,7 +36,9 @@ namespace MusicServer.Api.Controllers
         public async Task<IActionResult> GetAllPublicSongs(string name)
         {
             var songs = await _songService.GetAllPublicSongsByUserName(name);
-            return Ok(_mapper.Map<SongDto>(songs));
+            if(songs!=null)
+            return Ok(_mapper.Map<List<SongDto>>(songs));
+            return NotFound();
         }
 
         [HttpGet("{id}")]

@@ -1,28 +1,24 @@
 import api from "./api";
-
+//https://localhost:7260/api/Auth/Login
 const authService = {
   login: async (email: string, password: string) => {
-    try {
-      const response = await api.post('/Auth/Login/', {
-        email: email,
-        password: password,
-      });
+    return api.post('/Auth/Login', {
+      password: password,
+      email: email
+    }).then((response) => {
 
-      // שמירת הטוקן
       const token = response.data.token;
-      localStorage.setItem('token', token); // או כל מקום אחר שבו את שומרת את האסימון
-
-      return response.data; // ניתן להחזיר את כל התגובה או רק את הנתונים הרלוונטיים
-    } catch (error) {
-      // טיפול בשגיאות
+      localStorage.setItem('token', token);
+      return response;
+    }).catch((error) => {
       console.error('שגיאה בהתחברות:', error);
-      throw error; // העברת השגיאה הלאה כדי שניתן יהיה לטפל בה בקומפוננטה
-    }
+      throw error;
+    });
   },
 
   register: async (username: string, email: string, password: string) => {
     try {
-      const response = await api.post('/Auth/register/', {
+      const response = await api.post('/Auth/register', {
         username: username,
         email: email,
         password: password,

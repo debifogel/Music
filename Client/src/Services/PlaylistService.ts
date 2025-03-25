@@ -35,6 +35,7 @@ const playlistService = {
       const response = await api.post('/Playlists', null, {
         params: { playlistname: playlistName },
       });
+      console.log("in add playlist")
       return response.data;
     } catch (error) {
       console.error('שגיאה בהוספת רשימת השמעה:', error);

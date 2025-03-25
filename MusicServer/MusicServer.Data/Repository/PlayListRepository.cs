@@ -50,7 +50,7 @@ namespace MusicServer.Data.Repository
 
         public async Task<IEnumerable<Song>> GetAllSongsByPlaylistId(int playlistId)
         {
-            var Playlist = await _context.Playlists.FindAsync(playlistId);
+            var Playlist = await _context.Playlists.Include(p=>p.Songs).FirstAsync(p=>p.PlaylistId==playlistId);
             return Playlist.Songs;
         }
 
@@ -64,7 +64,6 @@ namespace MusicServer.Data.Repository
             var Playlist = await GetPlaylistByIdAsync(playlistId);
             var Song = await _context.Songs.FindAsync(songId);
             Playlist.Songs.Remove(Song);
-            Song.Playlists.Remove(Playlist);
         }
 
         public async Task RenamePlaylistAsync(int id, string playlist)

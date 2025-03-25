@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using MusicServer.Core.Classes;
 using MusicServer.Core.Dto;
+using MusicServer.Core.Irepository;
 using MusicServer.Core.Iservice;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -16,11 +17,12 @@ namespace MusicServer.Api.Controllers
     {
         private readonly IConfiguration _configuration;
         private readonly IUserService _userService;
-
-        public AuthController(IConfiguration configuration,IUserService userService)
+        private readonly IManager _manager;
+        public AuthController(IConfiguration configuration,IUserService userService,IManager manager)
         {
             _configuration = configuration;
             _userService = userService;
+            _manager = manager;
         }
 
         [HttpPost("Login/")]
@@ -40,7 +42,8 @@ namespace MusicServer.Api.Controllers
                 new Claim(ClaimTypes.Email,user.Email),
                 
             };
-
+                user.LastLogin = DateTime.Now;
+               await _manager.SavechangesAsync();
                 var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetValue<string>("JWT:Key")));
                 var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
                 var tokeOptions = new JwtSecurityToken(

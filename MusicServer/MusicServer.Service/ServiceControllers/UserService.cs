@@ -63,7 +63,8 @@ namespace MusicServer.Service.ServiceControllers
         }
        public async Task UpdateLoginUserAsync(int id)
         {
-            _userRepository.UpdateLoginUserAsync(id);
+            await _userRepository.UpdateLoginUserAsync(id);
+            await _manager.SavechangesAsync();
         }
 
     }

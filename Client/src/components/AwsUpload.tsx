@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import awsUploadService from '@/Services/awsService'; // יש לוודא שהשירות מתאים
-import { Input } from '@mui/material';
+// import { Button } from '@/components/ui/button';
+import { Button,CircularProgress, Input } from '@mui/material';
+import S3Service from '@/Services/awsService';
+import { Progress } from 'aws-sdk/lib/request';
 
-const AwsUpload: React.FC = () => {
+const AwsUpload= ({callback}:{callback:(path:string)=>void}) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [uploadStatus, setUploadStatus] = useState<string>('');
   const [uploadError, setUploadError] = useState<string | null>(null);
 
-  const bucketName = process.env.REACT_APP_AWS_BUCKET_NAME || '';
-  const region = process.env.REACT_APP_AWS_REGION || '';
+  
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -23,19 +23,22 @@ const AwsUpload: React.FC = () => {
       setUploadError('בחר קובץ להעלאה.');
       return;
     }
-
+   
     setUploadStatus('מעלה...');
     setUploadProgress(0);
     setUploadError(null);
 
     try {
-      if (!bucketName || !region) {
-        throw new Error("משתני סביבה חסרים")
-      }
-      await awsUploadService.uploadFile(selectedFile, (progress: number) => {
+       const res=await S3Service.uploadFile(selectedFile, selectedFile.name,
+         (progressEvent: Progress) => {
+        const progress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
         setUploadProgress(progress);
-      });
+
+      })
+      callback(res.Key);  // עדכון הנתיב רק לאחר שההעלאה הצליחה
       setUploadStatus('העלאה הצליחה!');
+
+  
     } catch (error: any) {
       console.error('שגיאה בהעלאה:', error);
       setUploadError(error.message || 'שגיאה בהעלאה.');
@@ -46,13 +49,13 @@ const AwsUpload: React.FC = () => {
   return (
     <div className="space-y-4">
       <Input type="file" onChange={handleFileChange} />
-      <Button onClick={handleUpload} disabled={!selectedFile}>
-        העלה
+      <Button onClick={handleUpload} disabled={!selectedFile}  >
+        העלאה
       </Button>
       {uploadProgress > 0 && (
         <div className="space-y-2">
           <p>התקדמות: {uploadProgress}%</p>
-          <progress value={uploadProgress} max="100" />
+          <CircularProgress variant="determinate" value={uploadProgress} />
         </div>
       )}
       {uploadStatus && <p>סטטוס: {uploadStatus}</p>}

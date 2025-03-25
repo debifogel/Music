@@ -29,7 +29,7 @@ namespace MusicServer.Api.Controllers
             {
                 return NotFound();
             }
-            return Ok(_mapper.Map<FolderDto>( folders));
+            return Ok(_mapper.Map<List<FolderDto>>( folders));
         }
 
         [HttpGet("playlists/{songId}")]
@@ -40,7 +40,7 @@ namespace MusicServer.Api.Controllers
             {
                 return NotFound();
             }
-            return Ok(_mapper.Map <PlayListDto> (playlists));
+            return Ok(_mapper.Map<List<PlayListDto>>(playlists));
         }
     }
 }

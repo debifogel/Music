@@ -1,12 +1,13 @@
 
+import { RouterProvider } from 'react-router-dom'
 import './App.css'
-import AppLayot from './Pages/AppLayot'
+import { myRouter } from './components/router'
 
 function App() {
 
   return (
     <>
-     <AppLayot/>
+    <RouterProvider router={myRouter}/>
     </>
   )
 }

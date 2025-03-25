@@ -58,7 +58,7 @@ namespace MusicServer.Data.Repository
         }
         public async Task<IEnumerable<Song>> GetAllSongsByFolderId(int folderId)
         {
-            var Folder = await _context.Folders.FindAsync(folderId);
+            var Folder = await _context.Folders.Include(f=>f.Songs).FirstAsync(f=>f.FolderId==folderId);
             return Folder.Songs;
         }
 

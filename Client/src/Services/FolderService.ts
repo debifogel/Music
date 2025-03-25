@@ -1,6 +1,7 @@
+import { Folder } from 'lucide-react';
 import api from './api'; // ייבוא מופע ה-Axios המוגדר שלך
 
-interface Folder {
+ interface Folder {
   folderId: number;
   userId: number;
   folderName: string;

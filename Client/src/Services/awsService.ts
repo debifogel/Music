@@ -1,78 +1,72 @@
 import AWS from 'aws-sdk';
-import dotenv from 'dotenv';
 
-dotenv.config();
+// Load environment variables
+const S3_BUCKET = process.env.REACT_APP_S3_BUCKET ;
+const REGION = process.env.REACT_APP_S3_REGION ;
+const ACCESS_KEY = process.env.REACT_APP_AWS_ACCESS_KEY 
+const SECRET_KEY = process.env.REACT_APP_AWS_SECRET_KEY ;
+const FOLDER_NAME = process.env.FOLDER_NAME ;
 
-const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
-const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
-const bucketName = process.env.AWS_BUCKET_NAME;
-const region = process.env.AWS_REGION;
-
-if (!accessKeyId || !secretAccessKey || !bucketName || !region) {
-  throw new Error('חסרים משתני סביבה');
-}
-
+// Configure AWS SDK
 AWS.config.update({
-  accessKeyId,
-  secretAccessKey,
-  region,
+    accessKeyId: ACCESS_KEY,
+    secretAccessKey: SECRET_KEY,
+    region: REGION,
 });
+
 const s3 = new AWS.S3();
 
+interface UploadResponse {
+    Location: string;
+    Key: string;
+    Bucket: string;
+}
 
-const awsService = {
-  uploadFile: async (file: File, onProgress: (progress: number) => void): Promise<string> => {
-    try {
-      const params = {
-        Bucket: bucketName,
-        Key: file.name,
-        Body: file,
-      };
+const S3Service = {
+    // Upload file to S3
+    uploadFile: async (file: File, fileName: string, progress?: (progressEvent: AWS.S3.ManagedUpload.Progress) => void): Promise<UploadResponse> => {
+        const params: AWS.S3.PutObjectRequest = {
+            Bucket: S3_BUCKET,
+            Key: FOLDER_NAME+fileName, // This should include the full path, e.g., "folderName/fileName.ext" if you want to upload to a folder
+            Body: file,
+            ContentType: 'audio/m4a',
+            };
+        const upload = s3.upload(params);
 
-      const upload = s3.upload(params);
+        if (progress) {
+            upload.on('httpUploadProgress', progress);
+        }
 
-      upload.on('httpUploadProgress', (progress) => {
-        const percent = Math.round((progress.loaded / progress.total) * 100);
-        onProgress(percent);
-      });
+        return upload.promise() as Promise<UploadResponse>;
+    },
 
-      const data = await upload.promise();
-      console.log('העלאה הצליחה:', data.Location);
-      return data.Location;
-    } catch (err: any) {
-      console.error('שגיאה בהעלאה:', err);
-      throw 'שגיאה בהעלאה.';
-    }
-  },
+    // Download file from S3
+    getFileUrl: (fileName: string): string => {
+        return `https://${S3_BUCKET}.s3.${REGION}.amazonaws.com/${fileName}`;
+    },
 
-  downloadFile: async (key: string): Promise<AWS.S3.GetObjectOutput> => {
-    try {
-      const params = {
-        Bucket: bucketName,
-        Key: key,
-      };
+    // Delete file from S3
+    deleteFile: async (fileName: string): Promise<AWS.S3.DeleteObjectOutput> => {
+        const params: AWS.S3.DeleteObjectRequest = {
+            Bucket: S3_BUCKET,
+            Key: fileName,
+        };
+        return s3.deleteObject(params).promise();
+    },
+// פונקציה ליצירת Pre-signed URL
+generatePresignedUrl: ( objectKey: string): string => {
+    const params = {
+        Bucket: S3_BUCKET,
+        Key: objectKey,
+        Expires: 60 * 5 // תוקף ה-URL (בדקות)
+    };
 
-      const data = await s3.getObject(params).promise();
-      return data;
-    } catch (err: any) {
-      console.error('שגיאה בהורדה:', err);
-      throw err;
-    }
-  },
+    // יצירת ה-Pre-signed URL
 
-  deleteFile: async (key: string): Promise<void> => {
-    try {
-      const params = {
-        Bucket: bucketName,
-        Key: key,
-      };
-
-      await s3.deleteObject(params).promise();
-    } catch (err: any) {
-      console.error('שגיאה במחיקה:', err);
-      throw err;
-    }
-  },
+    const url= s3.getSignedUrl('getObject', params);
+    console.log(url)
+    return url
+}
 };
 
-export default awsService;
+export default S3Service;

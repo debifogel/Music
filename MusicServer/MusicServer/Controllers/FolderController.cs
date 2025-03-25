@@ -26,7 +26,7 @@ namespace MusicServer.Api.Controllers
         {
             var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
             var folders = await _folderService.GetAllFoldersByUserId(userId);
-            return Ok(_mapper.Map<FolderDto>(folders));
+            return Ok(_mapper.Map<List<FolderDto>>(folders));
         }
 
         [HttpGet("{id}")]
@@ -55,7 +55,7 @@ namespace MusicServer.Api.Controllers
             }
             var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
             
-            return Ok(_mapper.Map<FolderDto>(folders));
+            return Ok(_mapper.Map<List<FolderDto>>(folders));
         }
 
         [HttpPost]
@@ -108,10 +108,10 @@ namespace MusicServer.Api.Controllers
         }
 
         [HttpGet("songs/{id}")]
-        public async Task<IActionResult> GetSongsInFolder(int id)
+        public async Task<IActionResult> GetAllSongsInFolder(int id)
         {
             var songs = await _folderService.GetAllSongsByFolderId(id);
-            return Ok(_mapper.Map<SongDto>(songs));
+            return Ok(_mapper.Map<List<SongDto>>(songs));
         }
     }
 }

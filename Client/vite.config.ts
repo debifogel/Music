@@ -16,6 +16,11 @@ export default defineConfig({
     }),
     nodePolyfills(),
   ],
+  server: {
+    proxy: {
+      '/api': 'http://localhost:7260',
+    }
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
@@ -29,6 +34,8 @@ export default defineConfig({
     esbuildOptions: {
       define: {
         global: 'globalThis',
+        process:'.env'
+
       },
     },
   },
