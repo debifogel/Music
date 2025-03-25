@@ -1,11 +1,12 @@
 import AWS from 'aws-sdk';
 
 // Load environment variables
-const S3_BUCKET = process.env.REACT_APP_S3_BUCKET || "" ;
-const REGION = process.env.REACT_APP_S3_REGION || "" ;
-const ACCESS_KEY = process.env.REACT_APP_AWS_ACCESS_KEY  || ""
-const SECRET_KEY = process.env.REACT_APP_AWS_SECRET_KEY || "" ;
-const FOLDER_NAME = process.env.FOLDER_NAME ;
+const S3_BUCKET = import.meta.env.VITE_S3_BUCKET || "" ;
+const REGION = import.meta.env.VITE_S3_REGION || "" ;
+const ACCESS_KEY = import.meta.env.VITE_AWS_ACCESS_KEY  || ""
+const SECRET_KEY = import.meta.env.VITE_AWS_SECRET_KEY || "" ;
+const FOLDER_NAME = import.meta.env.VITE_FOLDER_NAME ;
+console.log(import.meta.env);
 
 // Configure AWS SDK
 AWS.config.update({

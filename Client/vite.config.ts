@@ -34,7 +34,6 @@ export default defineConfig({
     esbuildOptions: {
       define: {
         global: 'globalThis',
-        process:'.env'
 
       },
     },
