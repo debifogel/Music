@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { TextField, Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 import OptionsMenu from "./OPtionMenu";
 import folderService from "@/Services/FolderService";
+import { useNavigate } from "react-router-dom";
 
 interface Opt {
     id: number;
@@ -23,10 +24,11 @@ interface Song {
 
 }
 
-const OptionSongs = ({ song, inPlay,callback }: { song: Song; inPlay: number,callback:()=>{} }) => {
+const OptionSongs = ({ song, inPlay }: { song: Song; inPlay: number}) => {
     const [playlists, setPlaylists] = useState<Opt[]>([]);
     const [edit, setEdit] = useState(false);
     const [editedSong, setEditedSong] = useState({ title: song.title, artist: song.artist,genre:song.genre });
+    const route=useNavigate()
  console.log(song)
     useEffect(() => {
         const fetchPlaylists = async () => {
@@ -60,17 +62,18 @@ const OptionSongs = ({ song, inPlay,callback }: { song: Song; inPlay: number,cal
         } catch (error) {
             console.error("שגיאה במחיקת השיר", error);
         }
-        callback()
+        route("/songs/all", { replace: true })
     };
 
     const handleAddToPlaylist = (id: number) => {
         playlistService.addSongToPlaylist(id, song.songId);
-        callback()
+        route("/songs/all", { replace: true })
     };
 
     const handleRemoveFromPlaylist = () => {
         playlistService.removeSongFromPlaylist(inPlay, song.songId);
-        callback()
+        route("/songs/all", { replace: true })
+
     };
 
     const handleSubmitEdit = async () => {
@@ -83,7 +86,8 @@ const OptionSongs = ({ song, inPlay,callback }: { song: Song; inPlay: number,cal
             setEdit(false);
 
         }
-        callback()
+        route("/songs/all", { replace: true })
+        window.location.reload();
     };
     const handlePermission=async()=>{
         try {
@@ -93,7 +97,7 @@ const OptionSongs = ({ song, inPlay,callback }: { song: Song; inPlay: number,cal
             console.error("שגיאה בעדכון השיר", error);
 
         }
-        callback()
+        route("/songs/all", { replace: true })
     }
 
     return (

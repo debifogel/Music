@@ -23,12 +23,7 @@ const ListSongs = () => {
   const [visibleSongs, setVisibleSongs] = useState<Song[]>([]);
   const [loading, setLoading] = useState(true);
   const [isLogin, setLogin] = useState(true);
-  const [keyLoad,setKeyLoad]=useState(0)
-const reLoad = () => {
-
-console.log(keyLoad+"render songs")
-  setKeyLoad(keyLoad=>keyLoad+1)// Trigger a re-render by updating the state
-};
+  
   useEffect(() => {
     const fetchSongs = async () => {
       setLoading(true);
@@ -63,7 +58,7 @@ console.log(keyLoad+"render songs")
     };
 
     fetchSongs();
-  }, [filterType, filterValue,keyLoad]);
+  }, [filterType, filterValue]);
 
   // אנימציה להצגת השירים בהדרגה
   useEffect(() => {
@@ -123,7 +118,7 @@ console.log(keyLoad+"render songs")
                   "&:hover": { backgroundColor: "#f5f5f5" },
                 }}
               >
-                {isLogin && <SongOptionsMenu song={song} inPlay={filterType === "playlist" ? Number(filterValue) : 0} callback={()=>reLoad}/>}
+                {isLogin && <SongOptionsMenu song={song} inPlay={filterType === "playlist" ? Number(filterValue) : 0} />}
                 <ListItemText primary={song.title} secondary={song.artist} sx={{ flex: 1, marginLeft: 2 }} />
                 <AudioPlayer audioUrl={song.filePath} />
               </ListItem>
