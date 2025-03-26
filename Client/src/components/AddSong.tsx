@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextField, Button, Grid2 as Grid, Typography, Switch } from '@mui/material';
+import { TextField, Button, Grid2 as Grid, Typography, Switch, Paper } from '@mui/material';
 import AwsUpload from './AwsUpload';
 import addSong from '../Services/AddSong';
 import { useNavigate } from 'react-router-dom';
@@ -44,7 +44,18 @@ import { useNavigate } from 'react-router-dom';
 
       return (
          <>
-            <form onSubmit={handleSubmit} style={{position:"fixed",top:"10px"}}>
+          <Paper
+               elevation={3}
+               sx={{
+                 maxWidth: 600,
+                 padding: 2,
+                 textAlign: "center",
+                 borderRadius: "12px",
+                 position: "fixed",
+                 top: "2px",
+               }}
+             >
+            <form onSubmit={handleSubmit}>
             <Typography variant="h6" gutterBottom>
                Add Song
             </Typography>
@@ -80,7 +91,7 @@ import { useNavigate } from 'react-router-dom';
                      variant="outlined"
                   />
                </Grid>
-               <Grid size={8}>
+               <Grid size={6}>
                <AwsUpload callback={handleFile}/>
 
                </Grid>
@@ -104,7 +115,8 @@ import { useNavigate } from 'react-router-dom';
                </Grid>
 
             </Grid>
-         </form>         
+         </form> 
+         </Paper>        
             </>         
       );
    };

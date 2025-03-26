@@ -4,12 +4,14 @@ import { useEffect, useState } from "react";
 import { NavBar } from "../components/NavBar";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import Home from "./Home";
+import AvatarAndUpdate from "@/components/AvatarAndUpdate";
+import { Avatar } from "@mui/material";
 
 export default function AppLayout() {
   const [insite, setInsite] = useState<boolean>(() => {
     // קריאה ל-sessionStorage כדי לבדוק אם המשתמש מחובר
     return sessionStorage.getItem("insite") === "true";
-  });
+  });       
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -21,11 +23,12 @@ export default function AppLayout() {
   }, [insite, location, navigate]);
 
   function register(email: string, password: string, name: string) {
+    console.log(JSON.stringify( name))
+
     authService
       .register(name, email, password)
       .then(() => {
-        sessionStorage.setItem("email", email);
-        sessionStorage.setItem("user", name);
+        console.log(JSON.stringify( name))
         sessionStorage.setItem("insite", "true");
         setInsite(true);
       })
@@ -41,6 +44,7 @@ export default function AppLayout() {
       .then((res) => {
         if (res.status === 200) {
           sessionStorage.setItem("insite", "true");
+
           setInsite(true);
         } else {
           alert("מצטערים, ארעה שגיאה בהתחברות");
@@ -57,7 +61,7 @@ export default function AppLayout() {
     <>
       {!insite && <>
         <div style={{position:"fixed",top:"50px",right:"10px"}}>
-        
+               <Avatar/>
           <FormToEnter
             buttonText="הרשמה"
             onSubmit={(email, password, name) => register(email, password, name || "")}
@@ -74,10 +78,13 @@ export default function AppLayout() {
 
       {insite && (
         <>
+        
           <NavBar />
           <Outlet />
         </>
       )}
+      {insite && <AvatarAndUpdate />}
+
     </>
   );
 }

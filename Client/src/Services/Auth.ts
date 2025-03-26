@@ -1,50 +1,85 @@
+import { jwtDecode, JwtPayload } from "jwt-decode";
 import api from "./api";
-//https://localhost:7260/api/Auth/Login
+
+interface CustomJwtPayload extends JwtPayload {
+  "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"?: string;
+  "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"?: string;
+  "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"?: string;
+  "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"?: string;
+}
+
 const authService = {
   login: async (email: string, password: string) => {
-    return api.post('/Auth/Login', {
-      password: password,
-      email: email
-    }).then((response) => {
-
-      const token = response.data.token;
-      sessionStorage.setItem('token', token);
-      return response;
-    }).catch((error) => {
-      console.error('שגיאה בהתחברות:', error);
-      throw error;
-    });
+    return api.post("/Auth/Login", { email, password })
+      .then((response) => {
+        const token = response.data.token;
+        sessionStorage.setItem("token", token);
+        return response;
+      })
+      .catch((error) => {
+        console.error("שגיאה בהתחברות:", error);
+        throw error;
+      });
   },
 
   register: async (username: string, email: string, password: string) => {
     try {
-      const response = await api.post('/Auth/register', {
-        username: username,
-        email: email,
-        password: password,
-      });
+      const response = await api.post("/Auth/register", { username, email, password });
 
-      // שמירת הטוקן (אופציונלי - תלוי אם אתה רוצה שהמשתמש יהיה מחובר מיד לאחר הרישום)
+      // Save token (if needed)
       const token = response.data.token;
-      sessionStorage.setItem('token', token);
+      sessionStorage.setItem("token", token);
 
       return response.data;
     } catch (error) {
-      // טיפול בשגיאות
-      console.error('שגיאה ברישום:', error);
+      console.error("שגיאה ברישום:", error);
       throw error;
     }
   },
 
   logout: () => {
     // מחיקת הטוקן
-    sessionStorage.removeItem('token'); // או מחיקה ממקום האחסון שלך
-    // ניתן להוסיף פעולות נוספות בעת התנתקות
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("insite")
+  },
+  getUserNameFromToken: (): string | null => {
+    try {
+      const token = authService.getToken();
+      if (!token) return null;
+      const decodedToken = jwtDecode<CustomJwtPayload>(token);
+      return decodedToken["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"] ?? null;
+    } catch (error) {
+      console.error("Invalid token:", error);
+      return null;
+    }
   },
 
-  getToken: () => {
-    // שליפת הטוקן (לשימוש במקומות אחרים באפליקציה)
-    return sessionStorage.getItem('token');
+  getEmailFromToken: (): string | null => {
+    try {
+      const token = authService.getToken();
+      if (!token) return null;
+      const decodedToken = jwtDecode<CustomJwtPayload>(token);
+      return decodedToken["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"] ?? null;
+    } catch (error) {
+      console.error("Invalid token:", error);
+      return null;
+    }
+  },
+
+  getRoleFromToken: (): string | null => {
+    try {
+      const token = authService.getToken();
+      if (!token) return null;
+      const decodedToken = jwtDecode<CustomJwtPayload>(token);
+      return decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] ?? null;
+    } catch (error) {
+      console.error("Invalid token:", error);
+      return null;
+    }
+  },
+
+  getToken: (): string | null => {
+    return sessionStorage.getItem("token");
   },
 };
 
