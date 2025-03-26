@@ -12,7 +12,8 @@ export default function AppLayout() {
     // קריאה ל-sessionStorage כדי לבדוק אם המשתמש מחובר
     return sessionStorage.getItem("insite") === "true";
   });       
-
+  const logout = (b: boolean) => {
+    setInsite(b); }
   const navigate = useNavigate();
   const location = useLocation();
   useEffect(() => {
@@ -83,7 +84,7 @@ export default function AppLayout() {
           <Outlet />
         </>
       )}
-      {insite && <AvatarAndUpdate />}
+      {insite && <AvatarAndUpdate logout={() => logout(false)} />}
 
     </>
   );

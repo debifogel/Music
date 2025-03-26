@@ -13,14 +13,17 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import authService from '@/Services/Auth';
+import userService from '@/Services/user';
 
 interface UserDetails {
     name: string;
     email: string;
-    password: string;
+    password:string
 }
-
-const AvatarAndUpdate: React.FC = () => {
+interface AvatarAndUpdateProps {
+    logout: () => void;
+  }
+const AvatarAndUpdate= ({ logout }: AvatarAndUpdateProps) => {
     const [menuOpen, setMenuOpen] = useState(false); // דגל לפתיחת התפריט
     const [dialogOpen, setDialogOpen] = useState(false);
     const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
@@ -35,7 +38,8 @@ const AvatarAndUpdate: React.FC = () => {
             setUserDetails({
                 name: user,
                 email: email,
-                password: '',
+                password:""
+               
             });
         }
     }, []);
@@ -68,6 +72,7 @@ const AvatarAndUpdate: React.FC = () => {
         authService.logout();
         setUserDetails(null);
         handleMenuClose();
+        logout()
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -78,9 +83,11 @@ const AvatarAndUpdate: React.FC = () => {
         }));
     };
 
-    const handleSaveDetails = () => {
-        console.log('Updated details:', userDetails);
+    const handleSaveDetails = async() => {
+        await userService.updateUser({username:userDetails?.name||"",email:userDetails?.email||""})
+
         setDialogOpen(false);
+        setMenuOpen(false)
     };
 
     if (!userDetails) {
@@ -91,7 +98,7 @@ const AvatarAndUpdate: React.FC = () => {
         <>
             <Button
                 onClick={handleAvatarClick} // כפתור שמגיב בלחיצה
-                sx={{borderRadius:"30px", height:"55px"}}
+                sx={{borderRadius:"30px", height:"55px" ,position:"fixed",right:"100px",top:"10px"}}
             >
                 <Avatar 
                     style={{ cursor: 'pointer', backgroundColor: '#3f51b5' }}
@@ -181,6 +188,7 @@ const AvatarAndUpdate: React.FC = () => {
                         value={userDetails.password}
                         onChange={handleInputChange}
                     />
+                    
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleDialogClose} color="secondary">

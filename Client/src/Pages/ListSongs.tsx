@@ -25,6 +25,7 @@ const ListSongs = () => {
   const [isLogin, setLogin] = useState(true);
   const [keyLoad,setKeyLoad]=useState(0)
 const reLoad = () => {
+
 console.log(keyLoad+"render songs")
   setKeyLoad(keyLoad=>keyLoad+1)// Trigger a re-render by updating the state
 };
@@ -62,7 +63,7 @@ console.log(keyLoad+"render songs")
     };
 
     fetchSongs();
-  }, [filterType, filterValue]);
+  }, [filterType, filterValue,keyLoad]);
 
   // אנימציה להצגת השירים בהדרגה
   useEffect(() => {

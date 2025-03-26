@@ -55,9 +55,13 @@ namespace MusicServer.Data.Repository
         public async Task UpdateUserAsync(int id,UserDto userd)
         {
             var user = await GetUserByIdAsync(id);
+            if(userd.Username!=null)
             user.Username = userd.Username;
+            if(userd.Password!=null)
             user.Password = userd.Password;
-            user.Email = userd.Email;
+            if (userd.Email != null)
+
+                user.Email = userd.Email;
             
         }
     }

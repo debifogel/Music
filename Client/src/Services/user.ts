@@ -28,11 +28,11 @@ const userService = {
     }
   },
 
-  updateUser: async (id: number, userDto: UserDto): Promise<void> => {
+  updateUser: async ( userDto: UserDto): Promise<void> => {
     try {
-      await api.put(`/Users/${id}`, userDto);
+      await api.put(`/Users/${0}`, userDto);
     } catch (error) {
-      console.error(`שגיאה בעדכון משתמש עם מזהה ${id}:`, error);
+      console.error(`שגיאה בעדכון משתמש עם מזהה :`, error);
       throw error;
     }
   },

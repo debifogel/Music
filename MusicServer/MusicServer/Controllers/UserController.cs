@@ -49,18 +49,12 @@ namespace MusicServer.Api.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(int id, UserDto userDto)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            if (id != 0)
+                Forbid();
+
             var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            if (userId != id)
-            {
-                return Forbid();
-            }
-
-            await _userService.UpdateUserAsync(id, userDto);
+            await _userService.UpdateUserAsync(userId, userDto);
             return Ok();
         }
 
