@@ -14,30 +14,28 @@ interface Folder {
 const Folders = () => {
   const [folders, setFolders] = useState<Folder[]>([]);
   const [loading, setLoading] = useState(true);
-  const [visibleFolders, setVisibleFolders] = useState<Folder[]>([]);
 
   useEffect(() => {
-    const fetchFolders = async () => {
-      setLoading(true);
-      try {
-        let fetchedFolders: Folder[] = await folderService.getAllFolders();
-        setFolders(fetchedFolders);
-        setVisibleFolders(fetchedFolders); // Directly set the folders if available
-      } catch (error) {
-        console.error("שגיאה בטעינת התיקיות", error);
-      }
-      setLoading(false);
-    };
-
     fetchFolders();
   }, []);
+
+  const fetchFolders = async () => {
+    setLoading(true);
+    try {
+      const fetchedFolders: Folder[] = await folderService.getAllFolders();
+      setFolders(fetchedFolders);
+    } catch (error) {
+      console.error(" שגיאה בטעינת תיקיות:", error);
+    }
+    setLoading(false);
+  };
 
   if (loading) return <CircularProgress sx={{ display: "block", margin: "auto", mt: 4 }} />;
 
   return (
     <Grid container spacing={3} sx={{ position: "fixed", top: "100px", left: "300px", padding: 3, marginTop: 5, justifyContent: "center" ,width:"60%"}}>
-      {visibleFolders.length > 0 ? (
-        visibleFolders.map((folder) => (
+      {folders.length > 0 ? (
+        folders.map((folder) => (
           <Grid size={4} key={folder.folderId}>
             <Card
               sx={{
