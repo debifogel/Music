@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using MusicServer.Core.Dto;
 using AutoMapper;
+using System.Threading.Tasks;
 
 namespace MusicServer.Api.Controllers
 {
@@ -76,35 +77,56 @@ namespace MusicServer.Api.Controllers
         public async Task<IActionResult> RenameFolder(int id, string folderName)
         {
             await _folderService.RenameFolderAsync(id, folderName);
-            return NoContent();
+            return Ok();
         }
 
         [HttpPut("parent/{id}")]
         public async Task<IActionResult> ChangeParentFolder(int id, int parentFolderId)
         {
             await _folderService.ChangeParentFolderAsync(id, parentFolderId);
-            return NoContent();
+            return Ok();
         }
 
         [HttpPut("song/{folderId}/{songId}")]
         public async Task<IActionResult> AddSongToFolder(int folderId, int songId)
         {
             await _folderService.AddSongInFolderAsync(songId, folderId);
-            return NoContent();
+            return Ok();
         }
 
         [HttpDelete("song/{folderId}/{songId}")]
         public async Task<IActionResult> RemoveSongFromFolder(int folderId, int songId)
         {
             await _folderService.RemoveSongInFolderAsync(songId, folderId);
-            return NoContent();
+            return Ok();
         }
-
+        [HttpDelete("empty/")]
+        public async Task<IActionResult> RemoveEmptyFolder()
+        {
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var allFolders = await _folderService.GetAllFoldersByUserId(userId);
+            foreach (var item in allFolders)
+            {
+                if (item.Songs.Count == 0)
+                     DeleteFolder(item.FolderId);
+            }
+            await Task.WhenAll();
+            return Ok();
+        }
+        [HttpDelete("empty/{id}")]
+        public async Task<IActionResult> RemoveEmptyFolderById(int id)
+        {
+            var folder = await _folderService.GetFolderByIdAsync(id);
+              if (folder.Songs.Count == 0)
+                   await DeleteFolder(folder.FolderId);
+            
+            return Ok();
+        }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteFolder(int id)
         {
             await _folderService.DeleteFolderByIdAsync(id);
-            return NoContent();
+            return Ok();
         }
 
         [HttpGet("songs/{id}")]

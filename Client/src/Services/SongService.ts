@@ -1,4 +1,5 @@
 import api from './api'; // ייבוא מופע ה-Axios המוגדר שלך
+import folderService from './FolderService';
 
 interface Song {
   songId: number;
@@ -20,10 +21,9 @@ interface SongDto {
 }
 
 interface SongUpdate {
-    title?: string;
-    artist?: string;
-    genre?: string;
-    filePath?: string;
+    title: string;
+    artist: string;
+    genre: string;
 }
 
 const songService = {
@@ -70,15 +70,24 @@ const songService = {
   updateSong: async (id: number, songUpdate: SongUpdate): Promise<void> => {
     try {
       await api.put(`/Songs/${id}`, songUpdate);
+     const foldersResponse = await api.get(`/Folders/`);
+     let bool = foldersResponse.data.find((f: any) => f.folderName === songUpdate.artist);
+     if(!bool)
+     {
+      bool= await folderService.addFolder({ folderName: songUpdate.artist || 'Unknown Artist' ,parentFolderId:null})
+       
+     }
+     await folderService.addSongToFolder(bool.folderId,id)
     } catch (error) {
       console.error(`שגיאה בעדכון שיר עם מזהה ${id}:`, error);
       throw error;
     }
   },
 
-  updateSongPermission: async (id: number, isPrivate: boolean): Promise<void> => {
+  updateSongPermission: async (id: number): Promise<void> => {
     try {
-      await api.put(`/Songs/permission/${id}`, isPrivate);
+      
+      await api.put(`/Songs/permission/${id}`);
     } catch (error) {
       console.error(`שגיאה בעדכון הרשאה לשיר עם מזהה ${id}:`, error);
       throw error;
@@ -96,3 +105,4 @@ const songService = {
 };
 
 export default songService;
+

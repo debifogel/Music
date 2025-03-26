@@ -6,7 +6,7 @@ import { myRouter } from './components/router'
 function App() {
 
   return (
-    <>
+    < >
     <RouterProvider router={myRouter}/>
     </>
   )

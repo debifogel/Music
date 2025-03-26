@@ -21,7 +21,7 @@ namespace MusicServer.Core.Irepository
         Task<Song> GetSongByIdAsync(int id);
         Task<Song> AddSongAsync(Song song);
         Task UpdateSongAsync(int id, SongUpdate song);
-        Task UpdatePermissionSongAsync(int id, bool isPrivate);
+        Task UpdatePermissionSongAsync(int id);
 
         Task DeleteSongByIdAsync(int id);
     }

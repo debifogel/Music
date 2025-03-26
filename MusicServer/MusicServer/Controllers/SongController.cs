@@ -76,21 +76,21 @@ namespace MusicServer.Api.Controllers
         public async Task<IActionResult> UpdateSong(int id, SongUpdate songUpdate)
         {
             await _songService.UpdateSongAsync(id, songUpdate);
-            return NoContent();
+            return Ok();
         }
 
         [HttpPut("permission/{id}")]
         public async Task<IActionResult> UpdateSongPermission(int id, bool isPrivate)
         {
-            await _songService.UpdatePermissionSongAsync(id, isPrivate);
-            return NoContent();
+            await _songService.UpdatePermissionSongAsync(id);
+            return Ok();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSong(int id)
         {
             await _songService.DeleteSongByIdAsync(id);
-            return NoContent();
+            return Ok();
         }
     }
 }

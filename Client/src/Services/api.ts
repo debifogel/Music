@@ -12,7 +12,7 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     
-    const token = localStorage.getItem('token'); // או כל מקום אחר שבו את שומרת את האסימון
+    const token = sessionStorage.getItem('token'); // או כל מקום אחר שבו את שומרת את האסימון
     if (token) {
       console.log('config')
       config.headers.Authorization = `Bearer ${token}`;

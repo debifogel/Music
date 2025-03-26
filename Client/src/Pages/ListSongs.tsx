@@ -12,6 +12,9 @@ interface Song {
   title: string;
   artist: string;
   filePath: string;
+  genre:string;
+  isPrivate:boolean
+
 }
 
 const ListSongs = () => {
@@ -20,8 +23,11 @@ const ListSongs = () => {
   const [visibleSongs, setVisibleSongs] = useState<Song[]>([]);
   const [loading, setLoading] = useState(true);
   const [isLogin, setLogin] = useState(true);
-
-
+  const [keyLoad,setKeyLoad]=useState(0)
+const reLoad = () => {
+console.log(keyLoad+"render songs")
+  setKeyLoad(keyLoad=>keyLoad+1)// Trigger a re-render by updating the state
+};
   useEffect(() => {
     const fetchSongs = async () => {
       setLoading(true);
@@ -32,13 +38,12 @@ const ListSongs = () => {
           case "folder":
             fetchedSongs = await songInPlaceService.getSongsInFolder(Number(filterValue));
             break;
-          case "playlist":  
+          case "playlist":
             fetchedSongs = await songInPlaceService.getSongsInPlaylist(Number(filterValue));
-            console.log("in playlist");
             break;
           case "name":
             fetchedSongs = await songService.getAllPublicSongs(filterValue || "");
-            setLogin ( false);
+            setLogin(false);
             break;
           case "all":
             fetchedSongs = await songService.getAllSongs();
@@ -61,24 +66,24 @@ const ListSongs = () => {
 
   // אנימציה להצגת השירים בהדרגה
   useEffect(() => {
-    if (songs.length === 1) {
-      setVisibleSongs([songs[0]]);
-      return;
-    }
-      
-        let index = 0;
-        const interval = setInterval(() => {
-          setVisibleSongs((prev) =>{if (prev.length === 0) {
-            return [songs[0]];
-          } else {
-            return [...prev, songs[index]];
-          }} );
-          index++;
-          if (index === songs.length) clearInterval(interval);
-        }, 500);
-        return () => clearInterval(interval);
-      
-    }, [songs]);
+    if (songs.length === 0) return; // מניעת קריסה במקרה של מערך ריק
+
+    let index = 0;
+    const interval = setInterval(() => {
+      setVisibleSongs((prev) => {if (prev.length === 0) {
+        return [songs[0]];
+       } else {
+         return [...prev, songs[index]];
+       }} );
+
+      index++;
+      if (index === songs.length) clearInterval(interval);
+
+    }, 500);
+
+    return () => clearInterval(interval);
+  }, [songs]);
+
   if (loading) return <CircularProgress sx={{ display: "block", margin: "20px auto" }} />;
 
   return (
@@ -90,8 +95,8 @@ const ListSongs = () => {
         padding: 3,
         textAlign: "center",
         borderRadius: "12px",
-        position:"fixed",
-        top:"50px"
+        position: "fixed",
+        top: "50px",
       }}
     >
       <Typography variant="h5" fontWeight="bold" sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1 }}>
@@ -99,31 +104,33 @@ const ListSongs = () => {
         רשימת שירים
       </Typography>
 
-      <List sx={{ marginTop: 2 }}>
-        {visibleSongs.map((song, index) => (
-          <Box key={song.songId}>
-            <ListItem
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                padding: "10px",
-                borderRadius: "8px",
-                "&:hover": { backgroundColor: "#f5f5f5" },
-              }}
-            >
-              {isLogin && <SongOptionsMenu song={song} inPlay={filterType === "playlist" ? Number(filterValue) : 0} />}
-              <ListItemText
-                primary={song.title}
-                secondary={song.artist}
-                sx={{ flex: 1, marginLeft: 2 }}
-              />
-              <AudioPlayer audioUrl={song.filePath} />
-            </ListItem>
-            {index < visibleSongs.length - 1 && <Divider />}
-          </Box>
-        ))}
-      </List>
+      {songs.length === 0 ? (
+        <Typography variant="subtitle1" sx={{ marginTop: 2, color: "gray" }}>
+          לא נמצאו שירים.
+        </Typography>
+      ) : (
+        <List sx={{ marginTop: 2 }}>
+          {visibleSongs.map((song, index) => (
+            <Box key={song.songId}>
+              <ListItem
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  padding: "10px",
+                  borderRadius: "8px",
+                  "&:hover": { backgroundColor: "#f5f5f5" },
+                }}
+              >
+                {isLogin && <SongOptionsMenu song={song} inPlay={filterType === "playlist" ? Number(filterValue) : 0} callback={()=>reLoad}/>}
+                <ListItemText primary={song.title} secondary={song.artist} sx={{ flex: 1, marginLeft: 2 }} />
+                <AudioPlayer audioUrl={song.filePath} />
+              </ListItem>
+              {index < visibleSongs.length - 1 && <Divider />}
+            </Box>
+          ))}
+        </List>
+      )}
     </Paper>
   );
 };

@@ -85,10 +85,10 @@ namespace MusicServer.Data.Repository
                     .FirstAsync(s => s.SongId == id );
         }
 
-        public async Task UpdatePermissionSongAsync(int id, bool isPrivate)
+        public async Task UpdatePermissionSongAsync(int id)
         {
             var Song= await GetSongByIdAsync(id);
-            Song.IsPrivate = isPrivate;
+            Song.IsPrivate = !Song.IsPrivate;
         }
 
         public async Task UpdateSongAsync(int id, SongUpdate song)

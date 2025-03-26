@@ -83,9 +83,9 @@ namespace MusicServer.Service.ServiceControllers
             return song;
         }
 
-        public async Task UpdatePermissionSongAsync(int id, bool isPrivate)
+        public async Task UpdatePermissionSongAsync(int id)
         {
-            await _songRepository.UpdatePermissionSongAsync(id, isPrivate);
+            await _songRepository.UpdatePermissionSongAsync(id);
             await _manager.SavechangesAsync();
         }
 

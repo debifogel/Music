@@ -4,6 +4,7 @@ import playlistService from "@/Services/PlaylistService";
 import { useEffect, useState } from "react";
 import { TextField, Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 import OptionsMenu from "./OPtionMenu";
+import folderService from "@/Services/FolderService";
 
 interface Opt {
     id: number;
@@ -17,13 +18,16 @@ interface Song {
     title: string;
     artist: string;
     filePath: string;
+    genre:string;
+    isPrivate:boolean
+
 }
 
-const OptionSongs = ({ song, inPlay }: { song: Song; inPlay: number }) => {
+const OptionSongs = ({ song, inPlay,callback }: { song: Song; inPlay: number,callback:()=>{} }) => {
     const [playlists, setPlaylists] = useState<Opt[]>([]);
     const [edit, setEdit] = useState(false);
-    const [editedSong, setEditedSong] = useState({ title: song.title, artist: song.artist });
-
+    const [editedSong, setEditedSong] = useState({ title: song.title, artist: song.artist,genre:song.genre });
+ console.log(song)
     useEffect(() => {
         const fetchPlaylists = async () => {
             try {
@@ -53,24 +57,41 @@ const OptionSongs = ({ song, inPlay }: { song: Song; inPlay: number }) => {
         } catch (error) {
             console.error("שגיאה במחיקת השיר", error);
         }
+        callback()
     };
 
     const handleAddToPlaylist = (id: number) => {
         playlistService.addSongToPlaylist(id, song.songId);
+        callback()
     };
 
     const handleRemoveFromPlaylist = () => {
         playlistService.removeSongFromPlaylist(inPlay, song.songId);
+        callback()
     };
 
     const handleSubmitEdit = async () => {
         try {
-            await songService.updateSong(song.songId, editedSong);
+            await songService.updateSong(song.songId, editedSong); 
+            await folderService.removeEmptyFolder()          
             setEdit(false);
         } catch (error) {
             console.error("שגיאה בעדכון השיר", error);
+            setEdit(false);
+
         }
+        callback()
     };
+    const handlePermission=async()=>{
+        try {
+          await songService.updateSongPermission(song.songId)
+        }
+        catch (error) {
+            console.error("שגיאה בעדכון השיר", error);
+
+        }
+        callback()
+    }
 
     return (
         <>
@@ -79,6 +100,7 @@ const OptionSongs = ({ song, inPlay }: { song: Song; inPlay: number }) => {
                     { id: 1, title: "ערוך", func: handleEdit },
                     { id: 2, title: "מחק", func: handleDelete },
                     { id: 3, title: "הוסף", func: () => {}, child: playlists },
+                    { id: 4, title:song.isPrivate? "שנה לציבורי":"שנה לפרטי", func: handlePermission},
                     ...(inPlay !== 0 ? [{ id: 4, title: "הסר", func: handleRemoveFromPlaylist }] : []),
                 ]}
             />
@@ -100,6 +122,13 @@ const OptionSongs = ({ song, inPlay }: { song: Song; inPlay: number }) => {
                         margin="dense"
                         value={editedSong.artist}
                         onChange={(e) => setEditedSong({ ...editedSong, artist: e.target.value })}
+                    />
+                    <TextField
+                        label="גנר"
+                        fullWidth
+                        margin="dense"
+                        value={editedSong.genre}
+                        onChange={(e) => setEditedSong({ ...editedSong, genre: e.target.value })}
                     />
                 </DialogContent>
                 <DialogActions>

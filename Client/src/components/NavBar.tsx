@@ -11,6 +11,7 @@ import {
   SidebarMenuItem,
   SidebarProvider,
   SidebarTrigger,
+  
 } from "@/components/ui/sidebar"
 import { Link } from "react-router-dom"
 
@@ -51,7 +52,7 @@ const items = [
  function AppSidebar() {
   return (
     <>
-    <Sidebar>
+    <Sidebar collapsible="icon">
       <SidebarContent>
         
         <SidebarGroup>
@@ -82,10 +83,10 @@ const items = [
 export  function NavBar() {
   return (
 <>
-<SidebarProvider>
+<SidebarProvider style={{ position: 'absolute', top: '20px', left: '10px' }}>
       <AppSidebar />
-      <main>
-        <SidebarTrigger />
+      <main >
+        <SidebarTrigger className="sidebar-toggle" />
       </main>
 </SidebarProvider>
 </>  )

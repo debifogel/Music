@@ -51,14 +51,14 @@ namespace MusicServer.Api.Controllers
         public async Task<IActionResult> UpdateLog(Log log)
         {
             await _logService.UpdateLogAsync(log);
-            return NoContent();
+            return Ok();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteLog(int id)
         {
             await _logService.DeleteLogAsync(id);
-            return NoContent();
+            return Ok();
         }
     }
 }

@@ -1,5 +1,5 @@
 import folderService from "@/Services/FolderService";
-import { CircularProgress,Grid2 as Grid } from "@mui/material";
+import { CircularProgress, Grid2 as Grid, Card, CardContent, Typography } from "@mui/material";
 import { Folder } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -10,61 +10,69 @@ interface Folder {
   folderName: string;
   parentFolderId: number | null;
 }
- const Folders=()=>{
-      const [folders, setFeldors] = useState<Folder[]>([]);
-      const [loading, setLoading] = useState(true);   
-      const [visibleFolders, setVisibleFolders] = useState<Folder[]>([]);
 
-      useEffect(() => {
-        const fetchFolders = async () => {
-          setLoading(true);
-          try {
-            let fetchedFolders: Folder[] =await folderService.getAllFolders();
-            setFeldors(fetchedFolders);
-            setVisibleFolders([]); // איפוס כדי לטעון בהדרגה
-          
-          } catch (error) {
-            console.error("שגיאה בטעינת השירים", error);
-          }
-          setLoading(false);
-        };
-    
-        fetchFolders();
-      }, []);
+const Folders = () => {
+  const [folders, setFolders] = useState<Folder[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [visibleFolders, setVisibleFolders] = useState<Folder[]>([]);
+
   useEffect(() => {
-    if (folders.length === 1) {
-      setVisibleFolders([folders[0]]);
-      return;
-    }
-        let index = 0;
-        const interval = setInterval(() => {
-          setVisibleFolders((prev) =>{ if (prev.length === 0) {
-            return [folders[0]];
-          } else {
-            return [...prev, folders[index]];
-          }});
-          index++;
-          if (index === folders.length) clearInterval(interval);
-        }, 500);
-        return () => clearInterval(interval);
-      
-    }, [folders]);
-  
-    if (loading) return <CircularProgress />;
-    return (
-      <>
-      <Grid container spacing={8} sx={{position:"fixed",top:"100px"}}>
-      {visibleFolders.filter(f=>f).map((folder)=>
-        <Grid key={folder.folderId} size={4} >   
-      <Link key={folder.folderId} to={`songs/folder/${folder.folderId}`} >
-      {folder.folderName}
-      <Folder/></Link>
-      </Grid> )}
-      </Grid>
-      </>
-    )
-  
-}
-export default  Folders 
+    const fetchFolders = async () => {
+      setLoading(true);
+      try {
+        let fetchedFolders: Folder[] = await folderService.getAllFolders();
+        setFolders(fetchedFolders);
+        setVisibleFolders(fetchedFolders); // Directly set the folders if available
+      } catch (error) {
+        console.error("שגיאה בטעינת התיקיות", error);
+      }
+      setLoading(false);
+    };
 
+    fetchFolders();
+  }, []);
 
+  if (loading) return <CircularProgress sx={{ display: "block", margin: "auto", mt: 4 }} />;
+
+  return (
+    <Grid container spacing={3} sx={{ position: "fixed", top: "100px", left: "300px", padding: 3, marginTop: 5, justifyContent: "center" ,width:"60%"}}>
+      {visibleFolders.length > 0 ? (
+        visibleFolders.map((folder) => (
+          <Grid size={4} key={folder.folderId}>
+            <Card
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: 3,
+                minHeight: "150px",
+                minWidth: "120px",
+                borderRadius: 3,
+                boxShadow: 3,
+                transition: "0.3s",
+                "&:hover": { transform: "scale(1.05)", boxShadow: 5 },
+                backgroundColor: "#f8f9fa",
+              }}
+            >
+              <Link to={`songs/folder/${folder.folderId}`} style={{ textDecoration: "none", textAlign: "center", width: "100%" }}>
+                <Folder size={48} color="#1976d2" />
+                <CardContent>
+                  <Typography variant="h6" color="textPrimary">
+                    {folder.folderName}
+                  </Typography>
+                </CardContent>
+              </Link>
+            </Card>
+          </Grid>
+        ))
+      ) : (
+        <Typography variant="h6" sx={{ marginTop: 5, color: "gray" }}>
+          אין תיקיות זמינות
+        </Typography>
+      )}
+    </Grid>
+  );
+};
+
+export default Folders;

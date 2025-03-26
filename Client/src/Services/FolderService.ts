@@ -91,7 +91,14 @@ const folderService = {
       throw error;
     }
   },
-
+  removeEmptyFolder: async (): Promise<void> => {
+    try {
+      await api.delete(`/Folders/empty/`);
+    } catch (error) {
+      console.error("שגיאה בהסרת תיקיה העלולה להיות ריקה", error);
+      throw error
+    }
+  },
   deleteFolder: async (id: number): Promise<void> => {
     try {
       await api.delete(`/Folders/${id}`);

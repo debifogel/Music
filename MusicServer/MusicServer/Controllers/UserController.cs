@@ -61,7 +61,7 @@ namespace MusicServer.Api.Controllers
             }
 
             await _userService.UpdateUserAsync(id, userDto);
-            return NoContent();
+            return Ok();
         }
 
         [HttpDelete("{id}")]
@@ -69,7 +69,7 @@ namespace MusicServer.Api.Controllers
         public async Task<IActionResult> DeleteUser(int id)
         {
             await _userService.DeleteUserByIdAsync(id);
-            return NoContent();
+            return Ok();
         }
 
         [HttpPut("block/{id}")]
@@ -77,7 +77,7 @@ namespace MusicServer.Api.Controllers
         public async Task<IActionResult> BlockUser(int id)
         {
             await _userService.BlockUserByIdAsync(id);
-            return NoContent();
+            return Ok();
         }
     }
 }

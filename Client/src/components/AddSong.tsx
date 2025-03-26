@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { TextField, Button, Grid2 as Grid, Typography, Switch } from '@mui/material';
 import AwsUpload from './AwsUpload';
 import addSong from '../Services/AddSong';
+import { useNavigate } from 'react-router-dom';
 
    const AddSong = () => {
+      const route=useNavigate()
       const [formData, setFormData] = useState({
          title: '',
          artist: '',
@@ -26,11 +28,13 @@ import addSong from '../Services/AddSong';
           setFormData({...formData,filePath:path})
 
       }
-      const handleSubmit = (e: React.FormEvent) => {
+      const handleSubmit = async(e: React.FormEvent) => {
          e.preventDefault();
          if(addFile)
          {
-            addSong(formData)
+           await addSong(formData)
+             route('/home')
+           
          }
          else{
             console.log("the client doesnt add file")
@@ -81,7 +85,7 @@ import addSong from '../Services/AddSong';
 
                </Grid>
 
-               <Grid size={8}>
+               <Grid size={5}>
                   <span>האם להגדיר את השיר כפרטי?</span>
                   {!formData.isPrivate&&<h6 style={{color:'rgb(61, 231, 231)'}}>ציבורי</h6>}
                   {formData.isPrivate&&<h6 style={{color:'rgb(98, 20, 214)'}}>פרטי</h6>}

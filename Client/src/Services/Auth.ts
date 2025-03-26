@@ -8,7 +8,7 @@ const authService = {
     }).then((response) => {
 
       const token = response.data.token;
-      localStorage.setItem('token', token);
+      sessionStorage.setItem('token', token);
       return response;
     }).catch((error) => {
       console.error('שגיאה בהתחברות:', error);
@@ -26,7 +26,7 @@ const authService = {
 
       // שמירת הטוקן (אופציונלי - תלוי אם אתה רוצה שהמשתמש יהיה מחובר מיד לאחר הרישום)
       const token = response.data.token;
-      localStorage.setItem('token', token);
+      sessionStorage.setItem('token', token);
 
       return response.data;
     } catch (error) {
@@ -38,13 +38,13 @@ const authService = {
 
   logout: () => {
     // מחיקת הטוקן
-    localStorage.removeItem('token'); // או מחיקה ממקום האחסון שלך
+    sessionStorage.removeItem('token'); // או מחיקה ממקום האחסון שלך
     // ניתן להוסיף פעולות נוספות בעת התנתקות
   },
 
   getToken: () => {
     // שליפת הטוקן (לשימוש במקומות אחרים באפליקציה)
-    return localStorage.getItem('token');
+    return sessionStorage.getItem('token');
   },
 };
 

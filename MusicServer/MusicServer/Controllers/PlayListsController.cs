@@ -63,28 +63,28 @@ namespace MusicServer.Api.Controllers
         public async Task<IActionResult> RenamePlaylist(int id, string playlistName)
         {
             await _playlistService.RenamePlaylistAsync(id, playlistName);
-            return NoContent();
+            return Ok();
         }
 
         [HttpPut("song/{playlistId}/{songId}")]
         public async Task<IActionResult> AddSongToPlaylist(int playlistId, int songId)
         {
             await _playlistService.AddSongInPlaylistAsync(songId, playlistId);
-            return NoContent();
+            return Ok();
         }
 
         [HttpDelete("song/{playlistId}/{songId}")]
         public async Task<IActionResult> RemoveSongFromPlaylist(int playlistId, int songId)
         {
             await _playlistService.RemoveSongInPlaylistAsync(songId, playlistId);
-            return NoContent();
+            return Ok();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePlaylist(int id)
         {
             await _playlistService.DeletePlayListByIdAsync(id);
-            return NoContent();
+            return Ok();
         }
 
         [HttpGet("songs/{id}")]
