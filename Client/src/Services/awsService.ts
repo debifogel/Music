@@ -2,9 +2,9 @@ import AWS from 'aws-sdk';
 
 // 1️⃣ יצירת פונקציה להחזרת הקונפיגורציה
 const getAWSConfig = () => {
-    const accessKeyId = import.meta.env.VITE_ACCESS_KEY;
-    const secretAccessKey = import.meta.env.VITE_SECRET_KEY;
-    const region = import.meta.env.VITE_REGION;
+    const accessKeyId = process.env.VITE_ACCESS_KEY;
+    const secretAccessKey = process.env.VITE_SECRET_KEY;
+    const region = process.env.VITE_REGION;
 
     if (!accessKeyId || !secretAccessKey || !region) {
         throw new Error("Missing AWS credentials. Please check your .env file.");
@@ -30,8 +30,8 @@ interface UploadResponse {
 const S3Service = {
     // 3️⃣ פונקציה להעלאת קובץ
     uploadFile: async (file: File, fileName: string, progress?: (progressEvent: AWS.S3.ManagedUpload.Progress) => void): Promise<UploadResponse> => {
-        const bucketName = import.meta.env.VITE_S3_BUCKET;
-        const folderName = import.meta.env.VITE_FOLDER_NAME || "";
+        const bucketName = process.env.VITE_S3_BUCKET;
+        const folderName = process.env.VITE_FOLDER_NAME || "";
 
         if (!bucketName) {
             throw new Error("Missing S3 bucket name in environment variables.");
@@ -56,8 +56,8 @@ const S3Service = {
 
     // 4️⃣ יצירת URL להורדת קובץ
     getFileUrl: (fileName: string): string => {
-        const bucketName = import.meta.env.VITE_S3_BUCKET;
-        const region = import.meta.env.VITE_REGION;
+        const bucketName = process.env.VITE_S3_BUCKET;
+        const region = process.env.VITE_REGION;
         if (!bucketName || !region) {
             throw new Error("Missing S3 bucket or region.");
         }
@@ -67,7 +67,7 @@ const S3Service = {
 
     // 5️⃣ מחיקת קובץ מה-S3
     deleteFile: async (fileName: string): Promise<AWS.S3.DeleteObjectOutput> => {
-        const bucketName = import.meta.env.VITE_S3_BUCKET;
+        const bucketName = process.env.VITE_S3_BUCKET;
         if (!bucketName) {
             throw new Error("Missing S3 bucket.");
         }
@@ -82,7 +82,7 @@ const S3Service = {
 
     // 6️⃣ יצירת URL זמני לגישה לקובץ
     generatePresignedUrl: (objectKey: string): string => {
-        const bucketName = import.meta.env.VITE_S3_BUCKET;
+        const bucketName = process.env.VITE_S3_BUCKET;
         if (!bucketName) {
             throw new Error("Missing S3 bucket.");
         }
