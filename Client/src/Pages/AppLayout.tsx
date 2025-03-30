@@ -18,7 +18,7 @@ export default function AppLayout() {
   const location = useLocation();
   useEffect(() => {
     // אם המשתמש לא מחובר ונסה לגשת לדפים אחרים, הפנייתו לדף הבית
-    if (!insite && location.pathname !== "/") {
+    if (!insite && location.pathname !== "/home" ) {
       navigate("/home");
     }
   }, [insite, location, navigate]);

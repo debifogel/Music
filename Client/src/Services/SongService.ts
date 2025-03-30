@@ -39,7 +39,10 @@ const songService = {
 
   getAllPublicSongs: async (name: string): Promise<Song[]> => {
     try {
+      console.log("in public");
+      
       const response = await api.get(`/Songs/public/${name}`);
+      console.log(response)
       return response.data;
     } catch (error) {
       console.error('שגיאה בקבלת שירים ציבוריים:', error);

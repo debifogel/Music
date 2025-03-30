@@ -38,7 +38,7 @@ namespace MusicServer.Api.Controllers
             var songs = await _songService.GetAllPublicSongsByUserName(name);
             if(songs!=null)
             return Ok(_mapper.Map<List<SongDto>>(songs));
-            return NotFound();
+            return Ok();
         }
 
         [HttpGet("{id}")]

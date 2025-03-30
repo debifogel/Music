@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const api = axios.create({
   baseURL: 'https://localhost:7260/api', // שנה לכתובת הבסיס של ה-API שלך
-  timeout: 5000, 
+  timeout: 7000, 
     headers: {
         'Content-Type': 'application/json'
     }

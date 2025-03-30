@@ -33,9 +33,12 @@ const ListSongs = () => {
         switch (filterType) {
           case "folder":
             fetchedSongs = await songInPlaceService.getSongsInFolder(Number(filterValue));
+            setLogin(true)
             break;
           case "playlist":
             fetchedSongs = await songInPlaceService.getSongsInPlaylist(Number(filterValue));
+            setLogin(true)
+
             break;
           case "name":
             fetchedSongs = await songService.getAllPublicSongs(filterValue || "");
@@ -43,6 +46,8 @@ const ListSongs = () => {
             break;
           case "all":
             fetchedSongs = await songService.getAllSongs();
+            setLogin(true)
+
             break;
           default:
             console.error("סוג חיפוש לא תקין");
