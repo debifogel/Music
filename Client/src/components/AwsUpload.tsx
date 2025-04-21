@@ -29,7 +29,7 @@ const AwsUpload= ({callback}:{callback:(path:string)=>void}) => {
     setUploadError(null);
 
     try {
-       const res=await S3Service.uploadFile(selectedFile, selectedFile.name,
+       const res=await S3Service .uploadFile(selectedFile, selectedFile.name,
          (progressEvent: Progress) => {
         const progress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
         setUploadProgress(progress);
