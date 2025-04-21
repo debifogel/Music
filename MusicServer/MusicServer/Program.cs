@@ -85,18 +85,12 @@ var app = builder.Build();
 app.UseDeveloperExceptionPage();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.UseHttpsRedirection();
-
-}
-else
-{
-    app.UseExceptionHandler("/Error");
-    // ניתן להוסיף כאן app.UseHsts(); אם נדרש
-}
+//}
+app.UseHttpsRedirection();
 app.UseCors(policy =>
     policy.AllowAnyOrigin()
           .AllowAnyMethod()
