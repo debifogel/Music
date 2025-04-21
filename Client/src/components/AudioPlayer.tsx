@@ -4,17 +4,36 @@ import ReactAudioPlayer from "react-audio-player";
 
 
 
-const AudioPlayer= ({audioUrl}:{audioUrl:string}) => {
-  // const { title } = useParams(); // Get title from URL
-  // const location = useLocation();
-  // const audioUrl = location.state?.audioUrl; 
-  // const songId = location.state?.songId; 
+import { useEffect, useState } from "react";
+
+const AudioPlayer = ({ audioUrl }: { audioUrl: string }) => {
+  const [presignedUrl, setPresignedUrl] = useState<string>("");
+
+  useEffect(() => {
+    const fetchPresignedUrl = async () => {
+      const url = await S3Service.generatePresignedUrl(audioUrl);
+      setPresignedUrl(url);
+    };
+    fetchPresignedUrl();
+  }, [audioUrl]);
 
   return (
-    <><div>
-      <ReactAudioPlayer src={S3Service.generatePresignedUrl(audioUrl)} controls style={{ width: "400px", height: "20px", borderRadius:"0px", colorScheme:"inherit"}} />
+    <div>
+      {presignedUrl ? (
+        <ReactAudioPlayer
+          src={presignedUrl}
+          controls
+          style={{
+            width: "400px",
+            height: "20px",
+            borderRadius: "0px",
+            colorScheme: "inherit",
+          }}
+        />
+      ) : (
+        <p>Loading...</p>
+      )}
     </div>
-    </>
   );
 };
 
