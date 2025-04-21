@@ -62,7 +62,7 @@ const OptionSongs = ({ song, inPlay }: { song: Song; inPlay: number}) => {
         } catch (error) {
             console.error("שגיאה במחיקת השיר", error);
         }
-        route("/songs/all", { replace: true })
+        route("/home", { replace: true })
     };
 
     const handleAddToPlaylist = (id: number) => {
