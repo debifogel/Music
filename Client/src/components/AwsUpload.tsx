@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 // import { Button } from '@/components/ui/button';
 import { Button,CircularProgress, Input } from '@mui/material';
 import S3Service from '@/Services/awsService';
-import { Progress } from 'aws-sdk/lib/request';
 
 const AwsUpload= ({callback}:{callback:(path:string)=>void}) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -30,10 +29,8 @@ const AwsUpload= ({callback}:{callback:(path:string)=>void}) => {
 
     try {
        const res=await S3Service .uploadFile(selectedFile, selectedFile.name,
-         (progressEvent: Progress) => {
-        const progress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
+         (progress: number) => {
         setUploadProgress(progress);
-
       })
       callback(res.Key);  // עדכון הנתיב רק לאחר שההעלאה הצליחה
       setUploadStatus('העלאה הצליחה!');
