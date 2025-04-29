@@ -1,12 +1,7 @@
-import { Folder } from 'lucide-react';
+import { Folder } from '@/Models/folder';
 import api from './api'; // ייבוא מופע ה-Axios המוגדר שלך
 
- interface Folder {
-  folderId: number;
-  userId: number;
-  folderName: string;
-  parentFolderId: number | null;
-}
+ 
 
 interface FolderDto {
   folderName: string;

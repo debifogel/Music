@@ -1,17 +1,13 @@
 import NameForm from "@/components/NameForm";
 import OptionsMenu from "@/components/OPtionMenu";
+import { Playlist } from "@/Models/Playlist";
 import playlistService from "@/Services/PlaylistService";
 import { Button, CircularProgress, Grid2 as Grid, Typography, Paper } from "@mui/material";
 import { Folder, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, Outlet } from "react-router-dom";
 
-interface Playlist {
-  playlistId: number;
-  userId: number;
-  playlistName: string;
-  creationDate: string; 
-}
+
 
 const PlayLists = () => {
   const [playlists, setPlaylists] = useState<Playlist[]>([]);

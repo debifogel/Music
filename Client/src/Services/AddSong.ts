@@ -1,3 +1,4 @@
+import { Folder } from '@/Models/folder';
 import folderService from './FolderService';
 import songService from './SongService';
 
@@ -12,11 +13,7 @@ interface SongDto {
     genre: string;
     isPrivate: boolean;
 }
-interface Folder {
-    folderId: number;
-    folderName: string;
-    parentFolderId: number | null;
-  }
+
 
 async function addSong(songDto: SongDto): Promise<void> {
     let folder:Folder|null=null;

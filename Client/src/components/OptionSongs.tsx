@@ -6,6 +6,7 @@ import { TextField, Button, Dialog, DialogActions, DialogContent, DialogTitle } 
 import OptionsMenu from "./OPtionMenu";
 import folderService from "@/Services/FolderService";
 import { useNavigate } from "react-router-dom";
+import { Song } from "@/Models/song";
 
 interface Opt {
     id: number;
@@ -14,15 +15,7 @@ interface Opt {
     child?: Opt[];
 }
 
-interface Song {
-    songId: number;
-    title: string;
-    artist: string;
-    filePath: string;
-    genre:string;
-    isPrivate:boolean
 
-}
 
 const OptionSongs = ({ song, inPlay }: { song: Song; inPlay: number}) => {
     const [playlists, setPlaylists] = useState<Opt[]>([]);

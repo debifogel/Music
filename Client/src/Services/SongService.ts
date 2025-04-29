@@ -1,16 +1,8 @@
+import { Song } from '@/Models/song';
 import api from './api'; // ייבוא מופע ה-Axios המוגדר שלך
 import folderService from './FolderService';
 
-interface Song {
-  songId: number;
-  userId: number;
-  title: string;
-  artist: string;
-  genre: string;
-  filePath: string;
-  isPrivate: boolean;
-  uploadDate: string; // או Date, בהתאם לאופן הטיפול בתאריכים
-}
+
 
 interface SongDto {
   title: string;

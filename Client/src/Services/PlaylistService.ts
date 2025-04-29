@@ -1,14 +1,5 @@
+import { Playlist } from '@/Models/Playlist';
 import api from './api'; // ייבוא מופע ה-Axios המוגדר שלך
-
-interface Playlist {
-  playlistId: number;
-  userId: number;
-  playlistName: string;
-  creationDate: string; // או Date, בהתאם לאופן הטיפול בתאריכים
-}
-
-
-
 const playlistService = {
   getAllPlaylists: async (): Promise<Playlist[]> => {
     try {
@@ -79,7 +70,6 @@ const playlistService = {
     }
   },
 
-  
 };
 
 export default playlistService;

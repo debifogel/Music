@@ -7,12 +7,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { FormEvent, Fragment, useState } from 'react';
 
-interface FormToEnterProps {
-  buttonText: string;
-  onSubmit: (email: string,password:string,name?:string) => void;
-  register:boolean;
-}
-
+interface FormToEnterProps {buttonText: string;onSubmit: (email: string,password:string,name?:string) => void;register:boolean;}
 export default function FormToEnter({ buttonText, onSubmit ,register}: FormToEnterProps) {
   const [open, setOpen] = useState(false);
 
@@ -40,8 +35,7 @@ export default function FormToEnter({ buttonText, onSubmit ,register}: FormToEnt
       <Button variant="outlined" sx={{ 
           borderRadius: '20px', 
           padding: '10px 20px', 
-          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-          
+          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',         
           '&:hover': {
             backgroundColor: 'rgba(63, 81, 181, 0.7)',
             boxShadow: '0 6px 12px rgba(0, 0, 0, 0.3)',
@@ -61,9 +55,7 @@ export default function FormToEnter({ buttonText, onSubmit ,register}: FormToEnt
       >
         <DialogTitle>welcome</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            הכנס בבקשה את פרטיך האישיים
-          </DialogContentText>
+          <DialogContentText> הכנס בבקשה את פרטיך האישיים</DialogContentText>
           <TextField
             autoFocus
             required

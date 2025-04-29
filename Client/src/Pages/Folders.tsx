@@ -3,16 +3,11 @@ import { CircularProgress, Grid2 as Grid, Card, CardContent, Typography } from "
 import { Folder } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import {Folder as IFolder} from "@/Models/folder"
 
-interface Folder {
-  folderId: number;
-  userId: number;
-  folderName: string;
-  parentFolderId: number | null;
-}
 
 const Folders = () => {
-  const [folders, setFolders] = useState<Folder[]>([]);
+  const [folders, setFolders] = useState<IFolder[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -22,7 +17,7 @@ const Folders = () => {
   const fetchFolders = async () => {
     setLoading(true);
     try {
-      const fetchedFolders: Folder[] = await folderService.getAllFolders();
+      const fetchedFolders: IFolder[] = await folderService.getAllFolders();
       setFolders(fetchedFolders);
     } catch (error) {
       console.error(" שגיאה בטעינת תיקיות:", error);

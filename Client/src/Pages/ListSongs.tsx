@@ -6,16 +6,9 @@ import { useParams } from "react-router-dom";
 import AudioPlayer from "../components/AudioPlayer";
 import SongOptionsMenu from "@/components/OptionSongs";
 import MusicNoteIcon from "@mui/icons-material/MusicNote";
+import { Song } from "@/Models/song";
 
-interface Song {
-  songId: number;
-  title: string;
-  artist: string;
-  filePath: string;
-  genre:string;
-  isPrivate:boolean
 
-}
 
 const ListSongs = () => {
   const { filterType, filterValue } = useParams(); // קבלת פרמטרים מה-URL

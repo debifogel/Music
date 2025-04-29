@@ -1,10 +1,7 @@
+import { Folder } from '@/Models/folder';
 import api from './api'; // ייבוא מופע ה-Axios המוגדר שלך
 
-interface FolderDto {
-  folderId: number;
-  folderName: string;
-  parentFolderId: number | null;
-}
+
 
 interface PlaylistDto {
   playlistId: number;
@@ -12,7 +9,7 @@ interface PlaylistDto {
 }
 
 const songWithOtherService = {
-  getFoldersBySongId: async (songId: number): Promise<FolderDto[]> => {
+  getFoldersBySongId: async (songId: number): Promise<Folder[]> => {
     try {
       const response = await api.get(`/SongWithOther/folders/${songId}`);
       return response.data;

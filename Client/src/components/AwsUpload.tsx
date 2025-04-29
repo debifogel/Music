@@ -8,25 +8,19 @@ const AwsUpload= ({callback}:{callback:(path:string)=>void}) => {
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [uploadStatus, setUploadStatus] = useState<string>('');
   const [uploadError, setUploadError] = useState<string | null>(null);
-
-  
-
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       setSelectedFile(event.target.files[0]);
     }
   };
-
   const handleUpload = async () => {
     if (!selectedFile) {
       setUploadError('בחר קובץ להעלאה.');
       return;
-    }
-   
+    }   
     setUploadStatus('מעלה...');
     setUploadProgress(0);
     setUploadError(null);
-
     try {
        const res=await S3Service .uploadFile(selectedFile, selectedFile.name,
          (progress: number) => {
@@ -34,8 +28,6 @@ const AwsUpload= ({callback}:{callback:(path:string)=>void}) => {
       })
       callback(res.Key);  // עדכון הנתיב רק לאחר שההעלאה הצליחה
       setUploadStatus('העלאה הצליחה!');
-
-  
     } catch (error: any) {
       console.error('שגיאה בהעלאה:', error);
       setUploadError(error.message || 'שגיאה בהעלאה.');
