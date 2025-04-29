@@ -1,0 +1,14 @@
+.login-container {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  
+  .login-card {
+    padding: 20px;
+  }
+  
+  .full-width {
+    width: 100%;
+  }
+  

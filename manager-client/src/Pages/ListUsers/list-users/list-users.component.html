@@ -1,0 +1,51 @@
+
+<div class="user-list-container">
+    <h2>רשימת משתמשים</h2>
+  
+    <!-- חיפוש לפי מייל -->
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-icon matPrefix>search</mat-icon> <!-- אייקון חיפוש -->
+      <input matInput [(ngModel)]="searchQuery" placeholder="חפש משתמשים" />
+      @if(searchQuery){<button mat-icon-button  (click)="clearSearch()">
+        <mat-icon>close</mat-icon> <!-- אייקון סגירה אם יש חיפוש פעיל -->
+      </button>}
+    </mat-form-field>
+    
+  
+    <!-- סינון חסומים -->
+    <mat-slide-toggle [(ngModel)]="showBlocked" (change)="toggleBlockedUsers()">
+      הצג משתמשים חסומים
+    </mat-slide-toggle>
+  
+    <table mat-table [dataSource]="filteredUsers">
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef> שם </th>
+        <td mat-cell *matCellDef="let user">{{ user.name }}</td>
+      </ng-container>
+      <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef> מייל </th>
+        <td mat-cell *matCellDef="let user">{{ user.email }}</td>
+      </ng-container>
+  
+      <ng-container matColumnDef="lastLogin">
+        <th mat-header-cell *matHeaderCellDef> התחברות אחרונה </th>
+        <td mat-cell *matCellDef="let user">{{ user.lastLogin }}</td>
+      </ng-container>
+  
+      <ng-container matColumnDef="lastUsage">
+        <th mat-header-cell *matHeaderCellDef> שימוש אחרון </th>
+        <td mat-cell *matCellDef="let user">{{ user.lastUsage }}</td>
+      </ng-container>
+  
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef> פעולות </th>
+        <td mat-cell *matCellDef="let user">
+          <app-user-actions [user]="user"></app-user-actions>
+        </td>
+      </ng-container>
+  
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+

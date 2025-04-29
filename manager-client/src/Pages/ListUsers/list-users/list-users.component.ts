@@ -1,0 +1,82 @@
+import { Component, OnInit } from '@angular/core';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { User } from '../../../models/User';
+import { UserService } from '../../../services/Users/users.service';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { UserActionsComponent } from "../../../components/ListUserAction/list-users-action/list-users-action.component";
+import { MatTableModule } from '@angular/material/table';
+import { FormsModule } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
+
+
+@Component({
+  selector: 'app-list-users',
+  standalone: true,
+    imports: [MatDialogModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule, 
+    MatSlideToggleModule,
+     UserActionsComponent,
+     MatTableModule,
+     FormsModule,
+     MatIconModule],
+  templateUrl: './list-users.component.html',
+  styleUrls: ['./list-users.component.css']
+})
+export class ListUsersComponent implements OnInit {
+  users: User[] = [];
+  filteredUsers: User[] = [];
+  searchEmail: string = '';
+  showBlocked: boolean = true;  // האם להציג את המשתמשים החסומים
+  currentDate = new Date();
+  searchQuery: string = ''; // אחסון מילת החיפוש
+
+  displayedColumns: string[] = ['name','email', 'lastLogin', 'lastUsage', 'actions'];
+  constructor(private userService: UserService, private dialog: MatDialog) {}
+
+  ngOnInit(): void {
+    this.getUsers();
+  }
+
+  clearSearch(): void {
+    this.searchQuery = '';// מנקה את שדה החיפוש
+  }
+  // פונקציה שמביאה את כל המשתמשים
+  getUsers(): void {
+    this.userService.getUsers().subscribe(users => {
+      this.users = users;
+      this.filteredUsers = users;
+    });
+  }
+
+  // פונקציה לחיפוש לפי מייל
+  searchByEmail(): void {
+    this.filteredUsers = this.users.filter(user =>
+      user.email.toLowerCase().includes(this.searchEmail.toLowerCase())
+    );
+  }
+
+  // פונקציה להציג או להסתיר חסומים
+  toggleBlockedUsers(): void {
+    if (this.showBlocked) {
+      this.filteredUsers = this.users;
+    } else {
+      this.filteredUsers = this.users.filter(user => !user.blocked);
+    }
+  }
+
+  // פונקציה למחיקת משתמש
+  deleteUser(user: User): void {
+    if (confirm(`האם אתה בטוח שברצונך למחוק את המשתמש ${user.email}?`)) {
+      this.userService.deleteUser(user.email).subscribe(() => {
+        this.users = this.users.filter(u => u.email !== user.email);
+        this.filteredUsers = this.filteredUsers.filter(u => u.email !== user.email);
+        alert('המשתמש נמחק');
+      });
+    }
+  }
+}

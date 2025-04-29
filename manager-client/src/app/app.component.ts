@@ -1,13 +1,18 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { LoginComponent } from "../components/Login/login/login.component";
+import { ListUsersComponent } from "../Pages/ListUsers/list-users/list-users.component";
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [ LoginComponent, ListUsersComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
 export class AppComponent {
+[x: string]: any;
   title = 'manager-client';
+
+insite=sessionStorage.getItem('token') === null
+  
 }

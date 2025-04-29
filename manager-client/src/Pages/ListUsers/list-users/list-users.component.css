@@ -1,0 +1,39 @@
+.search-field {
+    width: 100%;
+    max-width: 300px; /* תיבת חיפוש בגודל מינימלי */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 20px;
+    background-color: #f1f1f1; /* צבע רקע בהיר */
+    box-shadow: none; /* אין צללים */
+  }
+  
+  mat-form-field {
+    width: 100%;
+  }
+  
+  mat-icon {
+    color: #555; /* צבע אייקון */
+  }
+  
+  mat-input {
+    font-size: 14px;
+    padding: 10px;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+  }
+  
+  button mat-icon {
+    font-size: 20px; /* אייקון סגירה בגודל מתאים */
+  }
+  
+  mat-form-field.mat-form-field-appearance-legacy .mat-form-field-label {
+    display: none; /* מסתיר את התווית */
+  }
+  
+  .search-field .mat-input-element {
+    padding-left: 0; /* הוצאת רווחים לא נחוצים */
+  }
+  
