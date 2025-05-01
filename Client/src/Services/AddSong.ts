@@ -15,11 +15,10 @@ interface SongDto {
 }
 
 
-async function addSong(songDto: SongDto): Promise<void> {
-    let folder:Folder|null=null;
-    
+async function addSong(file:File,songDto: SongDto): Promise<void> {
+    let folder:Folder|null=null;   
     // Notify the other service to add the song
-    const songdata=await songService.addSong(songDto);
+    const songdata=await songService.addSong(file,songDto);
  // Check if artist folder exists in 
 
     try {

@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Button,CircularProgress, Input } from '@mui/material';
 import S3Service from '@/Services/awsService';
 
-const AwsUpload= ({callback}:{callback:(path:string)=>void}) => {
+const AwsUpload= ({callback}:{callback:(file:File,path:string)=>void}) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [uploadStatus, setUploadStatus] = useState<string>('');
@@ -26,7 +26,7 @@ const AwsUpload= ({callback}:{callback:(path:string)=>void}) => {
          (progress: number) => {
         setUploadProgress(progress);
       })
-      callback(res.Key);  // עדכון הנתיב רק לאחר שההעלאה הצליחה
+      callback(selectedFile,res.Key);  // עדכון הנתיב רק לאחר שההעלאה הצליחה
       setUploadStatus('העלאה הצליחה!');
     } catch (error: any) {
       console.error('שגיאה בהעלאה:', error);

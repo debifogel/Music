@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,5 +16,6 @@ namespace MusicServer.Core.Dto
         public string Genre { get; set; }
         public string FilePath { get; set; }
         public bool IsPrivate { get; set; }
+        public string audioFile { get; set; }
     }
 }

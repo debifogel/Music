@@ -1,3 +1,5 @@
+import os
+from urllib.parse import urlparse
 from fastapi import FastAPI 
 import whisper
 import openai
@@ -6,6 +8,7 @@ from pinecone import Pinecone
 from pinecone import ServerlessSpec
 import time
 import requests 
+from io import BytesIO
 
 # אתחול pinecone
 
@@ -25,6 +28,35 @@ model_whisper = whisper.load_model("base")
 # אתחול OpenAI
 openai_api_key="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"
 # תמלול קובץ שמע
+def transcribe_audio(file_path):
+    url = "https://hebrew-ai.com/api/transcribe" 
+    api_key = "YOUR_API_KEY"     
+    headers = { 
+        "Authorization": f"Bearer {api_key}" 
+    } 
+    response = requests.get(file_path)
+    response.raise_for_status()
+    filename = os.path.basename(urlparse(file_path).path)  # -> 'awesome_song.mp3'
+
+    files = {
+         "file": (filename, BytesIO(response.content))
+    }
+    response = requests.post(url, headers=headers, files=files) 
+     
+    if response.status_code == 200: 
+        data = response.json() 
+        # Wait for the transcription to complete
+        while True:
+            response = requests.get(url, headers=headers) 
+            if response.status_code == 200: 
+                data = response.json() 
+                if data["status"] == "completed": 
+                    return data["text"] 
+                elif data["status"] == "failed":
+                    return "Transcription failed"
+    else: 
+        print("Error:", response.status_code, response.text)
+        return None
 
 # שליחה למודל NLP להסרת מילים שאינן חלק מהשיר (למשל דיבור חיצוני)
 def extract_lyrics(raw_text):
@@ -81,19 +113,10 @@ def search_similar_songs(user_id, query_text, top_k=5):
 app = FastAPI()
 
 @app.post("/process-audio/")
-async def process_audio(user_id: str, song_id: str, Audioid: str):
+async def process_audio(user_id: str, song_id: str, Audio: str):
     try:
         # Send a GET request to download the file
-         
-        url = f"https://hebrew-ai.com/api/transcribe?id={Audioid}" 
-         
-        response = requests.get(url, headers={"Authorization": f"Bearer sk_sjv4efffnz63c3y3_8b87ba1caf374c1418d7"}) 
-         
-        if response.status_code == 200: 
-            data = response.json() 
-            print("Response:", data) 
-        else: 
-            print("Error:", response.status_code, response.text)
+        data=transcribe_audio(Audio)  # Assuming this function transcribes the audio and returns the text
         
         lyrics = extract_lyrics(data)  # Assuming extract_lyrics extracts song lyrics from the transcribed text
         analysis = analyze_song_content(lyrics)  # Assuming analyze_song_content analyzes the lyrics for insights

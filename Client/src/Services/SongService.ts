@@ -2,8 +2,6 @@ import { Song } from '@/Models/song';
 import api from './api'; // ייבוא מופע ה-Axios המוגדר שלך
 import folderService from './FolderService';
 
-
-
 interface SongDto {
   title: string;
   artist: string;
@@ -30,6 +28,7 @@ const songService = {
   },
 
   getAllPublicSongs: async (name: string): Promise<Song[]> => {
+
     try {
       console.log("in public");
       
@@ -52,16 +51,24 @@ const songService = {
     }
   },
 
-  addSong: async (songDto: SongDto): Promise<Song> => {
+  addSong: async (audio:File ,songDetails: SongDto): Promise<any> => {
     try {
-      const response = await api.post('/Songs', songDto);
-      return response.data;
-    } catch (error) {
-      console.error('שגיאה בהוספת שיר:', error);
-      throw error;
-    }
-  },
+        // שליחת הבקשה
+        const songId= await api.post('/Songs/',
 
+            {...songDetails,
+            }
+        );
+        
+    
+    } catch (error) {
+      console.error("Error:", error);
+    }
+    // שולח לשרת שלך את transcription_id ופרטי השיר
+   
+   
+  },
+  
   updateSong: async (id: number, songUpdate: SongUpdate): Promise<void> => {
     try {
       await api.put(`/Songs/${id}`, songUpdate);

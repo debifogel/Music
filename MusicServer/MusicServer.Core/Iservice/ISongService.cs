@@ -1,4 +1,5 @@
-﻿using MusicServer.Core.Classes;
+﻿using Microsoft.AspNetCore.Http;
+using MusicServer.Core.Classes;
 using MusicServer.Core.Post;
 using System;
 using System.Collections.Generic;
@@ -19,7 +20,7 @@ namespace MusicServer.Core.Iservice
         Task<IEnumerable<Song>> GetAllPublicSongsByUserName(string name);
 
         Task<Song> GetSongByIdAsync(int id);
-        Task<Song> AddSongAsync(Song song);
+        Task<Song> AddSongAsync(Song song, IFormFile audio);
         Task UpdateSongAsync(int id, SongUpdate song);
         Task UpdatePermissionSongAsync(int id);
 

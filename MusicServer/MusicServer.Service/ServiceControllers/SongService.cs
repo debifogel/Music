@@ -1,11 +1,14 @@
-﻿using MusicServer.Core.Classes;
+﻿using Microsoft.AspNetCore.Http;
+using MusicServer.Core.Classes;
 using MusicServer.Core.Irepository;
 using MusicServer.Core.Iservice;
 using MusicServer.Core.Post;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
@@ -21,13 +24,40 @@ namespace MusicServer.Service.ServiceControllers
             _songRepository = songRepository;
         }
 
-        public async Task<Song> AddSongAsync(Song song)
+        public async Task<Song> AddSongAsync(Song song, IFormFile idAudio)
         {
-           var Song= await _songRepository.AddSongAsync(song);
-            await _manager.SavechangesAsync();
-            return Song;
+            // קריאה ל־https://hebrew-ai.com/api/transcribe
+            var apiKey = "sk_sjv4efffnz63c3y3_8b87ba1caf374c1418d7";
+            var apiUrl = "https://hebrew-ai.com/api/transcribe";
 
+            using var httpClient = new HttpClient();
+            using var content = new MultipartFormDataContent();
+            using var stream = idAudio.OpenReadStream();
+
+            content.Add(new StreamContent(stream), "file", idAudio.FileName);
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
+
+            var response = await httpClient.PostAsync(apiUrl, content);
+            if (response.IsSuccessStatusCode)
+            {
+                var json = await response.Content.ReadAsStringAsync();
+                using var doc = JsonDocument.Parse(json);
+                var transcriptionId = doc.RootElement.GetProperty("transcription_id").GetString();
+
+                // שמירת המזהה במסד הנתונים
+            }
+            else
+            {
+                // אופציונלי: טיפול בשגיאה
+                throw new Exception($"Transcription API error: {response.StatusCode}, {await response.Content.ReadAsStringAsync()}");
+            }
+
+            // שמירה במסד הנתונים
+            var addedSong = await _songRepository.AddSongAsync(song);
+            await _manager.SavechangesAsync();
+            return addedSong;
         }
+
 
         public async Task DeleteSongByIdAsync(int id)
         {

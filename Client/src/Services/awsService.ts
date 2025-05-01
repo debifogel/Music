@@ -1,6 +1,5 @@
 import {
-    S3Client,
-    
+    S3Client,    
     DeleteObjectCommand,
     GetObjectCommand,
   } from "@aws-sdk/client-s3";
@@ -57,7 +56,8 @@ import {
           }
         });
       }
-  
+      await upload.done(); // חובה כדי לבצע את ההעלאה בפועל
+
   
       return {
         Key,

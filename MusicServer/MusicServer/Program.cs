@@ -70,6 +70,7 @@ builder.Services.AddScoped<ISongRepository, SongRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IFolderRepository, FolderRepository>();
 builder.Services.AddScoped<IManager, Manager>();
+
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddDbContext<IData, DataContext>();
 builder.Services.AddAuthorization(options =>

@@ -8,14 +8,16 @@ const AddSong = () => {
       const [formData, setFormData] = useState({
          title: '',artist: '',genre: '',filePath: '',isPrivate: false
       });
+      const [file, setFile] = useState<File | null>(null);
      const [addFile,setAddFile]=useState(false)
       const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
          const { name, value } = e.target;
          setFormData({ ...formData, [name]: value });
       };
       const handleClick=()=> setFormData({...formData,isPrivate:!formData.isPrivate})
-      const handleFile=async(path:string)=>
+      const handleFile=async(file:File,path:string)=>
       {
+         setFile(file)
           setAddFile(true)
           setFormData({...formData,filePath:path})
       }
@@ -23,7 +25,11 @@ const AddSong = () => {
          e.preventDefault();
          if(addFile)
          {
-           await addSong(formData)
+           if (file) {
+               await addSong(file, formData);
+           } else {
+               console.error("File is null");
+           }
             route('/home')          
          }
          else{
@@ -45,7 +51,8 @@ const AddSong = () => {
             <form onSubmit={handleSubmit}>
             <Typography variant="h6" gutterBottom>  Add Song </Typography>
             <Grid container spacing={2}>            
-               <Grid size={8}>
+                  <Grid container spacing={1}  alignContent={"center"}>
+                  <Grid size={8}>
                   <TextField                    
                      label="Title"
                      name="title"
@@ -61,6 +68,7 @@ const AddSong = () => {
                      value={formData.artist}
                      onChange={handleChange}
                      variant="outlined"
+                     
                   />
                </Grid>
                <Grid size={8}>
@@ -71,6 +79,7 @@ const AddSong = () => {
                      onChange={handleChange}
                      variant="outlined"
                   />
+               </Grid>
                </Grid>
                <Grid size={6}>
                <AwsUpload callback={handleFile}/>
