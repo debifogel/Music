@@ -14,10 +14,10 @@ namespace MusicServer.Core.Irepository
         Task<User> GetUserByIdAsync(int id);
         Task<User> AddUserAsync(User user);
         Task UpdateUserAsync(int id,UserDto user);
-        Task UpdateLoginUserAsync(int  id);
-
-        Task DeleteUserByIdAsync(int id);
-        Task BlockUserByIdAsync(int id);
+        Task UpdateLoginUserAsync(int id);
+        Task<IEnumerable<DateOnly>> GetAllUsersDateAsync();
+        Task DeleteUserByIdAsync(string email);
+        Task BlockUserByIdAsync(string email);
 
     }
 }

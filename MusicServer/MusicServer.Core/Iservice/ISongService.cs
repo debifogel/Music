@@ -20,7 +20,8 @@ namespace MusicServer.Core.Iservice
         Task<IEnumerable<Song>> GetAllPublicSongsByUserName(string name);
 
         Task<Song> GetSongByIdAsync(int id);
-        Task<Song> AddSongAsync(Song song, IFormFile audio);
+        Task<IEnumerable<Song>> GetSongByListIdAsync(List<int> ids);
+        Task<Song> AddSongAsync(Song song);
         Task UpdateSongAsync(int id, SongUpdate song);
         Task UpdatePermissionSongAsync(int id);
 

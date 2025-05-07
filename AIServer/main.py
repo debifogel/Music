@@ -1,15 +1,12 @@
 import os
 from urllib.parse import urlparse
-from fastapi import FastAPI 
-import whisper
 import openai
+from fastapi import FastAPI 
 from langchain_community.embeddings import OpenAIEmbeddings
-from pinecone import Pinecone
-from pinecone import ServerlessSpec
 import time
 import requests 
 from io import BytesIO
-
+from pinecone import Pinecone,ServerlessSpec
 # אתחול pinecone
 
 pc = Pinecone(api_key="pcsk_PiBhL_HqbSJ8iZm38SV6nPZQEobLvKXV5DLetfU1HQkT7TqFkptPMaqvdhReUh4AUfbLj",              
@@ -23,14 +20,13 @@ existing_indexes = [
 index = pc.Index("musicfiles")
 time.sleep(1)
 
-# אתחול Whisper (תמלול)
-model_whisper = whisper.load_model("base")
+
 # אתחול OpenAI
 openai_api_key="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"
 # תמלול קובץ שמע
 def transcribe_audio(file_path):
     url = "https://hebrew-ai.com/api/transcribe" 
-    api_key = "YOUR_API_KEY"     
+    api_key = "sk_sjv4efffnz63c3y3_93b07ae1d63bedfa4b39"     
     headers = { 
         "Authorization": f"Bearer {api_key}" 
     } 

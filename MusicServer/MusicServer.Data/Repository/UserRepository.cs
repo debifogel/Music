@@ -24,21 +24,28 @@ namespace MusicServer.Data.Repository
             return user;
         }
 
-        public async Task BlockUserByIdAsync(int id)
+        public async Task BlockUserByIdAsync(string email)
         {
-            var user=await GetUserByIdAsync(id);
-            user.IsBlocked = true;
+            var user=await _context.Users.FirstAsync(u=>u.Email== email);
+            user.IsBlocked = !user.IsBlocked;
         }
 
-        public async Task DeleteUserByIdAsync(int id)
+        public async Task DeleteUserByIdAsync(string email)
         {
-            var user = await GetUserByIdAsync(id);
+            var user =await _context.Users.FirstAsync(u => u.Email == email);
              _context.Users.RemoveRange(user);
         }
 
         public async Task<IEnumerable<User>> GetAllUsersAsync()
         {
             return await _context.Users.ToListAsync();
+        }
+        public async Task<IEnumerable<DateOnly>> GetAllUsersDateAsync()
+        {
+            return (IEnumerable<DateOnly>)_context.Users.
+                Select(u => u.RegistrationDate)
+                .ToListAsync();
+
         }
 
         public async Task<User> GetUserByIdAsync(int id)

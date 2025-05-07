@@ -7,6 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatError } from '@angular/material/form-field';
 import { ReactiveFormsModule } from '@angular/forms';
+import { AuthService } from '../../../services/Auth/auth.service';
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -23,7 +24,13 @@ import { ReactiveFormsModule } from '@angular/forms';
 export class LoginComponent {
   email = new FormControl('', [Validators.required, Validators.email]);
   password = new FormControl('', [Validators.required]);
+  // הוספת ה-AuthService לקונסטרקטור
+  // כדי שנוכל להשתמש בו בהגשת הטופס
+  private authService: AuthService;
 
+  constructor(authService: AuthService) {
+    this.authService = authService;
+  }
   // משתנה שמבקר אם להציג את הטופס או לא
   showForm = false;
 
@@ -35,8 +42,10 @@ export class LoginComponent {
   onSubmit() {
     if (this.email.valid && this.password.valid) {
       // כאן אפשר להוסיף את הלוגיקה לשליחת פרטי ההתחברות לשרת
-      console.log('Email:', this.email.value);
-      console.log('Password:', this.password.value);
+     this.authService.login(this.email.value || '', this.password.value || '').subscribe(
+        (response: any) => {    
+ 
+        })
     } else {
       console.log('לא כל השדות תקינים');
     }

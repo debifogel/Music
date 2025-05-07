@@ -16,7 +16,7 @@ export class UserActionsComponent {
   @Input() user: User | undefined;
 
   constructor(
-    private userService: UserService,
+    private UserService: UserService,
     private dialog: MatDialog
   ) {}
 
@@ -27,7 +27,7 @@ export class UserActionsComponent {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         if (this.user) {
-          this.userService.blockUser(this.user.email).subscribe(() => {
+          this.UserService.blockUser(this.user.email).subscribe(() => {
             this.user!.blocked = true;
             alert('המשתמש חסום');
           });
@@ -43,7 +43,7 @@ export class UserActionsComponent {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         if (this.user) {
-          this.userService.unblockUser(this.user.email).subscribe(() => {
+          this.UserService.unblockUser(this.user.email).subscribe(() => {
             this.user!.blocked = false;
             alert('המשתמש שוחרר מחסימה');
           });
@@ -59,7 +59,7 @@ export class UserActionsComponent {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         if (this.user) {
-          this.userService.deleteUser(this.user.email).subscribe(() => {
+          this.UserService.deleteUser(this.user.email).subscribe(() => {
             alert('המשתמש נמחק');
           });
         }

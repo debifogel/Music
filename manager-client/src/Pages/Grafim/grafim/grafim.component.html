@@ -1,1 +1,15 @@
-<p>grafim works!</p>
+@if (loading) {
+    <div class="loading">
+      <p>טוען נתונים...</p>
+    </div>
+  } @else {
+    <div class="chart-container">
+      <div class="chart-header">
+        <h2>גרף התחברויות</h2>
+      </div>
+      <div class="chart-content">
+        <div echarts [options]="chartOption" class="demo-chart" style="height: 400px;"></div>
+      </div>
+    </div>
+  }
+  

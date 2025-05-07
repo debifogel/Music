@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class UserService {
-  private apiUrl = 'https://example.com/api/users';  // ה-API של השרת
+  private apiUrl = 'https://localhost:7260/example.com/api/users';  // ה-API של השרת
 
   constructor(private http: HttpClient) {}
 
@@ -22,11 +22,14 @@ export class UserService {
 
   // ביטול חסימה של משתמש
   unblockUser(email: string): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}/unblock`, { email });
+    return this.http.post<void>(`${this.apiUrl}/block`, { email });
   }
 
   // מחיקת משתמש לצמיתות
   deleteUser(email: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/delete/${email}`);
+  }
+  getAllUserDates() {
+    return this.http.get<string[]>(this.apiUrl); // DateOnly מגיע כ־string
   }
 }

@@ -26,7 +26,13 @@ namespace MusicServer.Api.Controllers
             var users = await _userService.GetAllUsersAsync();
             return Ok(users);
         }
-
+        [HttpGet("/dates")]
+        [Authorize(Roles = "manager")]
+        public async Task<IActionResult> GetAllUsersDate()
+        {
+            var usersDateEnter = await _userService.GetAllUsersDateAsync();
+            return Ok(usersDateEnter);
+        }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUserById(int id)
         {
@@ -58,19 +64,19 @@ namespace MusicServer.Api.Controllers
             return Ok();
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{email}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteUser(int id)
+        public async Task<IActionResult> DeleteUser(string email)
         {
-            await _userService.DeleteUserByIdAsync(id);
+            await _userService.DeleteUserByIdAsync(email);
             return Ok();
         }
 
-        [HttpPut("block/{id}")]
+        [HttpPut("block/{email}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> BlockUser(int id)
+        public async Task<IActionResult> BlockUser(string email)
         {
-            await _userService.BlockUserByIdAsync(id);
+            await _userService.BlockUserByIdAsync(email);
             return Ok();
         }
     }

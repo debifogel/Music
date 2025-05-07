@@ -16,6 +16,5 @@ namespace MusicServer.Core.Dto
         public string Genre { get; set; }
         public string FilePath { get; set; }
         public bool IsPrivate { get; set; }
-        public string audioFile { get; set; }
     }
 }

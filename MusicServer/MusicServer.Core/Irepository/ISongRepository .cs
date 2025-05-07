@@ -17,7 +17,7 @@ namespace MusicServer.Core.Irepository
         Task<IEnumerable<Folder>> GetAllFoldersBySongId(int id);
         Task<IEnumerable<PlayList>> GetAllPlayListsBySongId( int id);
         Task<IEnumerable<Song>> GetAllPublicSongsByUserName(string name);
-
+        Task<IEnumerable<Song>> GetSongByListIdAsync(List<int> ids);
         Task<Song> GetSongByIdAsync(int id);
         Task<Song> AddSongAsync(Song song);
         Task UpdateSongAsync(int id, SongUpdate song);

@@ -62,47 +62,32 @@ namespace MusicServer.Api.Controllers
 
             return Ok(_mapper.Map<SongDto>( song));
         }
-       
+        [HttpGet("ids")]
+        public async Task<IActionResult> GetSongByListId([FromQuery]List<int> ids)
+        {
+            var song = await _songService.GetSongByListIdAsync(ids);
+            if (song == null)
+            {
+                return NotFound();
+            }
+            
+            return Ok(_mapper.Map<List<SongDto>>(song));
+        }
+
         [HttpPost]
         public async Task<IActionResult> AddSong(SongDto songdto)
         {
-            var fileName = "downloaded_song.mp3"; // You can change the file name here
-            var webRequest = WebRequest.Create(songdto.audioFile); // Ensure the audioFile is a valid URL string
-            var webResponse = await webRequest.GetResponseAsync();
-
-            // Reading data from the file in S3
-            using (var responseStream = webResponse.GetResponseStream())
-            using (var fileStream = new FileStream($"./{fileName}", FileMode.Create, FileAccess.Write))
-            {
-                await responseStream.CopyToAsync(fileStream);
-            }
-
-            // Convert the downloaded file to IFormFile
-            IFormFile formFile = await ConvertFileToIFormFile($"./{fileName}");
-
+           
             var song = _mapper.Map<Song>(songdto);
             int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out int userId);
             song.UserId = userId;
 
             // Add the song to the database or whatever service you're using
-            var addedSong = await _songService.AddSongAsync(song, formFile);
+            var addedSong = await _songService.AddSongAsync(song);
 
             // Return the added song ID as part of the response
             return Ok(new { id = addedSong.SongId });
         }
-
-        private async Task<IFormFile> ConvertFileToIFormFile(string filePath)
-        {
-            var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-            var formFile = new FormFile(fileStream, 0, fileStream.Length, "file", Path.GetFileName(filePath))
-            {
-                Headers = new HeaderDictionary(),
-                ContentType = "audio/mpeg"  // Or whatever content type fits the file (e.g. "audio/mp3")
-            };
-
-            return formFile;
-        }
-
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateSong(int id, SongUpdate songUpdate)

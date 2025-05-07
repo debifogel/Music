@@ -1,6 +1,8 @@
 import { Song } from '@/Models/song';
 import api from './api'; // ייבוא מופע ה-Axios המוגדר שלך
 import folderService from './FolderService';
+import S3Service from './awsService';
+import axios from 'axios';
 
 interface SongDto {
   title: string;
@@ -51,7 +53,7 @@ const songService = {
     }
   },
 
-  addSong: async (audio:File ,songDetails: SongDto): Promise<any> => {
+  addSong: async (songDetails: SongDto): Promise<any> => {
     try {
         // שליחת הבקשה
         const songId= await api.post('/Songs/',
@@ -59,8 +61,24 @@ const songService = {
             {...songDetails,
             }
         );
-        
-    
+        const filepath = songDetails.filePath ? S3Service.generatePresignedUrl(songDetails.filePath) : '';
+        const token = sessionStorage.getItem('token'); // Retrieve token from session storage
+        if (!token) {
+          throw new Error("Token not found in session storage");
+        }
+
+        const payload = JSON.parse(atob(token.split('.')[1])); // Decode JWT token
+        const userId = payload.userId; // Extract userId from token payload
+
+        axios.post("http://127.0.0.1:8080/process-audio/", {
+          user_id: userId,
+          song_id: songId,
+          Audio: filepath,
+        })
+        .catch((error) => {
+          // Errors will be caught here but the request does not wait for a result
+          console.error("Error sending audio:", error);
+        });
     } catch (error) {
       console.error("Error:", error);
     }

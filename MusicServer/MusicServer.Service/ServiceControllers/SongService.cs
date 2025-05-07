@@ -24,34 +24,8 @@ namespace MusicServer.Service.ServiceControllers
             _songRepository = songRepository;
         }
 
-        public async Task<Song> AddSongAsync(Song song, IFormFile idAudio)
+        public async Task<Song> AddSongAsync(Song song)
         {
-            // קריאה ל־https://hebrew-ai.com/api/transcribe
-            var apiKey = "sk_sjv4efffnz63c3y3_8b87ba1caf374c1418d7";
-            var apiUrl = "https://hebrew-ai.com/api/transcribe";
-
-            using var httpClient = new HttpClient();
-            using var content = new MultipartFormDataContent();
-            using var stream = idAudio.OpenReadStream();
-
-            content.Add(new StreamContent(stream), "file", idAudio.FileName);
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
-
-            var response = await httpClient.PostAsync(apiUrl, content);
-            if (response.IsSuccessStatusCode)
-            {
-                var json = await response.Content.ReadAsStringAsync();
-                using var doc = JsonDocument.Parse(json);
-                var transcriptionId = doc.RootElement.GetProperty("transcription_id").GetString();
-
-                // שמירת המזהה במסד הנתונים
-            }
-            else
-            {
-                // אופציונלי: טיפול בשגיאה
-                throw new Exception($"Transcription API error: {response.StatusCode}, {await response.Content.ReadAsStringAsync()}");
-            }
-
             // שמירה במסד הנתונים
             var addedSong = await _songRepository.AddSongAsync(song);
             await _manager.SavechangesAsync();
@@ -80,6 +54,11 @@ namespace MusicServer.Service.ServiceControllers
         public async Task<IEnumerable<Song>> GetAllPublicSongsByUserName(string name)
         {
             var songslist=await _songRepository.GetAllPublicSongsByUserName(name);
+            return songslist;
+        }
+        public async Task<IEnumerable<Song>> GetSongByListIdAsync(List<int> ids)
+        {
+            var songslist = await _songRepository.GetSongByListIdAsync(ids);
             return songslist;
         }
 

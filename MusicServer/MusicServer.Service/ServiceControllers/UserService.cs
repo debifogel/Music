@@ -29,23 +29,27 @@ namespace MusicServer.Service.ServiceControllers
             return User;
         }
 
-        public async Task BlockUserByIdAsync(int id)
+        public async Task BlockUserByIdAsync(string email)
         {
-            await _userRepository.BlockUserByIdAsync(id);
+            await _userRepository.BlockUserByIdAsync(email);
             await _manager.SavechangesAsync();
         }
 
-        public async Task DeleteUserByIdAsync(int id)
+        public async Task DeleteUserByIdAsync(string email)
         {
-            await _userRepository.UpdateLoginUserAsync(id);
             await _manager.SavechangesAsync();
-
         }
 
         public async Task<IEnumerable<User>> GetAllUsersAsync()
         {
             return await _userRepository.GetAllUsersAsync();
         }
+        public async Task<IEnumerable<DateOnly>> GetAllUsersDateAsync()
+        {
+            return await _userRepository.GetAllUsersDateAsync();
+
+        }
+
         public async Task<User> GetUserByEmailAsync(string email)
         {
             return (await _userRepository.GetAllUsersAsync()).First(u=>u.Email==email);
@@ -61,7 +65,7 @@ namespace MusicServer.Service.ServiceControllers
             await _userRepository.UpdateUserAsync(id, user);
             await _manager.SavechangesAsync();
         }
-       public async Task UpdateLoginUserAsync(int id)
+       public async Task UpdateLoginUserAsync(int  id)
         {
             await _userRepository.UpdateLoginUserAsync(id);
             await _manager.SavechangesAsync();

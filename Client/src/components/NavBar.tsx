@@ -1,4 +1,4 @@
-import { Home, Headphones, Search, Music, Album, Plus } from "lucide-react"
+import { Home, Headphones, Search, Music, Album } from "lucide-react"
 
 import {
   Sidebar,
@@ -42,11 +42,7 @@ const items = [
     url: "#",
     icon: Search,
   },
-  {
-    title: "הוספת שיר",
-    url: "/add-song",
-    icon: Plus,
-  },
+  
 ]
 
  function AppSidebar() {

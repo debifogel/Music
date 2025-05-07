@@ -26,7 +26,7 @@ const AddSong = () => {
          if(addFile)
          {
            if (file) {
-               await addSong(file, formData);
+               await addSong( formData);
            } else {
                console.error("File is null");
            }

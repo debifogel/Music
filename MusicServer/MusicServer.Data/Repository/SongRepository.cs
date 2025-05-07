@@ -41,6 +41,13 @@ namespace MusicServer.Data.Repository
             var Song=await GetSongByIdAsync(id);
             return Song.Playlists;
         }
+        public async Task<IEnumerable<Song>> GetSongByListIdAsync(List<int> ids)
+        {
+            var songlist= await _context.Songs
+            .Where(s => ids.Contains(s.SongId))
+              .ToListAsync();
+            return songlist;
+        }
 
 
         //what with the name

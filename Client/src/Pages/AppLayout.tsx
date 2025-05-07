@@ -1,35 +1,72 @@
-import FormToEnter from "../components/FormToEnter";
-import authService from "../Services/Auth";
 import { useEffect, useState } from "react";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Avatar, styled } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+
+import authService from "../Services/Auth";
+import FormToEnter from "../components/FormToEnter";
 import { NavBar } from "../components/NavBar";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import Home from "./Home";
 import AvatarAndUpdate from "@/components/AvatarAndUpdate";
-import { Avatar } from "@mui/material";
+import Home from "./Home";
+
+// יצירת נושא מותאם
+const theme = createTheme();
+
+// כפתור הוספת שיר
+const AddButton = styled(Link)(({ theme }) => ({
+  position: "fixed",
+  bottom: 20,
+  left: 90,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  width: 40,
+  height: 40,
+  borderRadius: "50%",
+  backgroundColor: theme.palette.primary.main,
+  color: "#fff",
+  textDecoration: "none",
+  overflow: "hidden",
+  transition: "all 0.3s ease",
+  padding: "0 12px",
+  boxShadow: "0 2px 5px rgba(0,0,0,0.3)",
+
+  "& .text": {
+    marginLeft: 8,
+    opacity: 0,
+    whiteSpace: "nowrap",
+    transition: "opacity 0.3s",
+  },
+
+  "&:hover": {
+    width: 130,
+    borderRadius: 20,
+  },
+
+  "&:hover .text": {
+    opacity: 1,
+  },
+}));
 
 export default function AppLayout() {
   const [insite, setInsite] = useState<boolean>(() => {
-    // קריאה ל-sessionStorage כדי לבדוק אם המשתמש מחובר
     return sessionStorage.getItem("insite") === "true";
-  });       
-  const logout = (b: boolean) => {
-    setInsite(b); }
+  });
+
   const navigate = useNavigate();
   const location = useLocation();
+
   useEffect(() => {
-    // אם המשתמש לא מחובר ונסה לגשת לדפים אחרים, הפנייתו לדף הבית
-    if (!insite && location.pathname !== "/home" ) {
+    if (!insite && location.pathname !== "/home") {
       navigate("/home");
     }
   }, [insite, location, navigate]);
 
   function register(email: string, password: string, name: string) {
-    console.log(JSON.stringify( name))
-
     authService
       .register(name, email, password)
       .then(() => {
-        console.log(JSON.stringify( name))
         sessionStorage.setItem("insite", "true");
         setInsite(true);
       })
@@ -45,7 +82,6 @@ export default function AppLayout() {
       .then((res) => {
         if (res.status === 200) {
           sessionStorage.setItem("insite", "true");
-
           setInsite(true);
         } else {
           alert("מצטערים, ארעה שגיאה בהתחברות");
@@ -59,33 +95,37 @@ export default function AppLayout() {
   }
 
   return (
-    <>
-      {!insite && <>
-        <div style={{position:"fixed",top:"50px",right:"10px"}}>
-               <Avatar/>
-          <FormToEnter
-            buttonText="הרשמה"
-            onSubmit={(email, password, name) => register(email, password, name || "")}
-            register={true}
-          />
-          <FormToEnter
-            buttonText="התחברות"
-            onSubmit={(email, password) => login(email, password)}
-            register={false}
-          />
-          </div>
-          <Home/>
-        </>}
-
-      {insite && (
+    <ThemeProvider theme={theme}>
+      {!insite ? (
         <>
-        
+          <div style={{ position: "fixed", top: "50px", right: "10px" }}>
+            <Avatar />
+            <FormToEnter
+              buttonText="הרשמה"
+              onSubmit={(email, password, name) =>
+                register(email, password, name || "")
+              }
+              register={true}
+            />
+            <FormToEnter
+              buttonText="התחברות"
+              onSubmit={(email, password) => login(email, password)}
+              register={false}
+            />
+          </div>
+          <Home />
+        </>
+      ) : (
+        <>
+          <AddButton to="/add-song">
+            <AddIcon />
+            <span className="text">הוסף שיר</span>
+          </AddButton>
           <NavBar />
           <Outlet />
+          <AvatarAndUpdate logout={() => setInsite(false)} />
         </>
       )}
-      {insite && <AvatarAndUpdate logout={() => logout(false)} />}
-
-    </>
+    </ThemeProvider>
   );
 }
