@@ -1,39 +1,77 @@
 .search-field {
-    width: 100%;
-    max-width: 300px; /* תיבת חיפוש בגודל מינימלי */
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-radius: 20px;
-    background-color: #f1f1f1; /* צבע רקע בהיר */
-    box-shadow: none; /* אין צללים */
-  }
-  
-  mat-form-field {
-    width: 100%;
-  }
-  
-  mat-icon {
-    color: #555; /* צבע אייקון */
-  }
-  
-  mat-input {
-    font-size: 14px;
-    padding: 10px;
-    border: none;
-    background: transparent;
-    box-shadow: none;
-  }
-  
-  button mat-icon {
-    font-size: 20px; /* אייקון סגירה בגודל מתאים */
-  }
-  
-  mat-form-field.mat-form-field-appearance-legacy .mat-form-field-label {
-    display: none; /* מסתיר את התווית */
-  }
-  
-  .search-field .mat-input-element {
-    padding-left: 0; /* הוצאת רווחים לא נחוצים */
-  }
-  
+  width: 180px; /* Reduced width slightly */
+  border-radius: 20px;
+  position:fixed;
+  top: 46%; /* Adjusted for better visibility */
+  left: 92%; /* Adjusted for better visibility */
+  transform: translateX(-50%); /* Adjust for centering */
+}
+.fiter-container{
+  position:fixed;
+  top: 37%; /* Adjusted for better visibility */
+  left: 85%; /* Adjusted for better visibility */
+}
+.toggle-blocked-users{
+  position:fixed;
+  top: 30%; /* Adjusted for better visibility */
+  left: 85%; /* Adjusted for better visibility */
+}
+/* Make the field outline more rounded for a cute look */
+::ng-deep .search-field .mat-form-field-outline {
+  border-radius: 25px;
+  border-color: #ff8c00 !important; /* Orange border */
+}
+
+/* Ensure consistent height and prevent truncation */
+::ng-deep .search-field .mat-form-field-flex {
+  min-height: 48px;
+  padding: 0 12px !important; /* Add padding to prevent text from being cut */
+}
+
+/* Style the input text */
+::ng-deep .search-field input {
+  font-size: 14px;
+  padding-left: 5px;
+  color: #000000; /* Black text */
+}
+
+/* Style the prefix and suffix icons */
+::ng-deep .search-field .mat-icon {
+  color: #ff8c00; /* Orange color for icons */
+}
+
+/* Style the placeholder */
+::ng-deep .search-field .mat-form-field-label {
+  color: rgba(0, 0, 0, 0.6) !important; /* Darker placeholder text */
+}
+
+/* Orange underline when focused */
+::ng-deep .search-field.mat-focused .mat-form-field-outline-thick {
+  color: #ff8c00 !important;
+}
+
+/* Add a subtle transition effect */
+::ng-deep .search-field .mat-form-field-outline {
+  transition: box-shadow 0.3s ease;
+}
+
+::ng-deep .search-field:hover .mat-form-field-outline {
+  box-shadow: 0 0 8px rgba(255, 140, 0, 0.5); /* Orange glow on hover */
+}
+
+/* Fix for RTL text alignment (for Hebrew) */
+::ng-deep .search-field input {
+  text-align: right;
+  direction: rtl;
+}
+
+/* Ensure the field doesn't get cut off */
+::ng-deep .mat-form-field-wrapper {
+  padding-bottom: 1.25em;
+  overflow: visible;
+}
+.table-container {
+  width: 80%;
+  margin-left: auto;
+  margin-right: 20%;
+}

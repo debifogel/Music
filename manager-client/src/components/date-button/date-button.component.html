@@ -1,0 +1,17 @@
+
+
+  <button
+  class="date-button"
+  (click)="openDatePicker()"
+  [class.expanded]="isHovered"
+  (mouseenter)="isHovered = true"
+  (mouseleave)="isHovered = false"
+>
+  <span class="button-text">
+    <mat-icon matTooltip="חסימת משתמשים" matTooltipPosition="above" 
+    aria-label="חסימת משתמשים" 
+    role="img" class="icon-style">block</mat-icon></span>
+  <span class="expand-text" [class.visible]="isHovered">
+    <span class="divider"></span>{{ expandText }}
+  </span>
+</button>

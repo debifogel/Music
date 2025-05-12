@@ -22,6 +22,7 @@ import { AuthService } from '../../../services/Auth/auth.service';
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
+
   email = new FormControl('', [Validators.required, Validators.email]);
   password = new FormControl('', [Validators.required]);
   // הוספת ה-AuthService לקונסטרקטור
@@ -37,14 +38,19 @@ export class LoginComponent {
   // פונקציה שתשנה את מצב ה-showForm
   toggleForm() {
     this.showForm = !this.showForm;
+    console.log("in toggel")
   }
-
+  
   onSubmit() {
+    
+    console.log("in submit")
+    console.log('הטופס הוגש', this.email.value, this.password.value);
     if (this.email.valid && this.password.valid) {
       // כאן אפשר להוסיף את הלוגיקה לשליחת פרטי ההתחברות לשרת
      this.authService.login(this.email.value || '', this.password.value || '').subscribe(
-        (response: any) => {    
- 
+        () => { 
+          this.toggleForm()
+          console.log('ההתחברות הצליחה');
         })
     } else {
       console.log('לא כל השדות תקינים');

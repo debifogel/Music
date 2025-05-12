@@ -7,7 +7,7 @@
         
         <mat-card-content>
           <form (ngSubmit)="onSubmit()">
-            <mat-form-field appearance="fill" class="full-width">
+          <mat-form-field appearance="fill" class="full-width">
               <mat-label>מייל</mat-label>
               <input matInput id="email" type="email" [formControl]="email" />
               @if(email.hasError('required')){<mat-error >יש להכניס מייל</mat-error>}
@@ -20,7 +20,8 @@
               @if(password.hasError('required')){<mat-error >יש להכניס סיסמה</mat-error>}
             </mat-form-field>
   
-            <button mat-raised-button color="primary" type="submit" [disabled]="!email.valid || !password.valid">
+            <button type="button" mat-raised-button color="accent" style="background-color: orange; color: white;"
+            (click)="onSubmit()" [disabled]="!email.valid || !password.valid">
               התחבר
             </button>
           </form>
@@ -30,7 +31,7 @@
 }
   
     <!-- כפתור להצגת הטופס -->
-    @if(!showForm){<div >
+    @else{<div >
       <button mat-stroked-button (click)="toggleForm()"> התחבר</button>
     </div>}
   </div>

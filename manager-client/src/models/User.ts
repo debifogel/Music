@@ -1,8 +1,9 @@
 export  interface User {
-  name:string;
+  userId:number;
+  username:string;
   email: string;
   password: string;
+  registrationDate: string;
   lastLogin: string;
-  lastUsage: string;
-  blocked: boolean;
+  isBlocked: boolean;
 }

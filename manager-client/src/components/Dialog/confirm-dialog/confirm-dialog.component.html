@@ -1,6 +1,15 @@
-<h2 mat-dialog-title>האם אתה בטוח?</h2>
-<mat-dialog-content>האם אתה בטוח שברצונך לבצע את הפעולה הזאת?</mat-dialog-content>
-<mat-dialog-actions>
-  <button mat-button (click)="onCancel()">לא</button>
-  <button mat-button color="warn" (click)="onConfirm()">כן</button>
-</mat-dialog-actions>
+<div class="dream-dialog">
+  <h2 mat-dialog-title class="dream-title">האם אתה בטוח?</h2>
+
+  <mat-dialog-content class="dream-content">
+  {{message}}
+    <div class="dream-icon">
+      <mat-icon class="icon" color="warn">help_outline</mat-icon>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end" class="dream-actions">
+    <button mat-button class="cancel-button" (click)="onCancel()">לא</button>
+    <button mat-button class="confirm-button" (click)="onConfirm()">כן</button>
+  </mat-dialog-actions>
+</div>

@@ -1,19 +1,25 @@
-import { Component } from '@angular/core';
+import {  Component } from '@angular/core';
 import { LoginComponent } from "../components/Login/login/login.component";
-import { ListUsersComponent } from "../Pages/ListUsers/list-users/list-users.component";
-import { GrafimComponent } from "../Pages/Grafim/grafim/grafim.component";
+import { AuthService } from '../services/Auth/auth.service';
+import { NavBarComponent } from "../components/NavBar/nav-bar/nav-bar.component";
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [LoginComponent, ListUsersComponent, GrafimComponent],
+  imports: [LoginComponent, NavBarComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-[x: string]: any;
   title = 'manager-client';
+  insite = false;
 
-insite=sessionStorage.getItem('token') === null
+  constructor(private authState: AuthService) {
+    this.authState.isLoggedIn$.subscribe(status => {
+      this.insite = status;
+    });
+  }
+
+  // נשלח לפעולה של login
   
 }

@@ -1,0 +1,18 @@
+<div class="dream-dialog">
+  <h2 mat-dialog-title class="dream-title">בחר תאריך</h2>
+
+  <mat-dialog-content class="dream-content">
+    <mat-form-field appearance="fill" class="date-field">
+      <mat-label>תאריך</mat-label>
+      <input matInput [matDatepicker]="picker" [(ngModel)]="selectedDate">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end" class="dream-actions">
+    <button mat-button class="cancel-button" (click)="onCancel()">ביטול</button>
+    <button mat-button class="confirm-button" (click)="onConfirm()">אישור</button>
+  </mat-dialog-actions>
+</div>
+

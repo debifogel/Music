@@ -1,0 +1,56 @@
+.date-button {
+    background-color: #ff8c00; /* כתום */
+    color: #ffffff; /* לבן */
+    border-radius: 50px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, transform 0.2s;
+  }
+  
+  .date-button {
+    background-color: #ff8c00;
+    color: #ffffff;
+    border-radius: 50px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .date-button:hover {
+    background-color: #ff7000;
+    transform: translateY(-2px);
+  }
+
+  .date-button.expanded {
+    padding-right: 24px;
+  }
+
+  .expand-text {
+    opacity: 0;
+    max-width: 0;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    display: inline-block;
+    margin-left: 8px;
+  }
+
+  .expand-text.visible {
+    opacity: 1;
+    max-width: 200px;
+  }
+
+  .divider {
+    display: inline-block;
+    border-right: 2px solid rgba(255, 255, 255, 0.5);
+    margin-right: 8px;
+    padding-right: 8px;
+    height: 16px;
+    vertical-align: middle;
+  }
+  

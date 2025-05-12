@@ -1,13 +1,14 @@
 button {
     margin: 0 8px;
-    border-radius: 50%;
-    padding: 10px;
+    border-radius: 40%;
+    padding: 7px;
     transition: background-color 0.3s ease, transform 0.3s ease;
   }
   
   button:hover {
     background-color: rgba(0, 0, 0, 0.1); /* שינוי צבע רקע */
-    transform: scale(1.1); /* הגדלה קלה כאשר מרחפים עם העכבר */
+    transform: scale(1.1);
+    background-color: orange; /* הגדלה קלה כאשר מרחפים עם העכבר */
   }
   
   mat-icon {

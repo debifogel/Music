@@ -1,9 +1,9 @@
 <!-- פעולות עבור כל משתמש -->
-@if(user?.blocked){<button  mat-icon-button color="accent" (click)="unblockUser()" matTooltip="שחרר חסימה">
+@if(user?.isBlocked){<button  mat-icon-button color="accent" (click)="unblockUser()" matTooltip="שחרר חסימה">
     <mat-icon>lock_open</mat-icon>  <!-- אייקון שחרור חסימה -->
   </button>}
   
-  @if(!user?.blocked){<button  mat-icon-button color="warn" (click)="blockUser()" matTooltip="חסום">
+@else{<button  mat-icon-button color="warn" (click)="blockUser()" matTooltip="חסום">
     <mat-icon>lock</mat-icon>  <!-- אייקון חסימה -->
   </button>}
   
