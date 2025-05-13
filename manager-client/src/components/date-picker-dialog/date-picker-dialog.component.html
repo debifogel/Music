@@ -2,10 +2,10 @@
   <h2 mat-dialog-title class="dream-title">בחר תאריך</h2>
 
   <mat-dialog-content class="dream-content">
-    <mat-form-field appearance="fill" class="date-field">
+    <mat-form-field appearance="fill" class="date-field" color="accent">
       <mat-label>תאריך</mat-label>
-      <input matInput [matDatepicker]="picker" [(ngModel)]="selectedDate">
-      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <input matInput [matDatepicker]="picker"  [(ngModel)]="selectedDate">
+      <mat-datepicker-toggle matSuffix [for]="picker" ></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
   </mat-dialog-content>

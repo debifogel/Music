@@ -29,14 +29,19 @@ namespace MusicServer.Service.ServiceControllers
             return User;
         }
 
-        public async Task BlockUserByIdAsync(string email)
+        public async Task BlockUserByIdAsync(int id)
         {
-            await _userRepository.BlockUserByIdAsync(email);
+            await _userRepository.BlockUserByIdAsync(id);
             await _manager.SavechangesAsync();
         }
-
-        public async Task DeleteUserByIdAsync(string email)
+        public async Task BlockByDate(DateTime date)
         {
+            await _userRepository.BlockByDate(date);
+            await _manager.SavechangesAsync();
+        }
+        public async Task DeleteUserByIdAsync(int id)
+        {
+            await _userRepository.DeleteUserByIdAsync(id);
             await _manager.SavechangesAsync();
         }
 

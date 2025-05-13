@@ -24,15 +24,25 @@ namespace MusicServer.Data.Repository
             return user;
         }
 
-        public async Task BlockUserByIdAsync(string email)
+        public async Task BlockUserByIdAsync(int id)
         {
-            var user=await _context.Users.FirstAsync(u=>u.Email== email);
+            var user=await _context.Users.FirstAsync(u=>u.UserId== id);
             user.IsBlocked = !user.IsBlocked;
         }
-
-        public async Task DeleteUserByIdAsync(string email)
+        public async Task BlockByDate(DateTime date)
         {
-            var user =await _context.Users.FirstAsync(u => u.Email == email);
+            var users = await _context.Users
+        .Where(user => user.LastLogin < date)
+        .ToListAsync();
+
+            foreach (var user in users)
+            {
+                user.IsBlocked = !user.IsBlocked;
+            }
+        }
+        public async Task DeleteUserByIdAsync(int id)
+        {
+            var user =await _context.Users.FirstAsync(u => u.UserId == id);
              _context.Users.RemoveRange(user);
         }
 
@@ -42,9 +52,12 @@ namespace MusicServer.Data.Repository
         }
         public async Task<IEnumerable<DateOnly>> GetAllUsersDateAsync()
         {
-            return (IEnumerable<DateOnly>)_context.Users.
-                Select(u => u.RegistrationDate)
-                .ToListAsync();
+            var dates = await _context.Users
+             .Select(u => u.RegistrationDate) // Assuming you are getting a DateTime value here
+              .ToListAsync();
+
+            // Convert DateTime to DateOnly and return it as IEnumerable<DateOnly>
+            return dates.Select(d => DateOnly.FromDateTime(d)).ToList();
 
         }
 

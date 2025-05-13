@@ -20,14 +20,14 @@ namespace MusicServer.Api.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "manager")] // Only admins can get all users
+        [Authorize(Roles = "Admin")] // Only admins can get all users
         public async Task<IActionResult> GetAllUsers()
         {
             var users = await _userService.GetAllUsersAsync();
             return Ok(users);
         }
-        [HttpGet("/dates")]
-        [Authorize(Roles = "manager")]
+        [HttpGet("dates")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllUsersDate()
         {
             var usersDateEnter = await _userService.GetAllUsersDateAsync();
@@ -64,19 +64,26 @@ namespace MusicServer.Api.Controllers
             return Ok();
         }
 
-        [HttpDelete("{email}")]
+        [HttpDelete("{id}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteUser(string email)
+        public async Task<IActionResult> DeleteUser(int id)
         {
-            await _userService.DeleteUserByIdAsync(email);
+            await _userService.DeleteUserByIdAsync(id);
             return Ok();
         }
 
-        [HttpPut("block/{email}")]
+        [HttpPut("block/{id}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> BlockUser(string email)
+        public async Task<IActionResult> BlockUser(int id)
         {
-            await _userService.BlockUserByIdAsync(email);
+            await _userService.BlockUserByIdAsync(id);
+            return Ok();
+        }
+        [HttpPut("blockgroup/{date}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> BlockByDate(DateTime date)
+        {
+            await _userService.BlockByDate(date);
             return Ok();
         }
     }

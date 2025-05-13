@@ -1,60 +1,76 @@
 import os
 from urllib.parse import urlparse
-import openai
-from fastapi import FastAPI 
-from langchain_community.embeddings import OpenAIEmbeddings
+from fastapi import FastAPI
+from langchain_openai import OpenAIEmbeddings
 import time
-import requests 
+import openai
+import requests
 from io import BytesIO
-from pinecone import Pinecone,ServerlessSpec
-# אתחול pinecone
+from pinecone import Pinecone, ServerlessSpec
 
-pc = Pinecone(api_key="pcsk_PiBhL_HqbSJ8iZm38SV6nPZQEobLvKXV5DLetfU1HQkT7TqFkptPMaqvdhReUh4AUfbLj",              
-              ssl_verify=False)
-spec = ServerlessSpec(
-    cloud="aws", region="us-east-1"
-)
-existing_indexes = [
-    index_info["name"] for index_info in pc.list_indexes()
-]
+# אתחול pinecone
+pc = Pinecone(api_key="pcsk_PiBhL_HqbSJ8iZm38SV6nPZQEobLvKXV5DLetfU1HQkT7TqFkptPMaqvdhReUh4AUfbLj", ssl_verify=False)
+spec = ServerlessSpec(cloud="aws", region="us-east-1")
+existing_indexes = [index_info["name"] for index_info in pc.list_indexes()]
 index = pc.Index("musicfiles")
 time.sleep(1)
 
-
 # אתחול OpenAI
-openai_api_key="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"
+openai_api_key = "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"
+openai.api_key = openai_api_key
+#get from ivrit ai
+def check_status(transcription_id, api_key):
+    print("Checking status for transcription ID:", transcription_id)
+    url = f"https://hebrew-ai.com/api/transcribe?id={transcription_id}"
+    headers = {
+        "Authorization": f"Bearer {api_key}"
+    }
+    while True:
+        response = requests.get(url, headers=headers)
+        if response.status_code == 200:
+            data = response.json()
+            print("Status:", data["status"])
+            if data["status"] == "COMPLETED":
+                print("Transcribed text:", data["text"])
+                break
+            elif data["status"] == "FAILED":
+                print("Transcription failed.")
+                break
+        else:
+            print("Error:", response.status_code, response.text)
+            break
+        time.sleep(5)  # המתן 5 שניות לפני בדיקה חוזרת
 # תמלול קובץ שמע
 def transcribe_audio(file_path):
-    url = "https://hebrew-ai.com/api/transcribe" 
-    api_key = "sk_sjv4efffnz63c3y3_93b07ae1d63bedfa4b39"     
-    headers = { 
-        "Authorization": f"Bearer {api_key}" 
-    } 
+    url = "https://hebrew-ai.com/api/transcribe"
+    api_key = "sk_sjv4efffnz63c3y3_d7b51644afb5fa01aced"
+    headers = {"Authorization": f"Bearer {api_key}"}
+
     response = requests.get(file_path)
     response.raise_for_status()
-    filename = os.path.basename(urlparse(file_path).path)  # -> 'awesome_song.mp3'
+    filename = os.path.basename(urlparse(file_path).path)
 
     files = {
-         "file": (filename, BytesIO(response.content))
+        "file": (filename, BytesIO(response.content), 'audio/mpeg')
     }
-    response = requests.post(url, headers=headers, files=files) 
-     
-    if response.status_code == 200: 
-        data = response.json() 
-        # Wait for the transcription to complete
-        while True:
-            response = requests.get(url, headers=headers) 
-            if response.status_code == 200: 
-                data = response.json() 
-                if data["status"] == "completed": 
-                    return data["text"] 
-                elif data["status"] == "failed":
-                    return "Transcription failed"
-    else: 
+    data = {
+        "language": "he"
+    }
+
+    response = requests.post(url, headers=headers, files=files, data=data)
+    
+    if response.status_code == 200:
+        data = response.json()
+        print("Transcription started successfully.",data)
+        transcription_id = data.get("transcriptionId")
+        print("Transcription ID:", transcription_id) 
+        text=check_status(transcription_id, api_key)
+        return text
+    else:
         print("Error:", response.status_code, response.text)
         return None
 
-# שליחה למודל NLP להסרת מילים שאינן חלק מהשיר (למשל דיבור חיצוני)
+# הסרת דיבור חיצוני מתוך טקסט
 def extract_lyrics(raw_text):
     prompt = f"""
     הנה טקסט מתוך הקלטה של שיר. השאר רק את מילות השיר, הסר דיבורים חיצוניים:
@@ -62,39 +78,40 @@ def extract_lyrics(raw_text):
     {raw_text}
     ---
     """
-    response = openai.ChatCompletion.create(
-        model="gpt-4",
+    response = openai.chat.completions.create(
+        model="gpt-4.1",
         messages=[{"role": "user", "content": prompt}]
     )
-    return response["choices"][0]["message"]["content"].strip()
+    return response.choices[0].message.content.strip()
 
-# ניתוח רגשות, מחשבות ורצונות
+# ניתוח רגשות ומחשבות
 def analyze_song_content(lyrics):
     prompt = f"""
     נתח את השיר הבא והצג את הרגשות, המחשבות והרצונות שהוא מבטא:
     ---
     {lyrics}
     """
-    response = openai.ChatCompletion.create(
+    response = openai.chat.completions.create(
         model="gpt-4",
         messages=[{"role": "user", "content": prompt}]
     )
-    return response["choices"][0]["message"]["content"].strip()
+    return response.choices[0].message.content.strip()
 
 # יצירת embedding
 openai_embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
+
 def get_embedding(text):
-    embeddings = openai_embeddings.embed_documents(text)
+    embeddings = openai_embeddings.embed_documents([text])[0]
     return embeddings
 
-# שמירת שיר ב־Pinecone
+# שמירה ב־Pinecone
 def store_song(user_id, song_id, embedding, metadata):
     index.upsert(vectors=[{
         "id": f"{user_id}:{song_id}",
         "values": embedding,
         "metadata": metadata
     }])
-
+    print ("Song stored successfully!", metadata)
 # חיפוש שירים דומים
 def search_similar_songs(user_id, query_text, top_k=5):
     query_embedding = get_embedding(query_text)
@@ -106,34 +123,24 @@ def search_similar_songs(user_id, query_text, top_k=5):
     )
     return results["matches"]
 
+# FastAPI
 app = FastAPI()
 
 @app.post("/process-audio/")
 async def process_audio(user_id: str, song_id: str, Audio: str):
     try:
-        # Send a GET request to download the file
-        data=transcribe_audio(Audio)  # Assuming this function transcribes the audio and returns the text
-        
-        lyrics = extract_lyrics(data)  # Assuming extract_lyrics extracts song lyrics from the transcribed text
-        analysis = analyze_song_content(lyrics)  # Assuming analyze_song_content analyzes the lyrics for insights
-
-        # Combine the lyrics and analysis
+        data = transcribe_audio(Audio)
+        lyrics = extract_lyrics(data)
+        analysis = analyze_song_content(lyrics)
         full_text = lyrics + "\n" + analysis
-        
-        # Get an embedding of the full text
         embedding = get_embedding(full_text)
-
-        # Prepare metadata to store
         metadata = {"user_id": user_id, "song_id": song_id, "lyrics": lyrics, "analysis": analysis}
-
-        # Store the song and its embedding
         store_song(user_id, song_id, embedding, metadata)
-
         return {"message": "שיר נשמר בהצלחה", "lyrics": lyrics, "analysis": analysis}
-    
     except Exception as e:
         print(f"Error processing audio: {e}")
         return {"error": "שגיאה בעיבוד השיר", "details": str(e)}
+
 @app.get("/search-similar/")
 def search_similar(user_id: str, query: str):
     matches = search_similar_songs(user_id, query)

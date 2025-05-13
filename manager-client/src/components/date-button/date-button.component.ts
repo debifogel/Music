@@ -31,21 +31,30 @@ export class DateButtonComponent {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.blockGroupByDate(result);
+        this.blockGroupByDate(result).subscribe(() => {
+          console.log("הקבוצה נחסמה בהצלחה");
+        }, error => {
+          console.error("שגיאה בחסימת הקבוצה", error);
+        });
         console.log(`תאריך שנבחר: ${result}`);
       }
     });
   }
-
-blockGroupByDate(date: string){
-  (() => {
+//TODO:not called ?
+blockGroupByDate(date: Date): Observable<void> {
+  return new Observable<void>((observer) => {
+    console.log("to api server");
+    console.log("date", date);
     this.userService.blockGroupByDate(date).subscribe(
-     () => {
+      () => {
         console.log(`הקבוצה נחסמה בהצלחה בתאריך: ${date}`);
-        }
-      , error => {
+        observer.next();
+        observer.complete();
+      },
+      (error) => {
         console.error(`שגיאה בחסימת הקבוצה בתאריך ${date}:`, error);
-      }      
+        observer.error(error);
+      }
     );
   });
 }

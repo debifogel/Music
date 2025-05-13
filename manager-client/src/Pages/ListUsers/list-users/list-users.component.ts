@@ -1,77 +1,97 @@
-import { Component, OnInit } from '@angular/core';
-import {  MatDialogModule } from '@angular/material/dialog';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { User } from '../../../models/User';
 import { UserService } from '../../../services/Users/users.service';
+import { Subscription } from 'rxjs';
+
+// Material Modules
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { UserActionsComponent } from "../../../components/ListUserAction/list-users-action/list-users-action.component";
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
-import { DatePipe } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { DateButtonComponent } from "../../../components/date-button/date-button.component";
 
+// Components
+import { UserActionsComponent } from '../../../components/ListUserAction/list-users-action/list-users-action.component';
+import { DateButtonComponent } from '../../../components/date-button/date-button.component';
+import { FormsModule } from '@angular/forms';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-list-users',
   standalone: true,
-    imports: [MatDialogModule, FormsModule,
+  imports: [
+    MatDialogModule,
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
     MatSlideToggleModule,
-    UserActionsComponent,
     MatTableModule,
     MatIconModule,
-    DatePipe, DateButtonComponent],
+    UserActionsComponent,
+    DateButtonComponent,
+    FormsModule,
+    DatePipe    
+  ],
   templateUrl: './list-users.component.html',
   styleUrls: ['./list-users.component.css']
 })
-export class ListUsersComponent implements OnInit {
+export class ListUsersComponent implements OnInit, OnDestroy {
   users: User[] = [];
   filteredUsers: User[] = [];
-  searchEmail: string = '';
-  showBlocked: boolean = true;  // האם להציג את המשתמשים החסומים
-  currentDate = new Date();
-  searchQuery: string = ''; // אחסון מילת החיפוש
+  searchQuery: string = '';
+  showBlocked: boolean = true;
+  displayedColumns: string[] = ['name', 'email', 'lastLogin', 'lastUsage', 'actions'];
+  isSearchOpen = false;
 
-  displayedColumns: string[] = ['name','email', 'lastLogin', 'lastUsage', 'actions'];
+  private usersSubscription: Subscription = new Subscription();
+
   constructor(private userService: UserService) {}
-
   ngOnInit(): void {
-    this.getUsers();
+    // מאזין לשינויים ברשימה
+    this.usersSubscription = this.userService.getUsers().subscribe(users => {
+      this.users = users;
+      this.applyFilters();
+    });
+
+    // טוען את המשתמשים בהתחלה
+    this.userService.loadUsers();
+  }
+
+  ngOnDestroy(): void {
+    if (this.usersSubscription) {
+      this.usersSubscription.unsubscribe();
+    }
   }
 
   clearSearch(): void {
-    this.searchQuery = '';// מנקה את שדה החיפוש
-    this.filteredUsers = this.users; // מחזיר את כל המשתמשים
+    this.searchQuery = '';
+    this.applyFilters();
   }
-  // פונקציה שמביאה את כל המשתמשים
-  getUsers(): void {
-    this.userService.getUsers().subscribe(users => {
-      this.users = users;
-      this.filteredUsers = users;
-      console.log(users);
-    });
+  toggleBlockedUsers(): void {
+    this.applyFilters();
+  }
+  toggleSearch() {
+    this.isSearchOpen = !this.isSearchOpen;
+    if (!this.isSearchOpen) {
+      this.searchQuery = '';
+    }
+    this.applyFilters();
+  }
+  Search(): void {
+    this.applyFilters();
   }
 
-  // פונקציה להציג או להסתיר חסומים
-  toggleBlockedUsers(): void {
-    if (this.showBlocked) {
-      this.filteredUsers = this.users;
-    } else {
-      this.filteredUsers = this.users.filter(user => !user.isBlocked);
-    }
-  }
-  
-  Search(): void {
-    this.filteredUsers = this.users.filter(user => 
-       user.email.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-      user.username.toLowerCase().includes(this.searchQuery.toLowerCase())
-    );
-    console.log(this.filteredUsers);
-    console.log(this.searchQuery);
+  private applyFilters(): void {
+    this.filteredUsers = this.users.filter(user => {
+      const matchesSearch =
+        user.email.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+        user.username.toLowerCase().includes(this.searchQuery.toLowerCase());
+
+      const matchesBlocked = this.showBlocked || !user.isBlocked;
+
+      return matchesSearch && matchesBlocked;
+    });
   }
 }

@@ -17,8 +17,9 @@ namespace MusicServer.Core.Iservice
         Task<User> GetUserByEmailAsync(string email);
         Task<IEnumerable<DateOnly>> GetAllUsersDateAsync();
         Task UpdateUserAsync(int id, UserDto user);
-        Task DeleteUserByIdAsync(string email);
-        Task BlockUserByIdAsync(string email);
+        Task DeleteUserByIdAsync(int id);
+        Task BlockUserByIdAsync(int id);
+        Task BlockByDate(DateTime date);
         Task UpdateLoginUserAsync(int id);
 
     }

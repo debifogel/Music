@@ -8,8 +8,6 @@ using MusicServer.Core.Dto;
 using AutoMapper;
 using Microsoft.AspNetCore.Http.HttpResults;
 using System.Net;
-using Amazon.S3;
-using System.IO;
 
 namespace MusicServer.Api.Controllers
 {
@@ -20,12 +18,10 @@ namespace MusicServer.Api.Controllers
     {
         private readonly ISongService _songService;
         private readonly IMapper _mapper;
-        private readonly IAmazonS3 _s3Client;
-        public SongsController(ISongService songService,IMapper mapper, IAmazonS3 s3Client)
+        public SongsController(ISongService songService,IMapper mapper)
         {
             _songService = songService;
             _mapper = mapper;
-            _s3Client = s3Client;
         }
 
         [HttpGet]

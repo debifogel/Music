@@ -71,8 +71,8 @@ const songService = {
         const userId = payload.userId; // Extract userId from token payload
 
         axios.post("http://127.0.0.1:8080/process-audio/", {
-          user_id: userId,
-          song_id: songId,
+          user_id: userId.tostring(),
+          song_id: songId.data.toString(),
           Audio: filepath,
         })
         .catch((error) => {

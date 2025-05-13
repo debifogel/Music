@@ -39,11 +39,15 @@ export class GrafimComponent implements OnInit {
         yAxis: {
           type: 'value'
         },
+        
         series: [
           {
             name: 'מספר התחברויות',
             type: 'bar',
-            data: counts
+            data: counts,
+            itemStyle: {
+              color: '#FFA500'
+            }
           }
         ]
       };

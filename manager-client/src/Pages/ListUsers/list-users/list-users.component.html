@@ -1,15 +1,22 @@
 
 <div class="user-list-container">
     <h2>רשימת משתמשים</h2>
-    <mat-form-field  color="accent" class="search-field">
-      <mat-icon matPrefix>search</mat-icon>
-      <input matInput [(ngModel)]="searchQuery" placeholder="חפש משתמשים" (keyup.enter)="Search()" />
-      @if(searchQuery){
-        <button mat-icon-button matSuffix (click)="clearSearch()">
-          <mat-icon>close</mat-icon>
-        </button>
-      }
-    </mat-form-field>
+    <div class="search-container" [class.open]="isSearchOpen">
+      <button mat-icon-button class="search-toggle" (click)="toggleSearch()">
+        <mat-icon>search</mat-icon>
+      </button>
+    
+      @if(isSearchOpen){<mat-form-field  color="accent" class="search-field">
+        <mat-icon matPrefix>search</mat-icon>
+        <input matInput [(ngModel)]="searchQuery" placeholder="חפש משתמשים" (keyup.enter)="Search()" />
+        @if(searchQuery){
+          <button mat-icon-button matSuffix (click)="clearSearch()">
+            <mat-icon>close</mat-icon>
+          </button>
+        }
+      </mat-form-field>}
+    </div>
+    
     <div class="fiter-container">
   <app-date-button></app-date-button>
 </div>
