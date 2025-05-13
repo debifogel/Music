@@ -1,22 +1,24 @@
 import os
 from urllib.parse import urlparse
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from langchain_openai import OpenAIEmbeddings
 import time
 import openai
 import requests
 from io import BytesIO
 from pinecone import Pinecone, ServerlessSpec
-
+from dotenv import load_dotenv
+load_dotenv()
 # אתחול pinecone
-pc = Pinecone(api_key="pcsk_PiBhL_HqbSJ8iZm38SV6nPZQEobLvKXV5DLetfU1HQkT7TqFkptPMaqvdhReUh4AUfbLj", ssl_verify=False)
+pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"), ssl_verify=False)
 spec = ServerlessSpec(cloud="aws", region="us-east-1")
 existing_indexes = [index_info["name"] for index_info in pc.list_indexes()]
 index = pc.Index("musicfiles")
 time.sleep(1)
 
 # אתחול OpenAI
-openai_api_key = "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"
+openai_api_key=os.getenv("OPENAI_API_KEY")
 openai.api_key = openai_api_key
 #get from ivrit ai
 def check_status(transcription_id, api_key):
@@ -43,7 +45,7 @@ def check_status(transcription_id, api_key):
 # תמלול קובץ שמע
 def transcribe_audio(file_path):
     url = "https://hebrew-ai.com/api/transcribe"
-    api_key = "sk_sjv4efffnz63c3y3_d7b51644afb5fa01aced"
+    api_key = os.getenv("IVRITAI_API_KEY")
     headers = {"Authorization": f"Bearer {api_key}"}
 
     response = requests.get(file_path)
@@ -125,7 +127,13 @@ def search_similar_songs(user_id, query_text, top_k=5):
 
 # FastAPI
 app = FastAPI()
-
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], 
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 @app.post("/process-audio/")
 async def process_audio(user_id: str, song_id: str, Audio: str):
     try:

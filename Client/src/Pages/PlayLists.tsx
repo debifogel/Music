@@ -1,13 +1,40 @@
 import NameForm from "@/components/NameForm";
 import OptionsMenu from "@/components/OPtionMenu";
-import { Playlist } from "@/Models/Playlist";
+import { Playlist } from "@/Models/playlist";
 import playlistService from "@/Services/PlaylistService";
 import { Button, CircularProgress, Grid2 as Grid, Typography, Paper } from "@mui/material";
 import { Folder, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, Outlet } from "react-router-dom";
 
-
+const style_container={
+  position: "fixed",
+  top: "100px",     
+  left: "300px",    
+  width: "60%",
+  height: "calc(100vh - 120px)", 
+  padding: 3,
+  margin:"10px",
+  overflowY: "auto",      
+  scrollbarWidth: "none",  
+  display: "flex",
+  flexWrap: "wrap",
+  justifyContent: "right",
+ }
+ const style_card={
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+  padding: 3,
+  minHeight: "150px",
+  minWidth: "120px",
+  borderRadius: 3,
+  boxShadow: 3,
+  transition: "0.3s",
+  "&:hover": { transform: "scale(1.05)", boxShadow: 5 },
+  backgroundColor: "#f8f9fa",
+}
 
 const PlayLists = () => {
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
@@ -73,11 +100,9 @@ const [keyLOad,setKeyLOad]=useState(0)
     setRenamePlay(true);
     setCurrentPlay(id);
   };
-
-  if (loading) return <CircularProgress sx={{ display: "block", margin: "20px auto" }} />;
-
   return (
     <>
+    { loading&&<CircularProgress sx={{ display: "block", margin: "20px auto" }} />}
       <Button
         onClick={() => setAddPlay(true)}
         variant="contained"
@@ -87,33 +112,15 @@ const [keyLOad,setKeyLOad]=useState(0)
       >
         הוספת רשימת השמעה
       </Button>
-
       {addPlay && <NameForm name={""} onClose={handleAdd} />}
       {renamePlay && currentPlay !== null && (
         <NameForm name={playName} id={currentPlay} onClose={handleUpdate} />
       )}
-
-      <Grid container spacing={3} sx={{position:"fixed",top:"100px",left:"300px", marginTop: "80px", justifyContent: "center", width:"60%"}}>
+      <Grid container spacing={3} sx={style_container}>
         {playlists.length > 0 ? (
           playlists.map((playlist) => (
             <Grid  size={4}  key={playlist.playlistId}>
-              <Paper
-                elevation={3}
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  padding: 3,
-                  minHeight: "150px",
-                  minWidth: "120px",
-                  borderRadius: 3,
-                  boxShadow: 3,
-                  transition: "0.3s",
-                  "&:hover": { transform: "scale(1.05)", boxShadow: 5 },
-                  backgroundColor: "#f8f9fa",
-                }}
-              >
+              <Paper elevation={3} sx={style_card}>
                 <Link to={`songs/playlist/${playlist.playlistId}`} style={{ textDecoration: "none", color: "inherit" }}>
                   <Folder size={40} color="blue" />
                   <Typography variant="h6" sx={{}}>{playlist.playlistName}</Typography>
@@ -133,12 +140,10 @@ const [keyLOad,setKeyLOad]=useState(0)
           </Typography>
         )}
       </Grid>
-
       <Outlet />
     </>
   );
 };
-
 export default PlayLists;
 
 

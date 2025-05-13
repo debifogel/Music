@@ -8,8 +8,27 @@ import SongOptionsMenu from "@/components/OptionSongs";
 import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import { Song } from "@/Models/song";
 
-
-
+const style_container={
+  position: "fixed",
+  top: "50px",     
+  left: "250px",    
+  width: "60%",
+  height: "calc(100vh - 120px)", 
+  padding: 3,
+  overflowY: "auto",      
+  scrollbarWidth: "none",  
+  display: "flex",
+  flexWrap: "wrap",
+  justifyContent: "right",
+ }
+const style_song={
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  padding: "10px",
+  borderRadius: "8px",
+  "&:hover": { backgroundColor: "#f5f5f5" },
+}
 const ListSongs = () => {
   const { filterType, filterValue } = useParams(); // קבלת פרמטרים מה-URL
   const [songs, setSongs] = useState<Song[]>([]);
@@ -83,15 +102,7 @@ const ListSongs = () => {
   return (
     <Paper
       elevation={3}
-      sx={{
-        maxWidth: 600,
-        margin: "40px auto",
-        padding: 3,
-        textAlign: "center",
-        borderRadius: "12px",
-        position: "fixed",
-        top: "50px",
-      }}
+      sx={style_container}
     >
       <Typography variant="h5" fontWeight="bold" sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1 }}>
         <MusicNoteIcon color="primary" />
@@ -106,16 +117,7 @@ const ListSongs = () => {
         <List sx={{ marginTop: 2 }}>
           {visibleSongs.map((song, index) => (
             <Box key={song.songId}>
-              <ListItem
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  padding: "10px",
-                  borderRadius: "8px",
-                  "&:hover": { backgroundColor: "#f5f5f5" },
-                }}
-              >
+              <ListItem sx={style_song}>
                 {isLogin && <SongOptionsMenu song={song} inPlay={filterType === "playlist" ? Number(filterValue) : 0} />}
                 <ListItemText primary={song.title} secondary={song.artist} sx={{ flex: 1, marginLeft: 2 }} />
                 <AudioPlayer audioUrl={song.filePath} />

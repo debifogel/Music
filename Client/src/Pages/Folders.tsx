@@ -5,11 +5,37 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {Folder as IFolder} from "@/Models/folder"
 
-
 const Folders = () => {
   const [folders, setFolders] = useState<IFolder[]>([]);
   const [loading, setLoading] = useState(true);
-
+ const style_container={
+  position: "fixed",
+  top: "100px",     
+  left: "300px",    
+  width: "60%",
+  height: "calc(100vh - 120px)", 
+  padding: 3,
+  margin:"10px",
+  overflowY: "auto",      
+  scrollbarWidth: "none",  
+  display: "flex",
+  flexWrap: "wrap",
+  justifyContent: "right",
+ }
+ const style_card={
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+  padding: 3,
+  minHeight: "150px",
+  minWidth: "120px",
+  borderRadius: 3,
+  boxShadow: 3,
+  transition: "0.3s",
+  "&:hover": { transform: "scale(1.05)", boxShadow: 5 },
+  backgroundColor: "#f8f9fa",
+}
   useEffect(() => {
     fetchFolders();
   }, []);
@@ -24,30 +50,15 @@ const Folders = () => {
     }
     setLoading(false);
   };
-
-  if (loading) return <CircularProgress sx={{ display: "block", margin: "auto", mt: 4 }} />;
-
   return (
-    <Grid container spacing={3} sx={{ position: "fixed", top: "100px", left: "300px", padding: 3, marginTop: 5, justifyContent: "center" ,width:"60%"}}>
+    <>
+    {loading&& <CircularProgress sx={{ display: "block", margin: "auto", mt: 4 }} />}
+    <Grid container spacing={3} 
+    sx={style_container}>
       {folders.length > 0 ? (
         folders.map((folder) => (
           <Grid size={4} key={folder.folderId}>
-            <Card
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                padding: 3,
-                minHeight: "150px",
-                minWidth: "120px",
-                borderRadius: 3,
-                boxShadow: 3,
-                transition: "0.3s",
-                "&:hover": { transform: "scale(1.05)", boxShadow: 5 },
-                backgroundColor: "#f8f9fa",
-              }}
-            >
+            <Card sx={style_card}>
               <Link to={`songs/folder/${folder.folderId}`} style={{ textDecoration: "none", textAlign: "center", width: "100%" }}>
                 <Folder size={48} color="#1976d2" />
                 <CardContent>
@@ -65,6 +76,7 @@ const Folders = () => {
         </Typography>
       )}
     </Grid>
+    </>
   );
 };
 

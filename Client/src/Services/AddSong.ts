@@ -20,7 +20,6 @@ async function addSong(songDto: SongDto): Promise<void> {
     // Notify the other service to add the song
     const songdata=await songService.addSong(songDto);
  // Check if artist folder exists in 
-
     try {
         const data= await folderService.getAllFolders();
         folder = data.find((f) => f.folderName === songDto.artist)||null;

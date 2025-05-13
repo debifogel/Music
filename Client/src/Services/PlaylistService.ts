@@ -1,4 +1,5 @@
-import { Playlist } from '@/Models/Playlist';
+
+import { Playlist } from '../Models/playlist'; // ייבוא המודל של Playlist
 import api from './api'; // ייבוא מופע ה-Axios המוגדר שלך
 const playlistService = {
   getAllPlaylists: async (): Promise<Playlist[]> => {

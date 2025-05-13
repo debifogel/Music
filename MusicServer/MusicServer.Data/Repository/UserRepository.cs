@@ -37,7 +37,7 @@ namespace MusicServer.Data.Repository
 
             foreach (var user in users)
             {
-                user.IsBlocked = !user.IsBlocked;
+                user.IsBlocked = true;
             }
         }
         public async Task DeleteUserByIdAsync(int id)
