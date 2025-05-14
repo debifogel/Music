@@ -127,13 +127,13 @@ def search_similar_songs(user_id, query_text, top_k=5):
 
 # FastAPI
 app = FastAPI()
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"], 
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=["*"], 
+#     allow_credentials=True,
+#     allow_methods=["*"],
+#     allow_headers=["*"],
+# )
 @app.post("/process-audio/")
 async def process_audio(user_id: str, song_id: str, Audio: str):
     try:
