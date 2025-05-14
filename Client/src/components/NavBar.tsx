@@ -1,4 +1,4 @@
-import { Home, Headphones, Search, Music, Album } from "lucide-react"
+import { Home, Headphones, Music, Album } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
@@ -10,17 +10,10 @@ import {
   SidebarMenuItem,
   SidebarProvider,
   SidebarTrigger,
-  useSidebar
 } from "@/components/ui/sidebar"
 import { Link } from "react-router-dom"
-import {
-  TextField,
-  InputAdornment,
-  Popover,
-  Box,
-  useTheme,
-} from "@mui/material"
-import { useState, useRef } from "react"
+import SearchSong from "./SearchSongs"
+
 
 const items = [
   { title: "בית", url: "/home", icon: Home },
@@ -30,23 +23,8 @@ const items = [
 ]
 
 function AppSidebar() {
-  const { collapsed } = useSidebar()
-  const [searchQuery, setSearchQuery] = useState("")
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  const searchBtnRef = useRef(null)
-
-  const handleSearchClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(anchorEl ? null : event.currentTarget)
-  }
-
-  const handleSearchKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter") {
-      console.log("🔍 מחפש:", searchQuery)
-      setAnchorEl(null)
-    }
-  }
-
-  const open = Boolean(anchorEl)
+  
+  
 
   return (
     <Sidebar collapsible="icon">
@@ -70,56 +48,8 @@ function AppSidebar() {
             </SidebarGroupContent>
           </SidebarGroup>
         </div>
-
-        {/* כפתור חיפוש */}
-        <div className="mb-4 px-2">
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                ref={searchBtnRef}
-                onClick={handleSearchClick}
-              >
-                <Search />
-                {!collapsed && <span>חיפוש</span>}
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-
-          {/* תיבת חיפוש קופצת לצד כשסגור */}
-          <Popover
-            open={open}
-            anchorEl={anchorEl}
-            onClose={() => setAnchorEl(null)}
-            anchorOrigin={{
-              vertical: "center",
-              horizontal: "right",
-            }}
-            transformOrigin={{
-              vertical: "center",
-              horizontal: "left",
-            }}
-          >
-            <Box p={2} sx={{ width: 250 }}>
-              <TextField
-                autoFocus
-                fullWidth
-                size="small"
-                variant="outlined"
-                placeholder="חפש שיר, אמן, רשימה..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyDown={handleSearchKeyDown}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Search fontSize="small" />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </Box>
-          </Popover>
-        </div>
+<SearchSong/>
+        
       </SidebarContent>
     </Sidebar>
   )

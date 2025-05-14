@@ -76,7 +76,7 @@ const S3Service = {
       Key: objectKey,
     });
 
-    return await getSignedUrl(s3Client, command, { expiresIn: 60 * 5 });
+    return await getSignedUrl(s3Client, command, { expiresIn: 60 * 15 });
   },
 };
 

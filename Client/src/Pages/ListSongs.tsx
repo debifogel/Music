@@ -52,14 +52,18 @@ const ListSongs = () => {
             setLogin(true)
 
             break;
-          case "name":
+          case "public":
             fetchedSongs = await songService.getAllPublicSongs(filterValue || "");
             setLogin(false);
             break;
+            case "search":
+              fetchedSongs=await songService.searchAndFetchSongs(filterValue || "");
+              setLogin(true)
+              break;
           case "all":
             fetchedSongs = await songService.getAllSongs();
             setLogin(true)
-
+     
             break;
           default:
             console.error("סוג חיפוש לא תקין");
@@ -100,20 +104,21 @@ const ListSongs = () => {
   if (loading) return <CircularProgress sx={{ display: "block", margin: "20px auto" }} />;
 
   return (
-    <Paper
-      elevation={3}
-      sx={style_container}
-    >
-      <Typography variant="h5" fontWeight="bold" sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1 }}>
-        <MusicNoteIcon color="primary" />
-        רשימת שירים
-      </Typography>
-
+    <>
       {songs.length === 0 ? (
         <Typography variant="subtitle1" sx={{ marginTop: 2, color: "gray" }}>
           לא נמצאו שירים.
         </Typography>
+        
       ) : (
+        <Paper
+        elevation={3}
+        sx={style_container}
+      >       
+        <Typography variant="h5" fontWeight="bold" sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1 }}>
+        <MusicNoteIcon color="primary" />
+        רשימת שירים
+      </Typography>
         <List sx={{ marginTop: 2 }}>
           {visibleSongs.map((song, index) => (
             <Box key={song.songId}>
@@ -126,8 +131,9 @@ const ListSongs = () => {
             </Box>
           ))}
         </List>
+        </Paper>
       )}
-    </Paper>
+   </>
   );
 };
 

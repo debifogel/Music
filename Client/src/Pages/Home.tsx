@@ -15,7 +15,7 @@ function Home() {
     />
     <Button
       component={Link}
-      to={`/songs/name/${search}`}
+      to={`/songs/public/${search}`}
       variant="contained"
       color="inherit"
     >

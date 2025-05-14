@@ -39,7 +39,9 @@ async function addSong(songDto: SongDto): Promise<void> {
     //add the song to the folder
     try {
         if (folder) {
-            await folderService.addSongToFolder(folder.folderId, songdata.songId);
+            console.log("Folder found:", folder);
+            console.log("Adding song to folder:", songdata);
+            await folderService.addSongToFolder(folder.folderId, songdata);
         } else {
             console.error("Folder is null. Cannot add song to folder.");
         }

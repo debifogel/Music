@@ -56,7 +56,7 @@ const songService = {
   addSong: async (songDetails: SongDto): Promise<any> => {
     try {
         // שליחת הבקשה
-        const songId= await api.post('/Songs/',
+        const songId = await api.post('/Songs/',
 
             {...songDetails,
             }
@@ -67,23 +67,25 @@ const songService = {
           throw new Error("Token not found in session storage");
         }
 
-        const payload = JSON.parse(atob(token.split('.')[1])); // Decode JWT token
-        const userId = payload.userId; // Extract userId from token payload
-
-        axios.post("http://127.0.0.1:8080/process-audio/", {
-          user_id: userId.tostring(),
-          song_id: songId.data.toString(),
+        const payload = JSON.parse(atob(token.split('.')[1])); 
+        const userId = payload["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"]; // Extract userId from token payload
+        console.log("userId",userId)
+        axios.post("http://127.0.0.1:8000/process-audio/", {
+          user_id: userId,
+          song_id: songId.data,
           Audio: filepath,
         })
         .catch((error) => {
           // Errors will be caught here but the request does not wait for a result
           console.error("Error sending audio:", error);
         });
-    } catch (error) {
-      console.error("Error:", error);
-    }
-    // שולח לשרת שלך את transcription_id ופרטי השיר
-   
+        return songId.data; // Ensure songId is properly declared and used
+
+  } catch (error) {
+    console.error("Error:", error);
+    throw error; // Ensure the error is propagated
+  }
+  // שולח לשרת שלך את transcription_id ופרטי השיר
    
   },
   
@@ -116,9 +118,39 @@ const songService = {
 
   deleteSong: async (id: number): Promise<void> => {
     try {
+      
       await api.delete(`/Songs/${id}`);
     } catch (error) {
       console.error(`שגיאה במחיקת שיר עם מזהה ${id}:`, error);
+      throw error;
+    }
+  },
+  searchAndFetchSongs: async ( query: string): Promise<Song[]> => {
+    try {
+      const token = sessionStorage.getItem('token'); // Retrieve token from session storage
+      if (!token) {
+        throw new Error("Token not found in session storage");
+      }
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const userId = payload["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"]; // Extract userId from token payload
+      // Send the search query to the first server
+      const searchResponse = await axios.get('http://127.0.0.1:8000/search-similar/', {
+        params: { user_id: userId, query: query },
+      });
+      const matchedIds: number[] = searchResponse.data;
+      if (!matchedIds || matchedIds.length === 0) {
+        console.warn('No matches found for the query.');
+        return [];
+      }
+
+      // Send the list of IDs to the second server
+      const songsResponse = await api.get('/Songs/ids', {
+        params: { ids: matchedIds },
+      });
+
+      return songsResponse.data;
+    } catch (error) {
+      console.error('Error in searching and fetching songs:', error);
       throw error;
     }
   },

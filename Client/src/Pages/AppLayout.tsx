@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import {  Outlet, useLocation, useNavigate } from "react-router-dom";
-import { Avatar } from "@mui/material";
+import { Alert, Avatar, Snackbar } from "@mui/material";
 
 import authService from "../Services/Auth";
 import FormToEnter from "../components/FormToEnter";
@@ -16,13 +16,18 @@ export default function AppLayout() {
 
   const navigate = useNavigate();
   const location = useLocation();
+  const [alertMessage, setAlertMessage] = useState<string>("");
 
   useEffect(() => {
-    if (!insite && location.pathname !== "/home") {
+    const isAllowedPath =
+      location.pathname === "/home" ||
+      location.pathname.startsWith("/songs/public/");
+  
+    if (!insite && !isAllowedPath) {
       navigate("/home");
     }
   }, [insite, location, navigate]);
-
+  
   function register(email: string, password: string, name: string) {
     authService
       .register(name, email, password)
@@ -31,11 +36,13 @@ export default function AppLayout() {
         setInsite(true);
       })
       .catch((err) => {
-        alert("מצטערים, ארעה שגיאה בהרשמה");
+        setAlertMessage("מצטערים, ארעה שגיאה בהרשמה");
+        setTimeout(() => {
+          setAlertMessage("");
+        }, 3000);
         console.error("Registration error:", err);
       });
   }
-
   function login(email: string, password: string) {
     authService
       .login(email, password)
@@ -49,7 +56,10 @@ export default function AppLayout() {
         }
       })
       .catch((err) => {
-        alert("מצטערים, ארעה שגיאה בהתחברות");
+        setAlertMessage("אין הרשאת כניסה אנא נסה שוב או פנה למנהל המערכת");
+        setTimeout(() => {
+          setAlertMessage("");
+        }, 3000);
         console.error("Login error:", err);
       });
   }   
@@ -57,32 +67,50 @@ export default function AppLayout() {
         <>
           {!insite ? (
             <>
-              <div style={{ position: "fixed", top: "50px", right: "10px" }}>
+              <div style={
+                { position: "fixed", top: "50px", right: "10px" }}>
                 <Avatar />
                 <FormToEnter
                   buttonText="הרשמה"
                   onSubmit={(email, password, name) =>
                     register(email, password, name || "")
                   }
-                  register={true}
-                />
+                  register={true}/>
+                  
                 <FormToEnter
                   buttonText="התחברות"
                   onSubmit={(email, password) => login(email, password)}
                   register={false}
                 />
               </div>
-              <Home />
-            </>
+                              <Home />
+                              </>
+
           ) : (
-            <>
+         <>
+         
               <NavBar />
               <Outlet />
               <AddSongButton />
               <AvatarAndUpdate logout={() => setInsite(false)} />
-            </>
-          )}
-
         </>
-      );
-}
+      )}
+      { alertMessage && (
+        <Snackbar
+          open={!!alertMessage}
+          autoHideDuration={3000}
+          onClose={() => setAlertMessage("")}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        >
+          <Alert
+            onClose={() => setAlertMessage("")}
+            severity="error"
+            sx={{ width: "100%" }}
+          >
+            {alertMessage}
+          </Alert>
+        </Snackbar>
+      )}
+      </>
+      )}
+
