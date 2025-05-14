@@ -10,17 +10,16 @@ from io import BytesIO
 from pinecone import Pinecone, ServerlessSpec
 from dotenv import load_dotenv
 load_dotenv()
-# אתחול pinecone
+
 pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"), ssl_verify=False)
 spec = ServerlessSpec(cloud="aws", region="us-east-1")
 existing_indexes = [index_info["name"] for index_info in pc.list_indexes()]
 index = pc.Index("musicfiles")
 time.sleep(1)
 
-# אתחול OpenAI
 openai_api_key=os.getenv("OPENAI_API_KEY")
 openai.api_key = openai_api_key
-#get from ivrit ai
+
 def check_status(transcription_id, api_key):
     print("Checking status for transcription ID:", transcription_id)
     url = f"https://hebrew-ai.com/api/transcribe?id={transcription_id}"
@@ -41,8 +40,8 @@ def check_status(transcription_id, api_key):
         else:
             print("Error:", response.status_code, response.text)
             break
-        time.sleep(5)  # המתן 5 שניות לפני בדיקה חוזרת
-# תמלול קובץ שמע
+        time.sleep(5)
+
 def transcribe_audio(file_path):
     url = "https://hebrew-ai.com/api/transcribe"
     api_key = os.getenv("IVRITAI_API_KEY")
@@ -72,7 +71,6 @@ def transcribe_audio(file_path):
         print("Error:", response.status_code, response.text)
         return None
 
-# הסרת דיבור חיצוני מתוך טקסט
 def extract_lyrics(raw_text):
     prompt = f"""
     הנה טקסט מתוך הקלטה של שיר. השאר רק את מילות השיר, הסר דיבורים חיצוניים:
@@ -86,7 +84,7 @@ def extract_lyrics(raw_text):
     )
     return response.choices[0].message.content.strip()
 
-# ניתוח רגשות ומחשבות
+
 def analyze_song_content(lyrics):
     prompt = f"""
     נתח את השיר הבא והצג את הרגשות, המחשבות והרצונות שהוא מבטא:
@@ -99,14 +97,14 @@ def analyze_song_content(lyrics):
     )
     return response.choices[0].message.content.strip()
 
-# יצירת embedding
+
 openai_embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
 
 def get_embedding(text):
     embeddings = openai_embeddings.embed_documents([text])[0]
     return embeddings
 
-# שמירה ב־Pinecone
+
 def store_song(user_id, song_id, embedding, metadata):
     index.upsert(vectors=[{
         "id": f"{user_id}:{song_id}",
@@ -114,7 +112,7 @@ def store_song(user_id, song_id, embedding, metadata):
         "metadata": metadata
     }])
     print ("Song stored successfully!", metadata)
-# חיפוש שירים דומים
+
 def search_similar_songs(user_id, query_text, top_k=5):
     query_embedding = get_embedding(query_text)
     results = index.query(
@@ -125,15 +123,14 @@ def search_similar_songs(user_id, query_text, top_k=5):
     )
     return results["matches"]
 
-# FastAPI
 app = FastAPI()
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=["*"], 
-#     allow_credentials=True,
-#     allow_methods=["*"],
-#     allow_headers=["*"],
-# )
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], 
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 @app.post("/process-audio/")
 async def process_audio(user_id: str, song_id: str, Audio: str):
     try:
