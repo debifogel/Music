@@ -7,7 +7,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 })
 export class AuthService {
 
- private apiUrl = 'https://localhost:7260/api/auth';  // ה-API של השרת
+ private apiUrl = 'https://musicserver-xzkr.onrender.com/api/auth';  // ה-API של השרת
  
    constructor(private http: HttpClient) {}
 

@@ -8,7 +8,7 @@ import { User } from '../../models/User';
   providedIn: 'root'
 })
 export class UserService {
-  private apiUrl = 'https://localhost:7260/api/users';
+  private apiUrl = 'https://musicserver-xzkr.onrender.com/api/users';
 
   private usersSubject = new BehaviorSubject<User[]>([]);
   public users$ = this.usersSubject.asObservable(); // נהפוך את הרשימה ל־Observable
