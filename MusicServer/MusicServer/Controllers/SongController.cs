@@ -80,9 +80,9 @@ namespace MusicServer.Api.Controllers
 
             // Add the song to the database or whatever service you're using
             var addedSong = await _songService.AddSongAsync(song);
-
+            Console.WriteLine( "the song id:"+ addedSong.SongId);
             // Return the added song ID as part of the response
-            return Ok(new { id = addedSong.SongId });
+            return Ok( addedSong.SongId );
         }
 
         [HttpPut("{id}")]
