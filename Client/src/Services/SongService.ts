@@ -11,13 +11,22 @@ interface SongDto {
   filePath?: string;
   isPrivate: boolean;
 }
-
+const aiUrl="http://127.0.0.1:8000/"//TODO change to the real url
 interface SongUpdate {
     title: string;
     artist: string;
     genre: string;
 }
-
+const extractUserIdFromToken=()=>
+{
+  const token = sessionStorage.getItem('token'); // Retrieve token from session storage
+        if (!token) {
+          throw new Error("Token not found in session storage");
+        }
+        const payload = JSON.parse(atob(token.split('.')[1])); 
+        
+          return payload["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
+      }       
 const songService = {
   getAllSongs: async (): Promise<Song[]> => {
     try {
@@ -62,16 +71,11 @@ const songService = {
             }
         );
         const filepath = songDetails.filePath ? S3Service.generatePresignedUrl(songDetails.filePath) : '';
-        const token = sessionStorage.getItem('token'); // Retrieve token from session storage
-        if (!token) {
-          throw new Error("Token not found in session storage");
-        }
+       
 
-        const payload = JSON.parse(atob(token.split('.')[1])); 
-        const userId = payload["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"]; // Extract userId from token payload
-        console.log("userId",userId)
-        axios.post("http://127.0.0.1:8000/process-audio/", {
-          user_id: userId,
+       
+        axios.post(`${aiUrl}process-audio/`, {
+          user_id: extractUserIdFromToken(),
           song_id: songId.data,
           Audio: filepath,
         })
@@ -120,10 +124,21 @@ const songService = {
     try {
       
       await api.delete(`/Songs/${id}`);
+      //TODO add a delete from pinecone
+      
+
+        axios.delete(`${aiUrl}delete-song/`, {      
+          data: {
+            user_id: extractUserIdFromToken(),
+            song_id: id,
+          },
+        });
+      
     } catch (error) {
       console.error(`שגיאה במחיקת שיר עם מזהה ${id}:`, error);
       throw error;
     }
+    
   },
   searchAndFetchSongs: async ( query: string): Promise<Song[]> => {
     try {

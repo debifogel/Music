@@ -50,12 +50,13 @@ const OptionSongs = ({ song, inPlay }: { song: Song; inPlay: number}) => {
             await S3Service.deleteFile(song.filePath);
             console.log("delete file from s3")
             await songService.deleteSong(song.songId);
+            await folderService.deleteFolder(song.songId);
             await folderService.removeEmptyFolder()          
-
+            
         } catch (error) {
             console.error("שגיאה במחיקת השיר", error);
         }
-        route("/home", { replace: true })
+        window.location.reload();
     };
 
     const handleAddToPlaylist = (id: number) => {

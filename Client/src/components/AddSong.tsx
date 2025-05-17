@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { TextField, Button, Grid2 as Grid, Typography, Switch, Paper } from '@mui/material';
 import AwsUpload from './AwsUpload';
 import addSong from '../Services/AddSong';
-import { useNavigate } from 'react-router-dom';
+import {  useNavigate } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
 const AddSong = () => {
       const route=useNavigate()
       const [formData, setFormData] = useState({
@@ -29,15 +30,26 @@ const AddSong = () => {
                await addSong( formData);
            } else {
                console.error("File is null");
-           }
-            route('/home')          
-         }
-         else{
-            console.log("the client doesnt add file")           
-         }
+            route('/songs/all')          
+          }
+        } else {
+            console.log("the client doesnt add file")    
+       
+        }
+        console.log("in add song fail")
+      toast.error("Failed to add the song. Please try again.", {
+         position: "top-center",
+         autoClose: 5000,
+         hideProgressBar: false,
+         closeOnClick: true,
+         pauseOnHover: true,
+         draggable: true,
+         progress: undefined,
+      });
       };
 
       return (
+         <>
           <Paper elevation={3}
                sx={{
                  maxWidth: 600,
@@ -97,7 +109,9 @@ const AddSong = () => {
                </Grid>
             </Grid>
          </form> 
-         </Paper>                
+         </Paper> 
+             <ToastContainer />
+             </>               
    );
 };
 export default AddSong;

@@ -1,9 +1,10 @@
 fastapi
 Flask==2.0.1
 gunicorn==20.1.0
+urllib.parse
 langchain-openai
 openai
 requests
-pinecone-client
+pinecone
 python-dotenv
 

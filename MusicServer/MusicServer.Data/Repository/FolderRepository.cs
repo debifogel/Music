@@ -64,7 +64,7 @@ namespace MusicServer.Data.Repository
 
         public async Task<IEnumerable<Folder>> GetAllFoldersByUserId(int id)
         {
-            return await _context.Folders.Where(f=>  f.UserId == id).ToListAsync();
+            return await _context.Folders.Where(f=>  f.UserId == id).Include(f=>f.Songs).ToListAsync();
 
         }       
 

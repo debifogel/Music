@@ -14,7 +14,7 @@ const SearchSong=()=>{
     const handleSearchClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(anchorEl ? null : event.currentTarget)
       }
-    
+        
       const navigate = useNavigate();
   
       const handleSearchKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -51,9 +51,14 @@ const SearchSong=()=>{
     vertical: "center",
     horizontal: "right",
   }}
-  transformOrigin={{
+  
+  transformOrigin={!open?{
     vertical: "center",
     horizontal: "left",
+  }:
+  {
+    vertical: "top",
+    horizontal: "right",
   }}
 >
   <Box p={2} sx={{ width: 250 }}>
@@ -76,6 +81,7 @@ const SearchSong=()=>{
     />
   </Box>
 </Popover>
+
 </div>
 </>
 )
