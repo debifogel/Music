@@ -105,12 +105,17 @@ namespace MusicServer.Api.Controllers
         {
             var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
             var allFolders = await _folderService.GetAllFoldersByUserId(userId);
+            var deleteTasks = new List<Task>();
+
             foreach (var item in allFolders)
             {
                 if (item.Songs.Count == 0)
-                     DeleteFolder(item.FolderId);
+                {
+                    deleteTasks.Add(DeleteFolder(item.FolderId));
+                }
             }
-            await Task.WhenAll();
+
+            await Task.WhenAll(deleteTasks);
             return Ok();
         }
         [HttpDelete("empty/{id}")]
