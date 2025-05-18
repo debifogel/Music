@@ -2,13 +2,13 @@ import os
 from urllib.parse import urlparse
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from langchain_openai import OpenAIEmbeddings
 import time
 import openai
 import requests
 from io import BytesIO
 from pinecone import Pinecone, ServerlessSpec
 from dotenv import load_dotenv
+from sentence_transformers import SentenceTransformer
 
 load_dotenv()
 
@@ -17,6 +17,8 @@ pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"), ssl_verify=False)
 spec = ServerlessSpec(cloud="aws", region="us-east-1")
 existing_indexes = [index_info["name"] for index_info in pc.list_indexes()]
 index = pc.Index("musicfiles")
+embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
+
 time.sleep(1)
 
 openai_api_key = os.getenv("OPENAI_API_KEY")
@@ -61,7 +63,7 @@ def transcribe_audio(file_path):
     }
 
     response = requests.post(url, headers=headers, files=files, data=data, verify=True)  # Ensure SSL verification
-
+    os.remove(filename)  # Clean up the file after upload
     if response.status_code == 200:
         data = response.json()
         print("Transcription started successfully.", data)
@@ -99,18 +101,39 @@ def analyze_song_content(lyrics):
     print("Analysis response:", response)
     return response.choices[0].message.content.strip()
 
-openai_embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
+def split_text(text, max_chunk_size=500):
+    paragraphs = text.split("\n\n")
+    chunks = []
+    current_chunk = ""
+
+    for para in paragraphs:
+        if len(current_chunk) + len(para) <= max_chunk_size:
+            current_chunk += para + "\n\n"
+        else:
+            chunks.append(current_chunk.strip())
+            current_chunk = para + "\n\n"
+
+    if current_chunk:
+        chunks.append(current_chunk.strip())
+
+    return chunks
 
 def get_embedding(text):
-    embeddings =openai_embeddings.embed_documents([text])[0]
+    text_chunks = split_text(text)
+    embeddings = embedding_model.encode(text_chunks)
     return embeddings
 
-def store_song(user_id, song_id, embedding, metadata):
-    index.upsert(vectors=[{
-        "id": f"{user_id}:{song_id}",
-        "values": embedding,
-        "metadata": metadata
-    }])
+def store_song(user_id, song_id, embeddings, metadata):
+    vectors = []
+    for  ( embedding) in enumerate(zip( embeddings)):
+        vectors.append({
+            "id": f"{user_id}:{song_id}",
+            "values": embedding,
+            "metadata": metadata
+        })
+
+    index.upsert(vectors)
+
     print("Song stored successfully!", metadata)
 
 def search_similar_songs(user_id, query_text, top_k=5):
@@ -142,7 +165,7 @@ async def process_audio(user_id: str, song_id: str, Audio: str):
         analysis = analyze_song_content(lyrics)
         full_text = lyrics + "\n" + analysis
         embedding = get_embedding(full_text)
-        metadata = {"user_id": user_id, "song_id": song_id, "lyrics": lyrics, "analysis": analysis}
+        metadata = {"user_id": user_id, "song_id": song_id}
         store_song(user_id, song_id, embedding, metadata)
         return {"message": "שיר נשמר בהצלחה", "lyrics": lyrics, "analysis": analysis}
     except Exception as e:
