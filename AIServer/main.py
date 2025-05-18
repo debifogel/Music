@@ -171,7 +171,6 @@ async def process_audio(user_id: str, song_id: str, Audio: str):
     except Exception as e:
         print(f"Error processing audio: {e}")
         return {"error": "שגיאה בעיבוד השיר", "details": str(e)}
-
 @app.get("/search-similar/")
 def search_similar(user_id: str, query: str):
     matches = search_similar_songs(user_id, query)
