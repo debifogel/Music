@@ -7,3 +7,4 @@ openai
 requests
 pinecone
 python-dotenv
+uvicorn
