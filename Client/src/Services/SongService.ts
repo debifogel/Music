@@ -11,7 +11,7 @@ interface SongDto {
   filePath?: string;
   isPrivate: boolean;
 }
-const aiUrl="http://127.0.0.1:8000/"//TODO change to the real url
+const aiUrl="https://musicai-tq2n.onrender.com/"//TODO change to the real url
 interface SongUpdate {
     title: string;
     artist: string;
@@ -149,7 +149,7 @@ const songService = {
       const payload = JSON.parse(atob(token.split('.')[1]));
       const userId = payload["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"]; // Extract userId from token payload
       // Send the search query to the first server
-      const searchResponse = await axios.get('http://127.0.0.1:8000/search-similar/', {
+      const searchResponse = await axios.get(`${aiUrl}search-similar/`, {
         params: { user_id: userId, query: query },
       });
       const matchedIds: number[] = searchResponse.data;
