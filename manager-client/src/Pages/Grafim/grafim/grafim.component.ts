@@ -16,33 +16,31 @@ export class GrafimComponent implements OnInit {
   loading = true;
   error = false;
 
-  constructor(
-    private userService: UserService,
-  ) {}
+  constructor(private userService: UserService) {}
 
   ngOnInit(): void {
-    // טעינת נתוני משתמשים
+    // Load user data
     this.userService.getAllUserDates().subscribe({
       next: (dates) => {
         this.createUserChart(dates);
       },
       error: (err) => {
         console.error('Error loading user dates:', err);
-        this.error = true;
-      }
+        this.error = true; // Set error state
+      },
+      complete: () => this.loading = false // Set loading to false after completion
     });
 
-    // טעינת נתוני שירים בנפרד
+    // Load song counts separately
     this.userService.getSongCounts().subscribe({
       next: (songCounts) => {
         this.createSongChart(songCounts);
-        this.loading = false;
-
       },
       error: (err) => {
         console.error('Error loading song counts:', err);
-        this.error = true;
-      }
+        this.error = true; // Set error state
+      },
+      complete: () => this.loading = false // Set loading to false after completion
     });
   }
 
@@ -57,13 +55,14 @@ export class GrafimComponent implements OnInit {
     const sortedDates = Object.keys(dateCounts).sort();
     const counts = sortedDates.map(date => dateCounts[date]);
 
+    // Set user chart options
     this.userChartOption = {
       title: {
         text: 'התחברויות לפי תאריך',
         textStyle: {
           fontWeight: 'bold',
           fontSize: 16,
-          color: '#333333' // שחור
+          color: '#333333' // Black
         },
         left: 'center'
       },
@@ -83,7 +82,7 @@ export class GrafimComponent implements OnInit {
         axisLabel: {
           rotate: 45,
           interval: 0,
-          color: '#333333' // שחור
+          color: '#333333' // Black
         }
       },
       yAxis: {
@@ -92,7 +91,7 @@ export class GrafimComponent implements OnInit {
         nameLocation: 'middle',
         nameGap: 30,
         axisLabel: {
-          color: '#333333' // שחור
+          color: '#333333' // Black
         }
       },
       series: [
@@ -101,11 +100,11 @@ export class GrafimComponent implements OnInit {
           type: 'bar',
           data: counts,
           itemStyle: {
-            color: '#FFA500' // כתום
+            color: '#FFA500' // Orange
           },
           emphasis: {
             itemStyle: {
-              color: '#FF8C00' // כתום כהה יותר בהדגשה
+              color: '#FF8C00' // Darker orange on emphasis
             }
           },
           barWidth: '60%'
@@ -116,6 +115,7 @@ export class GrafimComponent implements OnInit {
 
   private createSongChart(songCounts: { PublicSongs: number; PrivateSongs: number }): void {
     console.log('Song Counts:', songCounts);
+    // Set song chart options
     this.songChartOption = {
       title: {
         text: 'התפלגות שירים',
@@ -123,7 +123,7 @@ export class GrafimComponent implements OnInit {
         textStyle: {
           fontWeight: 'bold',
           fontSize: 16,
-          color: '#333333' // שחור
+          color: '#333333' // Black
         },
         left: 'center'
       },
@@ -136,7 +136,7 @@ export class GrafimComponent implements OnInit {
         bottom: 'bottom',
         data: ['שירים ציבוריים', 'שירים פרטיים'],
         textStyle: {
-          color: '#333333' // שחור
+          color: '#333333' // Black
         }
       },
       series: [
@@ -147,13 +147,13 @@ export class GrafimComponent implements OnInit {
           avoidLabelOverlap: false,
           itemStyle: {
             borderRadius: 10,
-            borderColor: '#FFFFFF', // לבן
+            borderColor: '#FFFFFF', // White
             borderWidth: 2
           },
           label: {
             show: true,
             formatter: '{b}: {c} ({d}%)',
-            color: '#333333' // שחור
+            color: '#333333' // Black
           },
           emphasis: {
             label: {
@@ -169,12 +169,12 @@ export class GrafimComponent implements OnInit {
             { 
               value: songCounts.PublicSongs, 
               name: 'שירים ציבוריים',
-              itemStyle: { color: '#FFA500' } // כתום
+              itemStyle: { color: '#FFA500' } // Orange
             },
             { 
               value: songCounts.PrivateSongs, 
               name: 'שירים פרטיים',
-              itemStyle: { color: '#808080' } // אפור
+              itemStyle: { color: '#808080' } // Gray
             }
           ]
         }
