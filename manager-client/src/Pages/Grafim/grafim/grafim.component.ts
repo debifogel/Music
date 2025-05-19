@@ -25,11 +25,9 @@ export class GrafimComponent implements OnInit {
     this.userService.getAllUserDates().subscribe({
       next: (dates) => {
         this.createUserChart(dates);
-        this.loading = false;
       },
       error: (err) => {
         console.error('Error loading user dates:', err);
-        this.loading = false;
         this.error = true;
       }
     });
@@ -38,6 +36,8 @@ export class GrafimComponent implements OnInit {
     this.userService.getSongCounts().subscribe({
       next: (songCounts) => {
         this.createSongChart(songCounts);
+        this.loading = false;
+
       },
       error: (err) => {
         console.error('Error loading song counts:', err);
