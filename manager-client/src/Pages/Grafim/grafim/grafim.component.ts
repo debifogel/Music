@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../../services/Users/users.service';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { CommonModule } from '@angular/common';
-import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-grafim',
