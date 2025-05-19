@@ -17,10 +17,18 @@ pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"), ssl_verify=False)
 spec = ServerlessSpec(cloud="aws", region="us-east-1")
 existing_indexes = [index_info["name"] for index_info in pc.list_indexes()]
 index = pc.Index("musicfiles")
-embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
-
+pinecone_index_name = "musicfiles"
+# embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
+embedding_model = SentenceTransformer('all-MiniLM-L12-v2')
 time.sleep(1)
-
+pinecone = Pinecone(
+    api_key=os.getenv("PINECONE_API_KEY"),
+    ssl_verify=False
+)
+spec = ServerlessSpec(
+    cloud="aws",
+    region="us-east-1"
+)
 openai_api_key = os.getenv("OPENAI_API_KEY")
 openai.api_key = openai_api_key
 
@@ -114,32 +122,40 @@ def split_text(text, max_chunk_size=500):
 
     if current_chunk:
         chunks.append(current_chunk.strip())
-
+        print("=====================================")
+    print("Number of chunks:", len(chunks))
+    print("chunks:",chunks) 
     return chunks
 
 def get_embedding(text):
     text_chunks = split_text(text)
-    embeddings = pc.inference.embed(
-    model="multilingual-e5-large",
-    inputs=[d['text'] for d in text_chunks],
-    parameters={"input_type": "passage", "truncate": "END"}
-    )
-    #embeddings = embedding_model.encode(text_chunks)
+    embeddings = embedding_model.encode(text_chunks)
+    print("Embeddings shape:", embeddings.shape)
+    print("================================")
     return embeddings
 
 def store_song(user_id, song_id, embeddings, metadata):
     vectors = [] 
-    for  ( embedding) in enumerate(zip( embeddings)):        
+    if pinecone_index_name not in pinecone.list_indexes().names():
+        pinecone.create_index(
+            name=pinecone_index_name,
+            dimension=len(embeddings[0]),
+            metric="cosine",
+            spec=spec
+        )
+    print("================================")
+    print("Storing song with ID:", f"{user_id}:{song_id}")   
+
+    for embedding in embeddings:  # Change this line to iterate directly over embeddings
         vectors.append({
-        "id": f"{user_id}:{song_id}",
-        "values": embedding,    
-        "metadata": metadata
-    })
+            "id": f"{user_id}:{song_id}",
+            "values": embedding.tolist() if hasattr(embedding, 'tolist') else embedding,  # Check if tolist exists
+            "metadata": metadata
+        })
 
     index.upsert(vectors)
 
     print("Song stored successfully!", metadata)
-
 def search_similar_songs(user_id, query_text, top_k=5):
     query_embedding = get_embedding(query_text)
     results = index.query(
@@ -167,12 +183,15 @@ async def process_audio(user_id: str, song_id: str, Audio: str):
             return {"error": "Transcription failed."}
         lyrics = extract_lyrics(data)
         analysis = analyze_song_content(lyrics)
+        print("Lyrics:", lyrics)
+        print("Analysis:", analysis)
         full_text = lyrics + "\n" + analysis
+        print("Full text for embedding:", full_text)
         embedding = get_embedding(full_text)
         print("Embedding shape:", embedding.shape)
         metadata = {"user_id": user_id, "song_id": song_id}
         store_song(user_id, song_id, embedding, metadata)
-        return {"message": "שיר נשמר בהצלחה", "lyrics": lyrics, "analysis": analysis}
+        return {"message": "שיר נשמר בהצלחה"}
     except Exception as e:
         print(f"Error processing audio: {e}")
         return {"error": "שגיאה בעיבוד השיר", "details": str(e)}
