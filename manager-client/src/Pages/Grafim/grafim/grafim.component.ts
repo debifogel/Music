@@ -22,19 +22,26 @@ export class GrafimComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Load both data sources in parallel
-    forkJoin({
-      userDates: this.userService.getAllUserDates(),
-      songCounts: this.userService.getSongCounts()
-    }).subscribe({
-      next: (results) => {
-        this.createUserChart(results.userDates);
-        this.createSongChart(results.songCounts);
+    // טעינת נתוני משתמשים
+    this.userService.getAllUserDates().subscribe({
+      next: (dates) => {
+        this.createUserChart(dates);
         this.loading = false;
       },
       error: (err) => {
-        console.error('Error loading chart data:', err);
+        console.error('Error loading user dates:', err);
         this.loading = false;
+        this.error = true;
+      }
+    });
+
+    // טעינת נתוני שירים בנפרד
+    this.userService.getSongCounts().subscribe({
+      next: (songCounts) => {
+        this.createSongChart(songCounts);
+      },
+      error: (err) => {
+        console.error('Error loading song counts:', err);
         this.error = true;
       }
     });
@@ -56,7 +63,8 @@ export class GrafimComponent implements OnInit {
         text: 'התחברויות לפי תאריך',
         textStyle: {
           fontWeight: 'bold',
-          fontSize: 16
+          fontSize: 16,
+          color: '#333333' // שחור
         },
         left: 'center'
       },
@@ -75,14 +83,18 @@ export class GrafimComponent implements OnInit {
         data: sortedDates,
         axisLabel: {
           rotate: 45,
-          interval: 0
+          interval: 0,
+          color: '#333333' // שחור
         }
       },
       yAxis: {
         type: 'value',
         name: 'מספר התחברויות',
         nameLocation: 'middle',
-        nameGap: 30
+        nameGap: 30,
+        axisLabel: {
+          color: '#333333' // שחור
+        }
       },
       series: [
         {
@@ -90,11 +102,11 @@ export class GrafimComponent implements OnInit {
           type: 'bar',
           data: counts,
           itemStyle: {
-            color: '#4e73df'
+            color: '#FFA500' // כתום
           },
           emphasis: {
             itemStyle: {
-              color: '#2e59d9'
+              color: '#FF8C00' // כתום כהה יותר בהדגשה
             }
           },
           barWidth: '60%'
@@ -110,7 +122,8 @@ export class GrafimComponent implements OnInit {
         subtext: 'שירים ציבוריים ופרטיים',
         textStyle: {
           fontWeight: 'bold',
-          fontSize: 16
+          fontSize: 16,
+          color: '#333333' // שחור
         },
         left: 'center'
       },
@@ -121,7 +134,10 @@ export class GrafimComponent implements OnInit {
       legend: {
         orient: 'horizontal',
         bottom: 'bottom',
-        data: ['שירים ציבוריים', 'שירים פרטיים']
+        data: ['שירים ציבוריים', 'שירים פרטיים'],
+        textStyle: {
+          color: '#333333' // שחור
+        }
       },
       series: [
         {
@@ -131,12 +147,13 @@ export class GrafimComponent implements OnInit {
           avoidLabelOverlap: false,
           itemStyle: {
             borderRadius: 10,
-            borderColor: '#fff',
+            borderColor: '#FFFFFF', // לבן
             borderWidth: 2
           },
           label: {
             show: true,
-            formatter: '{b}: {c} ({d}%)'
+            formatter: '{b}: {c} ({d}%)',
+            color: '#333333' // שחור
           },
           emphasis: {
             label: {
@@ -152,12 +169,12 @@ export class GrafimComponent implements OnInit {
             { 
               value: songCounts.PublicSongs, 
               name: 'שירים ציבוריים',
-              itemStyle: { color: '#36b9cc' } 
+              itemStyle: { color: '#FFA500' } // כתום
             },
             { 
               value: songCounts.PrivateSongs, 
               name: 'שירים פרטיים',
-              itemStyle: { color: '#1cc88a' } 
+              itemStyle: { color: '#808080' } // אפור
             }
           ]
         }

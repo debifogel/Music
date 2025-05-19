@@ -1,10 +1,10 @@
-/* Modern Dashboard Styling */
+/* עיצוב מודרני עם הצבעים המבוקשים */
 .dashboard-container {
     display: flex;
     flex-direction: column;
     width: 100%;
     padding: 20px;
-    background-color: #f8f9fc;
+    background-color: #FFFFFF; /* לבן */
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   }
   
@@ -14,13 +14,13 @@
   }
   
   .dashboard-header h1 {
-    color: #4e73df;
+    color: #333333; /* שחור */
     font-size: 28px;
     margin-bottom: 8px;
   }
   
   .dashboard-subtitle {
-    color: #6c757d;
+    color: #808080; /* אפור */
     font-size: 16px;
   }
   
@@ -40,28 +40,30 @@
   .chart-card {
     background-color: white;
     border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid #E0E0E0; /* אפור בהיר */
   }
   
   .chart-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
   }
   
   .chart-header {
     padding: 20px 20px 0;
+    border-bottom: 1px solid #F0F0F0; /* אפור בהיר מאוד */
   }
   
   .chart-header h2 {
-    color: #5a5c69;
+    color: #333333; /* שחור */
     font-size: 20px;
     margin-bottom: 8px;
   }
   
   .chart-description {
-    color: #858796;
+    color: #808080; /* אפור */
     font-size: 14px;
     margin-bottom: 10px;
   }
@@ -77,12 +79,12 @@
   
   .dashboard-footer {
     text-align: center;
-    color: #858796;
+    color: #808080; /* אפור */
     font-size: 14px;
     margin-top: 20px;
   }
   
-  /* Loading State */
+  /* מצב טעינה */
   .loading-container {
     display: flex;
     flex-direction: column;
@@ -94,9 +96,9 @@
   .spinner {
     width: 50px;
     height: 50px;
-    border: 5px solid rgba(78, 115, 223, 0.2);
+    border: 5px solid rgba(255, 165, 0, 0.2); /* כתום שקוף */
     border-radius: 50%;
-    border-top-color: #4e73df;
+    border-top-color: #FFA500; /* כתום */
     animation: spin 1s ease-in-out infinite;
     margin-bottom: 15px;
   }
@@ -108,11 +110,11 @@
   }
   
   .loading-container p {
-    color: #5a5c69;
+    color: #333333; /* שחור */
     font-size: 18px;
   }
   
-  /* Error State */
+  /* מצב שגיאה */
   .error-container {
     display: flex;
     justify-content: center;
@@ -124,6 +126,6 @@
   }
   
   .error-container p {
-    color: #e74a3b;
+    color: #FFA500; /* כתום */
     font-size: 18px;
   }
