@@ -31,7 +31,7 @@ def check_status(transcription_id, api_key):
         "Authorization": f"Bearer {api_key}"
     }
     while True:
-        response = requests.get(url, headers=headers, verify=True)  # Ensure SSL verification
+        response = requests.get(url, headers=headers, verify=True)
         if response.status_code == 200:
             data = response.json()
             print("Status:", data["status"])
@@ -50,20 +50,19 @@ def transcribe_audio(file_path):
     url = "https://hebrew-ai.com/api/transcribe"
     api_key = os.getenv("IVRITAI_API_KEY")
     headers = {"Authorization": f"Bearer {api_key}"}
-
+    print("Transcribing audio file:", file_path)
     response = requests.get(file_path)
     response.raise_for_status()
     filename = os.path.basename(urlparse(file_path).path)
-
+    print("Downloading file:", filename)
     files = {
-        "file": (filename, BytesIO(response.content), 'audio/mpeg')
+        "file": (filename, BytesIO(response.content), 'audio/mp3')
     }
     data = {
         "language": "he"
     }
 
     response = requests.post(url, headers=headers, files=files, data=data, verify=True)  # Ensure SSL verification
-    os.remove(filename)  # Clean up the file after upload
     if response.status_code == 200:
         data = response.json()
         print("Transcription started successfully.", data)
@@ -120,17 +119,22 @@ def split_text(text, max_chunk_size=500):
 
 def get_embedding(text):
     text_chunks = split_text(text)
-    embeddings = embedding_model.encode(text_chunks)
+    embeddings = pc.inference.embed(
+    model="multilingual-e5-large",
+    inputs=[d['text'] for d in text_chunks],
+    parameters={"input_type": "passage", "truncate": "END"}
+    )
+    #embeddings = embedding_model.encode(text_chunks)
     return embeddings
 
 def store_song(user_id, song_id, embeddings, metadata):
-    vectors = []
-    for  ( embedding) in enumerate(zip( embeddings)):
+    vectors = [] 
+    for  ( embedding) in enumerate(zip( embeddings)):        
         vectors.append({
-            "id": f"{user_id}:{song_id}",
-            "values": embedding,
-            "metadata": metadata
-        })
+        "id": f"{user_id}:{song_id}",
+        "values": embedding,    
+        "metadata": metadata
+    })
 
     index.upsert(vectors)
 
@@ -147,13 +151,13 @@ def search_similar_songs(user_id, query_text, top_k=5):
     return results["matches"]
 
 app = FastAPI()
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=["*"],
+#     allow_credentials=True,
+#     allow_methods=["*"],
+#     allow_headers=["*"],
+# )
 
 @app.post("/process-audio/")
 async def process_audio(user_id: str, song_id: str, Audio: str):
@@ -165,6 +169,7 @@ async def process_audio(user_id: str, song_id: str, Audio: str):
         analysis = analyze_song_content(lyrics)
         full_text = lyrics + "\n" + analysis
         embedding = get_embedding(full_text)
+        print("Embedding shape:", embedding.shape)
         metadata = {"user_id": user_id, "song_id": song_id}
         store_song(user_id, song_id, embedding, metadata)
         return {"message": "שיר נשמר בהצלחה", "lyrics": lyrics, "analysis": analysis}
