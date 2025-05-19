@@ -7,7 +7,7 @@ import songService from './SongService';
 //check if the artist folder exist if not create it
 //put the song in the match folder
 interface SongDto {
-    filePath?: string;
+    filePath: string;
     title: string;
     artist: string;
     genre: string;

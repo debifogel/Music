@@ -8,7 +8,7 @@ interface SongDto {
   title: string;
   artist: string;
   genre: string;
-  filePath?: string;
+  filePath: string;
   isPrivate: boolean;
 }
 const aiUrl="https://musicai-tq2n.onrender.com/"//TODO change to the real url
@@ -70,7 +70,7 @@ const songService = {
             {...songDetails,
             }
         );
-        const filepath = songDetails.filePath ? S3Service.generatePresignedUrl(songDetails.filePath) : '';
+        const filepath =S3Service.generatePresignedUrl(songDetails.filePath);
        
 
        

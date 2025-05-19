@@ -81,7 +81,7 @@ const PlayLists = () => {
         className="fixed bottom-4 right-4 z-50 bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2 rounded-full px-4 py-2 shadow-lg"
       >
         <Plus size={20} />
-        <span className="dir-rtl">הוספת רשימת השמעה</span>
+        <span className="dir-rtl ">הוספת רשימת השמעה</span>
       </Button>
 
       {addPlay && <NameForm name={""} onClose={handleAdd} />}
