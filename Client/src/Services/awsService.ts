@@ -58,7 +58,7 @@ const S3Service = {
       ContentType: contentType,
     });
 
-    return await getSignedUrl(s3Client, command, { expiresIn: 60 * 5 });
+    return await getSignedUrl(s3Client, command, { expiresIn: 60 * 10 });
   },
 
   deleteFile: async (fileName: string): Promise<void> => {
