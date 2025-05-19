@@ -112,7 +112,28 @@ export class GrafimComponent implements OnInit {
       ]
     };
   }
+  private setChartResizeListener(): void {
+    window.addEventListener('resize', () => {
+      const userChart = document.getElementById('userChart');
+      const songChart = document.getElementById('songChart');
+      if (userChart) {
+        const echartsInstance = (userChart as any).echartsInstance;
+        if (echartsInstance) {
+          echartsInstance.resize();
+        }
+      }
+      if (songChart) {
+        const echartsInstance = (songChart as any).echartsInstance;
+        if (echartsInstance) {
+          echartsInstance.resize();
+        }
+      }
+    });
+  }
 
+  ngAfterViewInit(): void {
+    this.setChartResizeListener();
+  }
   private createSongChart(songCounts: { PublicSongs: number; PrivateSongs: number }): void {
     console.log('Song Counts:', songCounts);
     // Set song chart options
