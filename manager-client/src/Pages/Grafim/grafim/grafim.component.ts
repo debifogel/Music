@@ -145,12 +145,7 @@ export class GrafimComponent implements OnInit {
           name: 'סוגי שירים',
           type: 'pie',
           radius: ['40%', '70%'],
-          avoidLabelOverlap: false,
-          itemStyle: {
-            borderRadius: 10,
-            borderColor: '#FFFFFF', // White
-            borderWidth: 2
-          },
+          avoidLabelOverlap: true,
           label: {
             show: true,
             formatter: '{b}: {c} ({d}%)',
