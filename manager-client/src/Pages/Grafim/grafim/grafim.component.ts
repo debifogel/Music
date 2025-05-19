@@ -112,28 +112,8 @@ export class GrafimComponent implements OnInit {
       ]
     };
   }
-  private setChartResizeListener(): void {
-    window.addEventListener('resize', () => {
-      const userChart = document.getElementById('userChart');
-      const songChart = document.getElementById('songChart');
-      if (userChart) {
-        const echartsInstance = (userChart as any).echartsInstance;
-        if (echartsInstance) {
-          echartsInstance.resize();
-        }
-      }
-      if (songChart) {
-        const echartsInstance = (songChart as any).echartsInstance;
-        if (echartsInstance) {
-          echartsInstance.resize();
-        }
-      }
-    });
-  }
-
-  ngAfterViewInit(): void {
-    this.setChartResizeListener();
-  }
+  
+  
   private createSongChart(songCounts: { PublicSongs: number; PrivateSongs: number }): void {
     console.log('Song Counts:', songCounts);
     // Set song chart options
@@ -168,10 +148,9 @@ export class GrafimComponent implements OnInit {
           avoidLabelOverlap: false,
           itemStyle: {
             borderRadius: 10,
-            // White
-              borderWidth: 2
-            }
-          ,
+            borderColor: '#FFFFFF', // White
+            borderWidth: 2
+          },
           label: {
             show: true,
             formatter: '{b}: {c} ({d}%)',
@@ -189,20 +168,18 @@ export class GrafimComponent implements OnInit {
           },
           data: [
             { 
-              value: songCounts.PublicSongs, 
+              value:songCounts.PublicSongs, 
               name: 'שירים ציבוריים',
               itemStyle: { color: '#FFA500' } // Orange
             },
             { 
-              value: songCounts.PrivateSongs, 
+              value:songCounts.PrivateSongs, 
               name: 'שירים פרטיים',
               itemStyle: { color: '#808080' } // Gray
             }
           ]
-        
         }
-      ],
-    }}
+      ]
+    };
   }
-    
-
+}
