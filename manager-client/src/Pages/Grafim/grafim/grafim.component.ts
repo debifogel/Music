@@ -188,12 +188,12 @@ export class GrafimComponent implements OnInit {
           },
           data: [
             { 
-              value: songCounts.PublicSongs, 
+              value:+ songCounts.PublicSongs, 
               name: 'שירים ציבוריים',
               itemStyle: { color: '#FFA500' } // Orange
             },
             { 
-              value: songCounts.PrivateSongs, 
+              value:+ songCounts.PrivateSongs, 
               name: 'שירים פרטיים',
               itemStyle: { color: '#808080' } // Gray
             }
