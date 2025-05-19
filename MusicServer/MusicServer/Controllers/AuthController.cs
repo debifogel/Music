@@ -32,7 +32,7 @@ namespace MusicServer.Api.Controllers
             var user = await _userService.GetUserByEmailAsync(loginModel.Email);
             // Important: In a real application, NEVER store passwords in plain text.
             // Always hash and compare hashed passwords.
-            if (user != null && loginModel.Password == user.Password &&user.IsBlocked==false)
+            if (user != null && loginModel.Password == user.Password &&(user.IsBlocked==false||user.IsAdmin==true))
             {
                 var claims = new List<Claim>()
             {
