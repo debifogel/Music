@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using MusicServer.Core.Classes;
 using MusicServer.Core.Irepository;
 using MusicServer.Core.Iservice;
@@ -22,6 +23,14 @@ namespace MusicServer.Service.ServiceControllers
         {
             _manager = manager;
             _songRepository = songRepository;
+        }
+        public async Task<(int PublicCount, int PrivateCount)> GetSongCountsAsync()
+        {
+            // Assuming the counts are retrieved from the repository
+            int publicCount = await _songRepository.GetPublicSongCountAsync();
+            int privateCount = await _songRepository.GetPrivateSongCountAsync();
+
+            return (publicCount, privateCount);
         }
 
         public async Task<Song> AddSongAsync(Song song)

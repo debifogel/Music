@@ -10,6 +10,8 @@ namespace MusicServer.Core.Irepository
 {
     public interface ISongRepository
     {
+        Task<int> GetPublicSongCountAsync();
+        Task<int> GetPrivateSongCountAsync();
         Task<IEnumerable<Song>> GetAllSongs();
         Task<IEnumerable<Song>> GetAllSongsByUserId(int id);
         Task<IEnumerable<Song>> GetAllSongsByArtist(int userId,string artist);

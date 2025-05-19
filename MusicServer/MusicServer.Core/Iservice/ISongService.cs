@@ -11,6 +11,7 @@ namespace MusicServer.Core.Iservice
 {
     public interface ISongService
     {
+        Task<(int PublicCount, int PrivateCount)> GetSongCountsAsync();
         Task<IEnumerable<Song>> GetAllSongs();
         Task<IEnumerable<Song>> GetAllSongsByUserId(int id);
         Task<IEnumerable<Song>> GetAllSongsByArtist(int userId, string artist);

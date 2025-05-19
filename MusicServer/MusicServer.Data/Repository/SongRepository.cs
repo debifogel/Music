@@ -107,5 +107,15 @@ namespace MusicServer.Data.Repository
             Song.Title=song.Title;
 
         }
+
+        public async Task<int> GetPublicSongCountAsync()
+        {
+            return await _context.Songs.CountAsync(s => !s.IsPrivate);
+        }
+
+        public async Task<int> GetPrivateSongCountAsync()
+        {
+            return await _context.Songs.CountAsync(s => s.IsPrivate);
+        }
     }
 }

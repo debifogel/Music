@@ -31,6 +31,19 @@ namespace MusicServer.Api.Controllers
             var songs = await _songService.GetAllSongsByUserId(userId);
             return Ok(_mapper.Map<List<SongDto>>(songs));
         }
+        [HttpGet("count")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetPublicAndPrivateSongCount()
+        {
+            var (publicCount, privateCount) = await _songService.GetSongCountsAsync();
+
+            if (publicCount == 0 && privateCount == 0)
+            {
+                return NotFound("No songs found.");
+            }
+
+            return Ok(new { PublicSongs = publicCount, PrivateSongs = privateCount });
+        }
 
         [HttpGet("public/{name}")]
         [AllowAnonymous]
