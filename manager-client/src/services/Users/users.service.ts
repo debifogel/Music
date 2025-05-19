@@ -9,7 +9,7 @@ import { User } from '../../models/User';
 })
 export class UserService {
   private apiUrl = 'https://musicserver-xzkr.onrender.com/api/users';
-
+  private apiUrlsongs = 'https://musicserver-xzkr.onrender.com/api/songs';
   private usersSubject = new BehaviorSubject<User[]>([]);
   public users$ = this.usersSubject.asObservable(); // נהפוך את הרשימה ל־Observable
 
@@ -59,6 +59,12 @@ export class UserService {
   getAllUserDates(): Observable<string[]> {
     return this.http.get<string[]>(
       `${this.apiUrl}/dates`,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+  getSongCounts(): Observable<{ PublicSongs: number; PrivateSongs: number }> {
+    return this.http.get<{ PublicSongs: number; PrivateSongs: number }>(
+      `${this.apiUrlsongs}/count`,
       { headers: this.getAuthHeaders() }
     );
   }

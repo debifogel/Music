@@ -1,13 +1,43 @@
-@if (loading) {
-    <div class="loading">
+<div class="dashboard-container" dir="rtl">
+  @if (loading) {
+    <div class="loading-container">
+      <div class="spinner"></div>
       <p>טוען נתונים...</p>
     </div>
+  } @else if (error) {
+    <div class="error-container">
+      <p>שגיאה בטעינת הנתונים. אנא נסה שוב מאוחר יותר.</p>
+    </div>
   } @else {
-    <div class="chart-container" >
-      <div class="chart-header" >
-        <h2>גרף התחברויות</h2>
+    <div class="dashboard-header">
+      <h1>לוח מחוונים אנליטי</h1>
+      <p class="dashboard-subtitle">סקירת פעילות משתמשים ונתוני שירים</p>
+    </div>
+
+    <div class="charts-grid">
+      <div class="chart-card">
+        <div class="chart-header">
+          <h2>גרף התחברויות</h2>
+          <p class="chart-description">מציג את מספר ההתחברויות לפי תאריך</p>
+        </div>
+        <div class="chart-wrapper">
+          <div echarts [options]="userChartOption" class="chart"></div>
+        </div>
       </div>
-      <div echarts [options]="chartOption" style="height: 400px;"></div>
+
+      <div class="chart-card">
+        <div class="chart-header">
+          <h2>התפלגות שירים</h2>
+          <p class="chart-description">השוואה בין שירים ציבוריים ופרטיים</p>
+        </div>
+        <div class="chart-wrapper">
+          <div echarts [options]="songChartOption" class="chart"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dashboard-footer">
+      <p>הנתונים מתעדכנים בזמן אמת</p>
     </div>
   }
-  
+</div>
