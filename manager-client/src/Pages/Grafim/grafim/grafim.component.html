@@ -15,6 +15,7 @@
     </div>
 
     <div class="charts-grid">
+      <!-- גרף התחברויות -->
       <div class="chart-card">
         <div class="chart-header">
           <h2>גרף התחברויות</h2>
@@ -25,6 +26,7 @@
         </div>
       </div>
 
+      <!-- גרף התפלגות שירים -->
       @if (songChartOption) {
         <div class="chart-card">
           <div class="chart-header">
@@ -33,6 +35,17 @@
           </div>
           <div class="chart-wrapper">
             <div echarts [options]="songChartOption" class="chart"></div>
+          </div>
+        </div>
+      } @else {
+        <div class="chart-card">
+          <div class="chart-header">
+            <h2>התפלגות שירים</h2>
+            <p class="chart-description">השוואה בין שירים ציבוריים ופרטיים</p>
+          </div>
+          <div class="chart-wrapper loading-chart">
+            <div class="spinner small-spinner"></div>
+            <p>טוען נתוני שירים...</p>
           </div>
         </div>
       }
