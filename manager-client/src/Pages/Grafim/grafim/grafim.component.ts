@@ -115,6 +115,7 @@ export class GrafimComponent implements OnInit {
   }
 
   private createSongChart(songCounts: { PublicSongs: number; PrivateSongs: number }): void {
+    console.log('Song Counts:', songCounts);
     this.songChartOption = {
       title: {
         text: 'התפלגות שירים',
