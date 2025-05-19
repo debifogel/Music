@@ -150,7 +150,7 @@ export class GrafimComponent implements OnInit {
       },
       tooltip: {
         trigger: 'item',
-        //formatter: '{b}: {c} ({d}%)'
+        formatter: '{b}: {c} ({d}%)'
       },
       legend: {
         orient: 'vertical',
@@ -168,9 +168,10 @@ export class GrafimComponent implements OnInit {
           avoidLabelOverlap: false,
           itemStyle: {
             borderRadius: 10,
-            borderColor: '#FFFFFF', // White
-            borderWidth: 2
-          },
+            // White
+              borderWidth: 2
+            }
+          ,
           label: {
             show: true,
             formatter: '{b}: {c} ({d}%)',
@@ -188,18 +189,20 @@ export class GrafimComponent implements OnInit {
           },
           data: [
             { 
-              value:+ songCounts.PublicSongs, 
+              value: songCounts.PublicSongs, 
               name: 'שירים ציבוריים',
               itemStyle: { color: '#FFA500' } // Orange
             },
             { 
-              value:+ songCounts.PrivateSongs, 
+              value: songCounts.PrivateSongs, 
               name: 'שירים פרטיים',
               itemStyle: { color: '#808080' } // Gray
             }
           ]
+        
         }
-      ]
-    };
+      ],
+    }}
   }
-}
+    
+
