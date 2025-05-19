@@ -150,10 +150,10 @@ export class GrafimComponent implements OnInit {
       },
       tooltip: {
         trigger: 'item',
-        formatter: '{b}: {c} ({d}%)'
+        //formatter: '{b}: {c} ({d}%)'
       },
       legend: {
-        orient: 'horizontal',
+        orient: 'vertical',
         bottom: 'bottom',
         data: ['שירים ציבוריים', 'שירים פרטיים'],
         textStyle: {
