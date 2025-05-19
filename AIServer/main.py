@@ -39,7 +39,7 @@ def check_status(transcription_id, api_key):
         "Authorization": f"Bearer {api_key}"
     }
     while True:
-        response = requests.get(url, headers=headers, verify=True)
+        response = requests.get(url, headers=headers, verify=False)
         if response.status_code == 200:
             data = response.json()
             print("Status:", data["status"])
@@ -70,7 +70,7 @@ def transcribe_audio(file_path):
         "language": "he"
     }
 
-    response = requests.post(url, headers=headers, files=files, data=data, verify=True)  # Ensure SSL verification
+    response = requests.post(url, headers=headers, files=files, data=data, verify=False)  # Ensure SSL verification
     if response.status_code == 200:
         data = response.json()
         print("Transcription started successfully.", data)
@@ -170,7 +170,7 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
