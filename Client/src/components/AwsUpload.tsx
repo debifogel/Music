@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button, CircularProgress, Input } from '@mui/material';
 import S3Service from '@/Services/awsService';
+import { UploadIcon } from 'lucide-react';
 
 const AwsUpload = ({ callback }: { callback: (file: File, path: string) => void }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -57,7 +58,9 @@ const AwsUpload = ({ callback }: { callback: (file: File, path: string) => void 
         variant="contained"
         color="primary"
       >
-        העלאה
+        <UploadIcon className="mr-2 h-4 w-4" />
+
+        הוספת השיר
       </Button>
 
       {uploading && (

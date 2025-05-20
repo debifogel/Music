@@ -3,17 +3,13 @@ import songService from "@/Services/SongService";
 import playlistService from "@/Services/PlaylistService";
 import { useEffect, useState } from "react";
 import { TextField, Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
+import { Lock, LockOpen, Edit, Delete, Remove, AddCircleOutline } from "@mui/icons-material";
 import OptionsMenu from "./OPtionMenu";
 import folderService from "@/Services/FolderService";
 import { useNavigate } from "react-router-dom";
 import { Song } from "@/Models/song";
-
-interface Opt {
-    id: number;
-    title: string;
-    func: () => void;
-    child?: Opt[];
-}
+import { Plus } from "lucide-react";
+import type { Opt } from "./OPtionMenu";
 
 
 
@@ -28,9 +24,10 @@ const OptionSongs = ({ song, inPlay }: { song: Song; inPlay: number}) => {
             try {
                 const res = await playlistService.getAllPlaylists();
                 const formattedPlaylists = res.map((p) => ({
-                    id: p.playlistId ,
+                    id: p.playlistId,
                     title: p.playlistName,
                     func: () => handleAddToPlaylist(p.playlistId),
+                    icon: AddCircleOutline,
                 }));
                 setPlaylists(formattedPlaylists);
             } catch (error) {
@@ -97,49 +94,49 @@ const OptionSongs = ({ song, inPlay }: { song: Song; inPlay: number}) => {
     return (
         <>
             <OptionsMenu
-                options={[
-                    { id: 1, title: "ערוך", func: handleEdit },
-                    { id: 2, title: "מחק", func: handleDelete },
-                    { id: 3, title: "הוסף", func: () => {}, child: playlists },
-                    { id: 4, title:song.isPrivate? "שנה לציבורי":"שנה לפרטי", func: handlePermission},
-                    ...(inPlay !== 0 ? [{ id: 4, title: "הסר", func: handleRemoveFromPlaylist }] : []),
-                ]}
+            options={[
+            { id: 1, title: "ערוך", func: handleEdit, icon: Edit },
+            { id: 2, title: "מחק", func: handleDelete, icon: Delete },
+            { id: 3, title: "הוסף לרשימת השמעה", func: () => {}, child: playlists, icon: Plus },
+            { id: 5, title: song.isPrivate ? "שנה לציבורי" : "שנה לפרטי", func: handlePermission, icon: song.isPrivate ? Lock : LockOpen },
+            ...(inPlay !== 0 ? [{ id: 6, title: "הסר", func: handleRemoveFromPlaylist, icon: Remove }] : [])
+            ]}
             />
 
             {/* דיאלוג עריכת שיר */}
             <Dialog open={edit} onClose={() => setEdit(false)}>
-                <DialogTitle>עריכת שיר</DialogTitle>
-                <DialogContent>
-                    <TextField
-                        label="שם השיר"
-                        fullWidth
-                        margin="dense"
-                        value={editedSong.title}
-                        onChange={(e) => setEditedSong({ ...editedSong, title: e.target.value })}
-                    />
-                    <TextField
-                        label="שם האמן"
-                        fullWidth
-                        margin="dense"
-                        value={editedSong.artist}
-                        onChange={(e) => setEditedSong({ ...editedSong, artist: e.target.value })}
-                    />
-                    <TextField
-                        label="גנר"
-                        fullWidth
-                        margin="dense"
-                        value={editedSong.genre}
-                        onChange={(e) => setEditedSong({ ...editedSong, genre: e.target.value })}
-                    />
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setEdit(false)} color="secondary">
-                        ביטול
-                    </Button>
-                    <Button onClick={handleSubmitEdit} color="primary">
-                        שמירה
-                    </Button>
-                </DialogActions>
+            <DialogTitle>עריכת שיר</DialogTitle>
+            <DialogContent>
+            <TextField
+            label="שם השיר"
+            fullWidth
+            margin="dense"
+            value={editedSong.title}
+            onChange={(e) => setEditedSong({ ...editedSong, title: e.target.value })}
+            />
+            <TextField
+            label="שם האמן"
+            fullWidth
+            margin="dense"
+            value={editedSong.artist}
+            onChange={(e) => setEditedSong({ ...editedSong, artist: e.target.value })}
+            />
+            <TextField
+            label="גנר"
+            fullWidth
+            margin="dense"
+            value={editedSong.genre}
+            onChange={(e) => setEditedSong({ ...editedSong, genre: e.target.value })}
+            />
+            </DialogContent>
+            <DialogActions>
+            <Button onClick={() => setEdit(false)} color="secondary">
+            ביטול
+            </Button>
+            <Button onClick={handleSubmitEdit} color="primary">
+            שמירה
+            </Button>
+            </DialogActions>
             </Dialog>
         </>
     );

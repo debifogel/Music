@@ -27,7 +27,7 @@ function AppSidebar() {
   
 
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar collapsible="icon"  className="bg-white shadow-lg rounded-lg w-64">
       <SidebarContent className="flex flex-col h-full justify-between">
         <div>
           <SidebarGroup>

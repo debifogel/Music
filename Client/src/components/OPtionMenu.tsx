@@ -6,6 +6,7 @@ interface Opt {
   title: string;
   func:(id?:number)=>void;
   child?: Opt[];  // new optional field to identify special items
+  icon?: React.ElementType; // optional icon property
 }
 
 interface OptionsMenuProps {
@@ -35,14 +36,19 @@ const OptionsMenu = (options:OptionsMenuProps) => {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        {options.options.map((opt)=>
-        <MenuItem key={opt.id} onClick={(event) => {
-            event.stopPropagation(); // למנוע סגירה אוטומטית של התפריט אם יש תפריט משנה
-            opt.func(opt.id); // מעביר את ה-id ולא את האירוע
-          }}>{opt.title}
-        {opt.child&& <OptionsMenu options={opt.child} />}
-        </MenuItem>
-    )}
+        {options.options.map((opt) => (
+          <MenuItem
+            key={opt.id}
+            onClick={(event) => {
+              event.stopPropagation(); // למנוע סגירה אוטומטית של התפריט אם יש תפריט משנה
+              opt.func(opt.id); // מעביר את ה-id ולא את האירוע
+            }}
+          >
+            {opt.title}
+            {opt.child && <OptionsMenu options={opt.child} />}
+            {opt.icon && <opt.icon style={{ marginLeft: 'auto' }} />} {/* הצגת אייקון אם קיים */}
+          </MenuItem>
+        ))}
         </Menu>
     </>
   );

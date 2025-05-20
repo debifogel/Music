@@ -2,14 +2,32 @@
 
 import { useEffect, useState } from "react"
 import { Link, Outlet } from "react-router-dom"
-import { CircularProgress } from "@mui/material"
-import { Plus, Music } from "lucide-react"
+import { CircularProgress, Typography,Box,Button } from "@mui/material"
+import { Plus, Music, Edit  } from "lucide-react"
+import { Delete } from "@mui/icons-material"
 import NameForm from "@/components/NameForm"
 import OptionsMenu from "@/components/OPtionMenu"
 import type { Playlist } from "@/Models/playlist"
 import playlistService from "@/Services/PlaylistService"
-import { Button } from "@/components/ui/button"
 
+import { keyframes } from "@emotion/react"
+const pulse = keyframes`
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+`
+const style_loading = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: 2,
+  animation: `${pulse} 1.5s infinite ease-in-out`,
+}
 const PlayLists = () => {
   const [playlists, setPlaylists] = useState<Playlist[]>([])
   const [loading, setLoading] = useState(true)
@@ -74,20 +92,28 @@ const PlayLists = () => {
 
   return (
     <>
-      {loading && <CircularProgress sx={{ display: "block", margin: "20px auto" }} />}
+       {loading && 
+             <Box sx={style_loading}>
+             <CircularProgress size={60} thickness={4} sx={{ color: "#6d8de1" }} />
+             <Typography variant="h6" sx={{ color: "#6d8de1", fontWeight: "500" }}>
+            טוען רשימות השמעה...
+             </Typography>
+           </Box>}
 
-      <Button
+           <Button
         onClick={() => setAddPlay(true)}
-        className="fixed bottom-4 right-4 z-50 bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2 rounded-full px-4 py-2 shadow-lg"
+        variant="contained"
+        color="primary"
+        startIcon={<Plus />}
+        sx={{ position: "fixed", buttom: "0px", right: "20px", zIndex: 1000 }}
       >
-        <Plus size={20} />
-        <span className="dir-rtl ">הוספת רשימת השמעה</span>
+        הוספת רשימת השמעה
       </Button>
 
       {addPlay && <NameForm name={""} onClose={handleAdd} />}
       {renamePlay && currentPlay !== null && <NameForm name={playName} id={currentPlay} onClose={handleUpdate} />}
 
-      <div className="fixed top-[100px] left-[300px] w-[60%] h-[calc(100vh-120px)] p-6 m-2.5 overflow-y-auto scrollbar-hide">
+      <div className="fixed top-[100px] left-[300px] w-[60%] h-[calc(100vh-70px)] p-6 m-2.5 overflow-y-auto scrollbar-hide">
         {!loading && (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 justify-items-end">
             {playlists.length > 0 ? (
@@ -112,10 +138,10 @@ const PlayLists = () => {
                         </Link>
                         <div className="options-menu-container">
                           <OptionsMenu
-                            options={[
-                              { id: 1, title: "מחק", func: () => handleDelete(playlist.playlistId) },
-                              { id: 2, title: "ערוך", func: () => rename(playlist.playlistId, playlist.playlistName) },
-                            ]}
+                          options={[
+                            { id: 1, title: "מחק", func: () => handleDelete(playlist.playlistId), icon: Delete },
+                            { id: 2, title: "ערוך", func: () => rename(playlist.playlistId, playlist.playlistName), icon: Edit },
+                          ]}
                           />
                         </div>
                       </div>
@@ -176,7 +202,11 @@ const PlayLists = () => {
           overflow: hidden;
           z-index: 1;
         }
-        
+         .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+          
+        }
         .folder:before {
           content: '';
           position: absolute;
@@ -239,158 +269,3 @@ const PlayLists = () => {
 }
 
 export default PlayLists
-
-
-
-
-
-// import NameForm from "@/components/NameForm";
-// import OptionsMenu from "@/components/OPtionMenu";
-// import { Playlist } from "@/Models/playlist";
-// import playlistService from "@/Services/PlaylistService";
-// import { Button, CircularProgress, Grid2 as Grid, Typography, Paper } from "@mui/material";
-// import { Folder, Plus } from "lucide-react";
-// import { useEffect, useState } from "react";
-// import { Link, Outlet } from "react-router-dom";
-
-// const style_container={
-//   position: "fixed",
-//   top: "100px",     
-//   left: "300px",    
-//   width: "60%",
-//   height: "calc(100vh - 120px)", 
-//   padding: 3,
-//   margin:"10px",
-//   overflowY: "auto",      
-//   scrollbarWidth: "none",  
-//   display: "flex",
-//   flexWrap: "wrap",
-//   justifyContent: "right",
-//  }
-//  const style_card={
-//   display: "flex",
-//   flexDirection: "column",
-//   alignItems: "center",
-//   justifyContent: "center",
-//   padding: 3,
-//   minHeight: "150px",
-//   minWidth: "120px",
-//   borderRadius: 3,
-//   boxShadow: 3,
-//   transition: "0.3s",
-//   "&:hover": { transform: "scale(1.05)", boxShadow: 5 },
-//   backgroundColor: "#f8f9fa",
-// }
-
-// const PlayLists = () => {
-//   const [playlists, setPlaylists] = useState<Playlist[]>([]);
-//   const [loading, setLoading] = useState(true);
-//   const [addPlay, setAddPlay] = useState(false);
-//   const [renamePlay, setRenamePlay] = useState(false);
-//   const [currentPlay, setCurrentPlay] = useState<number | null>(null);
-//   const [playName, setPlayName] = useState("");
-// const [keyLOad,setKeyLOad]=useState(0)
-//   useEffect(() => {
-//     fetchPlaylists();
-//   }, []);
-
-//   const fetchPlaylists = async () => {
-//     setLoading(true);
-//     try {
-//       const fetchedPlaylists: Playlist[] = await playlistService.getAllPlaylists();
-//       setPlaylists(fetchedPlaylists);
-//     } catch (error) {
-//       console.error("שגיאה בטעינת רשימות ההשמעה:", error);
-//     }
-//     setLoading(false);
-//   };
-
-//   const handleAdd = async (name: string) => {
-//     setAddPlay(false);
-//     try {
-//       await playlistService.addPlaylist(name);
-//       fetchPlaylists(); // עדכון הרשימה לאחר ההוספה
-//     } catch (error) {
-//       console.error("שגיאה בהוספת רשימת ההשמעה", error);
-//     }
-//   };
-
-//   const handleDelete = async (id: number) => {
-//     try {
-//       await playlistService.deletePlaylist(id);
-//       setPlaylists(playlists.filter((p) => p.playlistId !== id)); // עדכון מיידי של הסטייט
-//     } catch (error) {
-//       console.error("שגיאה במחיקת רשימת ההשמעה", error);
-//     }
-//   };
-
-//   const handleUpdate = async (name: string, id?: number) => {
-//     setRenamePlay(false);
-//     if (!id) return;
-//     try {
-//       await playlistService.renamePlaylist(id, name);
-//       setPlaylists(
-//         playlists.map((p) =>
-//           p.playlistId === id ? { ...p, playlistName: name } : p
-//         )
-//       ); // עדכון מיידי של הסטייט
-//     } catch (error) {
-//       console.error("שגיאה בעדכון רשימת ההשמעה", error);
-//     }
-//     setKeyLOad(prev=>prev+1)
-//    console.log(keyLOad+"render in the playlists")
-//   };
-
-//   const rename = (id: number, name: string) => {
-//     setPlayName(name);
-//     setRenamePlay(true);
-//     setCurrentPlay(id);
-//   };
-//   return (
-//     <>
-//     { loading&&<CircularProgress sx={{ display: "block", margin: "20px auto" }} />}
-//       <Button
-//         onClick={() => setAddPlay(true)}
-//         variant="contained"
-//         color="primary"
-//         startIcon={<Plus />}
-//         sx={{ position: "fixed", buttom: "0px", right: "20px", zIndex: 1000 }}
-//       >
-//         הוספת רשימת השמעה
-//       </Button>
-//       {addPlay && <NameForm name={""} onClose={handleAdd} />}
-//       {renamePlay && currentPlay !== null && (
-//         <NameForm name={playName} id={currentPlay} onClose={handleUpdate} />
-//       )}
-//       <Grid container spacing={3} sx={style_container}>
-//         {playlists.length > 0 ? (
-//           playlists.map((playlist) => (
-//             <Grid  size={4}  key={playlist.playlistId}>
-//               <Paper elevation={3} sx={style_card}>
-//                 <Link to={`songs/playlist/${playlist.playlistId}`} style={{ textDecoration: "none", color: "inherit" }}>
-//                   <Folder size={40} color="blue" />
-//                   <Typography variant="h6" sx={{}}>{playlist.playlistName}</Typography>
-//                 </Link>
-//                 <OptionsMenu
-//                   options={[
-//                     { id: 1, title: "מחק", func: () => handleDelete(playlist.playlistId) },
-//                     { id: 2, title: "ערוך", func: () => rename(playlist.playlistId, playlist.playlistName) },
-//                   ]}
-//                 />
-//               </Paper>
-//             </Grid>
-//           ))
-//         ) : (
-//           <Typography variant="h6" sx={{ marginTop: 5, color: "gray" }}>
-//             אין רשימות השמעה זמינות
-//           </Typography>
-//         )}
-//       </Grid>
-//       <Outlet />
-//     </>
-//   );
-// };
-// export default PlayLists;
-
-
-
