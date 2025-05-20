@@ -73,10 +73,13 @@ const songService = {
         const filepath =await S3Service.generatePresignedUrl(songDetails.filePath);
        
         console.log("the generate file path",filepath)
-       
+       console.log("the post=================",
+        {user_id:extractUserIdFromToken().toString(),
+        song_id: songId.data.toString(),
+        Audio: filepath})
         axios.post(`${aiUrl}process-audio/`, {
-          user_id: extractUserIdFromToken(),
-          song_id: songId.data,
+          user_id: extractUserIdFromToken().toString(),
+          song_id: songId.data.toString(),
           Audio: filepath,
         })
         .catch((error) => {
