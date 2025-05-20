@@ -10,6 +10,7 @@ from io import BytesIO
 from pinecone import Pinecone, ServerlessSpec
 from dotenv import load_dotenv
 from sentence_transformers import SentenceTransformer
+from pydantic import BaseModel
 
 load_dotenv()
 
@@ -186,11 +187,18 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
+class AudioRequest(BaseModel):
+    user_id: str
+    song_id: str
+    Audio: str
 @app.post("/process-audio/")
-async def process_audio(user_id: str, song_id: str, Audio: str):
+async def process_audio(request: AudioRequest):
     try:
-        data = transcribe_audio(Audio)
+        user_id = request.user_id
+        song_id = request.song_id
+        audio_url = request.Audio
+
+        data = transcribe_audio(audio_url)
         if not data:  # Check if transcription failed
             return {"error": "Transcription failed."}
         lyrics = extract_lyrics(data)
