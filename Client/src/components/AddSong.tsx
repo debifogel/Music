@@ -36,7 +36,8 @@ const AddSong = () => {
     setAddFile(true)
     setFormData({ ...formData, filePath: path })
     console.log("File uploaded successfully:", file)
-    console.log("file",addFile)
+    await new Promise((resolve) => setTimeout(resolve, 1000)); // Delay for 1 second
+    console.log("file",addFile)   
     handleSubmit()
   }
 
