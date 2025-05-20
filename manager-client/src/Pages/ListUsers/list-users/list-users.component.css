@@ -13,6 +13,7 @@
   flex-direction: column;
   margin-bottom: 24px;
   padding-bottom: 16px;
+  margin-left: 20px;
 }
 
 @media (min-width: 768px) {
@@ -59,7 +60,7 @@
 .toggle-blocked-users,
 .filter-container,
 .search-container {
-  height: 40px;
+  height: 45px;
   display: flex;
   align-items: center;
 }
@@ -128,7 +129,6 @@
   padding: 0;
   width: 180px; /* INCREASED WIDTH TO PREVENT CUTTING */
   height: auto; /* AUTO HEIGHT TO PREVENT CUTTING */
-  min-height: 40px;
 }
 
 /* Search field - FIXED CUTTING ISSUES */
@@ -145,7 +145,7 @@
 ::ng-deep .search-field .mat-form-field-flex {
   border: none !important;
   background-color: transparent !important;
-  min-height: 40px !important;
+  height: 30px !important;
   padding: 0 !important;
 }
 
@@ -163,29 +163,28 @@
 /* Input styling - FIXED CUTTING ISSUES */
 ::ng-deep .search-field input {
   text-align: right;
-  font-size: 14px;
+  font-size: 4px;
   color: #333;
-  padding: 8px 0;
   border-bottom: 1px solid #e0e0e0; /* SUBTLE BOTTOM BORDER ONLY */
 }
 
 ::ng-deep .search-field.mat-focused input {
   border-bottom-color: #ff8c00;
+  
 }
 
 /* Icon styling */
 ::ng-deep .search-field .mat-icon {
   color: #ff8c00;
-  font-size: 18px;
-  height: 18px;
-  width: 18px;
+  font-size: 15px;
+  height: 16px;
+  width: 16px;
 }
 
 /* Placeholder - FIXED POSITIONING */
 ::ng-deep .search-field .mat-form-field-label {
   color: #999;
-  top: 1.5em; /* ADJUSTED TO PREVENT CUTTING */
-}
+  font-size: 14px;}
 
 /* Table wrapper */
 .table-wrapper {

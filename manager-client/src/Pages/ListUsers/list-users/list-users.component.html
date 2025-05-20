@@ -25,6 +25,7 @@
             [(ngModel)]="searchQuery" 
             placeholder="חפש משתמשים" 
             (keyup.enter)="Search()" 
+            
           />
           @if(searchQuery){
             <button mat-icon-button matSuffix (click)="clearSearch()">

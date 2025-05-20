@@ -115,67 +115,76 @@ export class GrafimComponent implements OnInit {
   }
   
   
-  private createSongChart(songCounts: { PublicSongs: number; PrivateSongs: number }): void {
-    console.log('Song Counts:', songCounts);
+  private createSongChart(songCounts: { publicSongs: number; privateSongs: number }): void {
+    console.log("Song Counts:", songCounts);
+    console.log("Public Songs:", songCounts.publicSongs);
+    console.log("Private Songs:", songCounts.privateSongs);
+    // בדוק אם יש נתונים תקינים
+    if (songCounts.publicSongs <= 0 && songCounts.privateSongs <= 0) {
+        console.error("No valid song counts to display.");
+        return; // עצור אם אין נתונים להציג
+    }
+
     // Set song chart options
     this.songChartOption = {
-      title: {
-        text: 'התפלגות שירים',
-        subtext: 'שירים ציבוריים ופרטיים',
-        textStyle: {
-          fontWeight: 'bold',
-          fontSize: 16,
-          color: '#333333' // Black
-        },
-        left: 'center'
-      },
-      tooltip: {
-        trigger: 'item',
-        formatter: '{b}: {c} ({d}%)'
-      },
-      legend: {
-        orient: 'vertical',
-        bottom: 'bottom',
-        data: ['שירים ציבוריים', 'שירים פרטיים'],
-        textStyle: {
-          color: '#333333' // Black
-        }
-      },
-      series: [
-        {
-          name: 'סוגי שירים',
-          type: 'pie',
-          radius: ['40%', '70%'],
-          avoidLabelOverlap: false,
-          label: {
-            show: true,
-            formatter: '{b}: {c} ({d}%)',
-            color: '#333333' // Black
-          },
-          emphasis: {
-            label: {
-              show: true,
-              fontSize: '16',
-              fontWeight: 'bold'
-            }
-          },
-          labelLine: {
-            show: true
-          },
-          data: [
-            { 
-              value:songCounts.PublicSongs, 
-              name: 'שירים ציבוריים',
-              itemStyle: { color: '#FFA500' } // Orange
+        title: {
+            text: "התפלגות שירים",
+            subtext: "שירים ציבוריים ופרטיים",
+            textStyle: {
+                fontWeight: "bold",
+                fontSize: 16,
+                color: "#333333",
             },
-            { 
-              value:songCounts.PrivateSongs, 
-              name: 'שירים פרטיים',
-              itemStyle: { color: '#808080' } // Gray
-            }
-          ]
-        }
-      ]
+            left: "center",
+        },
+        tooltip: {
+            trigger: "item",
+            formatter: "{b}: {c} ({d}%)",
+        },
+        legend: {
+            orient: "vertical",
+            bottom: "bottom",
+            data: ["שירים ציבוריים", "שירים פרטיים"],
+            textStyle: {
+                color: "#333333",
+            },
+        },
+        series: [
+            {
+                name: "סוגי שירים",
+                type: "pie",
+                radius: ["40%", "70%"],
+                avoidLabelOverlap: false,
+                label: {
+                    show: true,
+                    formatter: "{b}: {c} ({d}%)",
+                    color: "#333333",
+                },
+                emphasis: {
+                    label: {
+                        show: true,
+                        fontSize: "16",
+                        fontWeight: "bold",
+                    },
+                },
+                labelLine: {
+                    show: true,
+                },
+                data: [
+                    {
+                        value: songCounts.publicSongs,
+                        name: "שירים ציבוריים",
+                        itemStyle: { color: "#FFA500" },
+                    },
+                    {
+                        value: songCounts.privateSongs,
+                        name: "שירים פרטיים",
+                        itemStyle: { color: "#808080" },
+                    },
+                ],
+            },
+        ],
     };
-  }
+}
+
 }

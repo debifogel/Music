@@ -62,8 +62,8 @@ export class UserService {
       { headers: this.getAuthHeaders() }
     );
   }
-  getSongCounts(): Observable<{ PublicSongs: number; PrivateSongs: number }> {
-    return this.http.get<{ PublicSongs: number; PrivateSongs: number }>(
+  getSongCounts(): Observable<{ publicSongs: number; privateSongs: number }> {
+    return this.http.get<{ publicSongs: number; privateSongs: number }>(
       `${this.apiUrlsongs}/count`,
       { headers: this.getAuthHeaders() }
     );
