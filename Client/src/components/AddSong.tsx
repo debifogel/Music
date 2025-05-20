@@ -36,13 +36,13 @@ const AddSong = () => {
     setAddFile(true)
     setFormData({ ...formData, filePath: path })
     console.log("File uploaded successfully:", file)
-    await new Promise((resolve) => setTimeout(resolve, 1000)); // Delay for 1 second
+    await new Promise((resolve) => setTimeout(resolve,1500)); // Delay for 1 second
     console.log("file",addFile)   
     handleSubmit()
   }
 
   const handleSubmit = async () => {
-    if (addFile) {
+    
       if (file) {
         await addSong(formData)
         route("/songs/all")
@@ -58,19 +58,9 @@ const AddSong = () => {
           progress: undefined,
         })
       }
-    } else {
-      console.log("the client doesnt add file")
-      toast.error("Failed to add the song. Please try again.", {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      })
-    }
-  }
+    } 
+    
+  
 
   return (
     <>
