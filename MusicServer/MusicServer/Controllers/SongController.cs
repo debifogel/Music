@@ -79,8 +79,8 @@ namespace MusicServer.Api.Controllers
             {
                 return NotFound();
             }
-            
-            return Ok(_mapper.Map<List<SongDto>>(song));
+            //_mapper.Map<List<SongDto>>(song), 
+            return Ok(ids);
         }
 
         [HttpPost]
