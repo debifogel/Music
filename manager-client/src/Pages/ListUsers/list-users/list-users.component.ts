@@ -43,7 +43,6 @@ export class ListUsersComponent implements OnInit, OnDestroy {
   searchQuery: string = '';
   showBlocked: boolean = true;
   displayedColumns: string[] = ['name', 'email', 'lastLogin', 'lastUsage', 'actions'];
-  isSearchOpen = false;
 
   private usersSubscription: Subscription = new Subscription();
 
@@ -73,10 +72,8 @@ export class ListUsersComponent implements OnInit, OnDestroy {
     this.applyFilters();
   }
   toggleSearch() {
-    this.isSearchOpen = !this.isSearchOpen;
-    if (!this.isSearchOpen) {
       this.searchQuery = '';
-    }
+    
     this.applyFilters();
   }
   Search(): void {

@@ -43,6 +43,7 @@ namespace MusicServer.Data.Repository
         public async Task DeleteUserByIdAsync(int id)
         {
             var user =await _context.Users.FirstAsync(u => u.UserId == id);
+            if(user.IsAdmin==false)
              _context.Users.RemoveRange(user);
         }
 

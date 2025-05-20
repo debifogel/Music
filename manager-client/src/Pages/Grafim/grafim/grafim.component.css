@@ -1,141 +1,208 @@
 /* עיצוב מודרני עם הצבעים המבוקשים */
 .dashboard-container {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    padding: 20px;
-    background-color: #FFFFFF; /* לבן */
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  }
-  
-  .dashboard-header {
-    text-align: center;
-    margin-bottom: 30px;
-  }
-  
-  .dashboard-header h1 {
-    color: #333333; /* שחור */
-    font-size: 28px;
-    margin-bottom: 8px;
-  }
-  
-  .dashboard-subtitle {
-    color: #808080; /* אפור */
-    font-size: 16px;
-  }
-  
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 20px;
+  background-color: #FFFFFF; /* לבן */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.dashboard-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.dashboard-header h1 {
+  color: #333333; /* שחור */
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+
+.dashboard-subtitle {
+  color: #808080; /* אפור */
+  font-size: 16px;
+}
+
+.charts-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 25px;
+  margin-bottom: 30px;
+}
+
+@media (min-width: 992px) {
   .charts-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 25px;
-    margin-bottom: 30px;
+    grid-template-columns: 1fr 1fr;
   }
-  
-  @media (min-width: 992px) {
-    .charts-grid {
-      grid-template-columns: 1fr 1fr;
-    }
+}
+
+.chart-card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  overflow: visible; /* שינוי מ-hidden ל-visible */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid #E0E0E0; /* אפור בהיר */
+  margin-bottom: 20px;
+  height: 500px; /* גובה קבוע גדול יותר */
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.chart-header {
+  padding: 20px 20px 0;
+  border-bottom: 1px solid #F0F0F0; /* אפור בהיר מאוד */
+}
+
+.chart-header h2 {
+  color: #333333; /* שחור */
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+
+.chart-description {
+  color: #808080; /* אפור */
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.chart-wrapper {
+  padding: 10px 20px 20px;
+  flex: 1; /* תופס את שאר המקום בכרטיס */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* מרכז אנכית */
+  min-height: 400px; /* גובה מינימלי לתרשים */
+  position: relative; /* חשוב לפוזישן אבסולוט */
+}
+
+.chart {
+  height: 100%;
+  width: 100%;
+  position: absolute; /* פוזישן אבסולוט */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* הסרת הגבול המקווקו */
+  /* border: 1px dashed #ccc; */
+}
+/* מוודא שאין שום אלמנט שמסתיר את התרשים */
+.chart-wrapper * {
+  pointer-events: auto !important;
+}
+
+/* מגדיל את ה-z-index של התרשים */
+.chart {
+  z-index: 100 !important;
+}
+/* סגנון ספציפי לגרף העוגה - הכרטיס השני */
+.charts-grid .chart-card:nth-child(2) .chart {
+  height: 100% !important;
+  width: 100% !important;
+  min-height: 400px !important;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10; /* z-index גבוה יותר */
+}
+
+/* סגנון ספציפי למיכל של גרף העוגה */
+.charts-grid .chart-card:nth-child(2) .chart-wrapper {
+  position: relative;
+  height: 400px;
+  min-height: 400px;
+  padding: 0;
+  margin: 0;
+  overflow: visible;
+}
+
+.dashboard-footer {
+  text-align: center;
+  color: #808080; /* אפור */
+  font-size: 14px;
+  margin-top: 20px;
+}
+
+/* מצב טעינה */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(255, 165, 0, 0.2); /* כתום שקוף */
+  border-radius: 50%;
+  border-top-color: #FFA500; /* כתום */
+  animation: spin 1s ease-in-out infinite;
+  margin-bottom: 15px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
-  
-  .chart-card {
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    border: 1px solid #E0E0E0; /* אפור בהיר */
-  }
-  
-  .chart-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
-  }
-  
-  .chart-header {
-    padding: 20px 20px 0;
-    border-bottom: 1px solid #F0F0F0; /* אפור בהיר מאוד */
-  }
-  
-  .chart-header h2 {
-    color: #333333; /* שחור */
-    font-size: 20px;
-    margin-bottom: 8px;
-  }
-  
-  .chart-description {
-    color: #808080; /* אפור */
-    font-size: 14px;
-    margin-bottom: 10px;
-  }
-  
-  .chart-wrapper {
-    padding: 10px 20px 20px;
-  }
-  
-  .chart {
-    height: 400px;
-    width: 100%;
-    border: 1px dashed #ccc; /* גבול מקווקו לבדיקת נראות */
-  }
-  
-  .chart-card {
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    overflow: visible; /* שינוי מ-hidden ל-visible לבדיקה */
-    margin-bottom: 20px;
-    border: 1px solid #E0E0E0;
-  }
-  
-  .dashboard-footer {
-    text-align: center;
-    color: #808080; /* אפור */
-    font-size: 14px;
-    margin-top: 20px;
-  }
-  
-  /* מצב טעינה */
-  .loading-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 300px;
-  }
-  
-  .spinner {
-    width: 50px;
-    height: 50px;
-    border: 5px solid rgba(255, 165, 0, 0.2); /* כתום שקוף */
-    border-radius: 50%;
-    border-top-color: #FFA500; /* כתום */
-    animation: spin 1s ease-in-out infinite;
-    margin-bottom: 15px;
-  }
-  
-  @keyframes spin {
-    to {
-      transform: rotate(360deg);
-    }
-  }
-  
-  .loading-container p {
-    color: #333333; /* שחור */
-    font-size: 18px;
-  }
-  
-  /* מצב שגיאה */
-  .error-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 300px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-  }
-  
-  .error-container p {
-    color: #FFA500; /* כתום */
-    font-size: 18px;
-  }
+}
+
+.loading-container p {
+  color: #333333; /* שחור */
+  font-size: 18px;
+}
+
+/* מצב שגיאה */
+.error-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.error-container p {
+  color: #FFA500; /* כתום */
+  font-size: 18px;
+}
+
+/* מצב טעינה לתרשים ספציפי */
+.loading-chart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 350px; /* גובה קבוע */
+}
+
+.small-spinner {
+  width: 30px;
+  height: 30px;
+  border-width: 3px;
+  margin-bottom: 10px;
+}
+
+/* תיקון ספציפי לתצוגת echarts */
+[_nghost-ng-c1234567890] .echarts {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 400px !important;
+}
+
+/* תיקון למיכל של echarts */
+.echarts-container {
+  width: 100% !important;
+  height: 100% !important;
+}

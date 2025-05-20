@@ -1,103 +1,240 @@
-.search-container {
-  position: fixed;
-  top: 48%;
-  left: 88%;
-  transform: translateX(-50%);
-  z-index: 1000;
-}
-
-.search-toggle {
-  background-color: #ff8c00;
-    color: #ffffff;
-    border-radius: 50px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-    padding: 15px 30px;
-    white-space: nowrap;
-    font-size: 18px;
-    font-weight: 500;
-    border: none;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-}
-
-.search-toggle:hover {
-  background-color: #ffa733;
-}
-
-.search-field {
-  width: 180px;
-  margin-top: 10px;
-  border-radius: 20px;
-  transition: all 0.3s ease;
-}
-.fiter-container{
-  position:fixed;
-  top: 37%; /* Adjusted for better visibility */
-  left: 85%; /* Adjusted for better visibility */
-}
-.toggle-blocked-users{
-  position:fixed;
-  top: 30%; /* Adjusted for better visibility */
-  left: 85%; /* Adjusted for better visibility */
-}
-/* Make the field outline more rounded for a cute look */
-::ng-deep .search-field .mat-form-field-outline {
-  border-radius: 25px;
-  border-color: #ff8c00 !important; /* Orange border */
-}
-
-/* Ensure consistent height and prevent truncation */
-::ng-deep .search-field .mat-form-field-flex {
-  min-height: 48px;
-  padding: 0 12px !important; /* Add padding to prevent text from being cut */
-}
-
-/* Style the input text */
-::ng-deep .search-field input {
-  font-size: 14px;
-  padding-left: 5px;
-  color: #000000; /* Black text */
-}
-
-/* Style the prefix and suffix icons */
-::ng-deep .search-field .mat-icon {
-  color: #ff8c00; /* Orange color for icons */
-}
-
-/* Style the placeholder */
-::ng-deep .search-field .mat-form-field-label {
-  color: rgba(0, 0, 0, 0.6) !important; /* Darker placeholder text */
-}
-
-/* Orange underline when focused */
-::ng-deep .search-field.mat-focused .mat-form-field-outline-thick {
-  color: #ff8c00 !important;
-}
-
-/* Add a subtle transition effect */
-::ng-deep .search-field .mat-form-field-outline {
-  transition: box-shadow 0.3s ease;
-}
-
-::ng-deep .search-field:hover .mat-form-field-outline {
-  box-shadow: 0 0 8px rgba(255, 140, 0, 0.5); /* Orange glow on hover */
-}
-
-/* Fix for RTL text alignment (for Hebrew) */
-::ng-deep .search-field input {
-  text-align: right;
+/* Main container */
+.user-list-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
   direction: rtl;
 }
 
-/* Ensure the field doesn't get cut off */
-::ng-deep .mat-form-field-wrapper {
-  padding-bottom: 1.25em;
-  overflow: visible;
+/* Header section with title and controls */
+.header-section {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
 }
-.table-container {
-  width: 80%;
-  margin-left: auto;
-  margin-right: 20%;
+
+@media (min-width: 768px) {
+  .header-section {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 500;
+  margin-bottom: 16px;
+  color: #333;
+}
+
+@media (min-width: 768px) {
+  .title {
+    margin-bottom: 0;
+  }
+}
+
+/* Controls section - NO BORDER */
+.controls-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding: 12px;
+}
+
+@media (min-width: 768px) {
+  .controls-section {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center; /* CENTER THE CONTROLS */
+    width: auto;
+    gap: 20px; /* INCREASED GAP */
+  }
+}
+
+/* UNIFIED STYLING FOR ALL CONTROLS */
+.toggle-blocked-users,
+.filter-container,
+.search-container {
+  height: 40px;
+  display: flex;
+  align-items: center;
+}
+
+/* Toggle blocked users - WITH BORDER */
+.toggle-blocked-users {
+  background-color: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 0 12px;
+  min-width: 160px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+::ng-deep .toggle-blocked-users .mat-slide-toggle-label {
+  font-size: 14px;
+  margin-right: 8px;
+}
+
+::ng-deep .toggle-blocked-users .mat-slide-toggle-bar {
+  background-color: #e0e0e0;
+}
+
+::ng-deep .toggle-blocked-users.mat-checked .mat-slide-toggle-bar {
+  background-color: rgba(255, 140, 0, 0.5);
+}
+
+::ng-deep .toggle-blocked-users.mat-checked .mat-slide-toggle-thumb {
+  background-color: #ff8c00;
+}
+
+/* Filter container - NO BORDER */
+.filter-container {
+  background-color: transparent;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Date button styling */
+::ng-deep .filter-container .mat-stroked-button,
+::ng-deep .filter-container .mat-button {
+  border: none;
+  color: #333;
+  border-radius: 0;
+  padding: 0 12px;
+  height: 40px;
+  min-width: 160px;
+  font-weight: normal;
+  font-size: 14px;
+}
+
+::ng-deep .filter-container .mat-stroked-button:hover,
+::ng-deep .filter-container .mat-button:hover {
+  background-color: #f5f5f5;
+}
+
+::ng-deep .filter-container .mat-stroked-button .mat-icon,
+::ng-deep .filter-container .mat-button .mat-icon {
+  color: #ff8c00;
+  margin-left: 8px;
+}
+
+/* Search container - FIXED HEIGHT ISSUES */
+.search-container {
+  background-color: transparent;
+  padding: 0;
+  width: 180px; /* INCREASED WIDTH TO PREVENT CUTTING */
+  height: auto; /* AUTO HEIGHT TO PREVENT CUTTING */
+  min-height: 40px;
+}
+
+/* Search field - FIXED CUTTING ISSUES */
+.search-field {
+  width: 100%;
+}
+
+/* Override Material styles - FIXED CUTTING ISSUES */
+::ng-deep .search-field .mat-form-field-wrapper {
+  padding-bottom: 0 !important;
+  margin: 0 !important;
+}
+
+::ng-deep .search-field .mat-form-field-flex {
+  border: none !important;
+  background-color: transparent !important;
+  min-height: 40px !important;
+  padding: 0 !important;
+}
+
+::ng-deep .search-field .mat-form-field-infix {
+  padding: 0 !important;
+  border-top: 0 !important;
+}
+
+/* Hide the default outline */
+::ng-deep .search-field .mat-form-field-outline,
+::ng-deep .search-field .mat-form-field-underline {
+  display: none !important;
+}
+
+/* Input styling - FIXED CUTTING ISSUES */
+::ng-deep .search-field input {
+  text-align: right;
+  font-size: 14px;
+  color: #333;
+  padding: 8px 0;
+  border-bottom: 1px solid #e0e0e0; /* SUBTLE BOTTOM BORDER ONLY */
+}
+
+::ng-deep .search-field.mat-focused input {
+  border-bottom-color: #ff8c00;
+}
+
+/* Icon styling */
+::ng-deep .search-field .mat-icon {
+  color: #ff8c00;
+  font-size: 18px;
+  height: 18px;
+  width: 18px;
+}
+
+/* Placeholder - FIXED POSITIONING */
+::ng-deep .search-field .mat-form-field-label {
+  color: #999;
+  top: 1.5em; /* ADJUSTED TO PREVENT CUTTING */
+}
+
+/* Table wrapper */
+.table-wrapper {
+  width: 90%;
+  overflow-x: hidden;
+  border-radius: 4px;
+  border: 1px solid #e0e0e0;
+  background-color: white;
+}
+
+.users-table {
+  width: 100%;
+}
+
+/* Table header */
+::ng-deep .mat-header-cell {
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.87);
+  background-color: #f5f5f5;
+  text-align: right !important;
+  padding: 12px 16px;
+}
+
+/* Table cells */
+::ng-deep .mat-cell {
+  text-align: right !important;
+  padding: 12px 16px;
+}
+
+/* Table row hover effect */
+::ng-deep .mat-row:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  ::ng-deep .mat-header-cell,
+  ::ng-deep .mat-cell {
+    padding: 12px 8px;
+  }
+
+  .search-container {
+    width: 100%;
+  }
+
+  .toggle-blocked-users,
+  .filter-container,
+  ::ng-deep .filter-container .mat-button {
+    width: 100%;
+    min-width: 100%;
+  }
 }

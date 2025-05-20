@@ -43,6 +43,7 @@ export class GrafimComponent implements OnInit {
       complete: () => this.loading = false // Set loading to false after completion
     });
   }
+// הוסף את זה בסוף הפונקציה createSongChart
 
   private createUserChart(dates: string[]): void {
     const dateCounts: { [key: string]: number } = {};

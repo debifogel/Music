@@ -3,6 +3,7 @@ from urllib.parse import urlparse
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import time
+import numpy as np
 import openai
 import requests
 from io import BytesIO
@@ -158,13 +159,24 @@ def store_song(user_id, song_id, embeddings, metadata):
     print("Song stored successfully!", metadata)
 def search_similar_songs(user_id, query_text, top_k=5):
     query_embedding = get_embedding(query_text)
+    if isinstance(query_embedding, np.ndarray):
+        query_embedding = query_embedding.tolist()  # Ensure it's a list
     results = index.query(
-        vector=query_embedding,
+        vector=query_embedding[0],  # Use the first embedding if it's a batch
         top_k=top_k,
         include_metadata=True,
         filter={"user_id": user_id}
     )
-    return results["matches"]
+    for match in results.get("matches", []):
+        if isinstance(match, dict) and "values" in match:
+            match.pop("values", None)  # Safely remove the 'values' field
+    print("Query results:", match)
+    matches = [
+        match["metadata"]["song_id"]
+        for match in results.get("matches", [])       
+    ]
+    print("Matches found:", matches)
+    return matches
 
 app = FastAPI()
 app.add_middleware(
@@ -198,6 +210,7 @@ async def process_audio(user_id: str, song_id: str, Audio: str):
 @app.get("/search-similar/")
 def search_similar(user_id: str, query: str):
     matches = search_similar_songs(user_id, query)
+    print("Matches found:", matches)
     return matches
 @app.delete("/delete-song/")
 def delete_song(user_id: str, song_id: str):

@@ -4,9 +4,7 @@
     border-radius: 50px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     transition: background-color 0.3s, transform 0.2s;
-  }
   
-  .date-button {
     background-color: #ff8c00;
     color: #ffffff;
     border-radius: 50px;
@@ -19,10 +17,8 @@
     border: none;
     cursor: pointer;
     position: relative;
-    overflow: hidden;
-  }
-
-  .date-button:hover {
+    overflow: visible;
+  
     background-color: #ff7000;
     transform: translateY(-2px);
   }
@@ -40,7 +36,7 @@
     margin-left: 8px;
   }
 
-  .expand-text.visible {
+  .expand-text {
     opacity: 1;
     max-width: 200px;
   }
