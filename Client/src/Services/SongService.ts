@@ -77,10 +77,10 @@ const songService = {
         song_id: songId.data.toString(),
         Audio: filepath})
         axios.post(`${aiUrl}process-audio/`, {
-        body:{  user_id: extractUserIdFromToken().toString(),
+         user_id: extractUserIdFromToken().toString(),
           song_id: songId.data.toString(),
           Audio: filepath,}
-        })
+        )
         .catch((error) => {
           // Errors will be caught here but the request does not wait for a result
           console.error("Error sending audio:", error);
