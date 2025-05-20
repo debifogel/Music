@@ -39,6 +39,8 @@ const AwsUpload = ({ callback }: { callback: (file: File, path: string) => void 
         }
       );
       callback(selectedFile, res.Key);
+      callback(selectedFile, res.Key);
+
       setUploadStatus('✅ העלאה הצליחה!');
     } catch (error: any) {
       console.error('שגיאה בהעלאה:', error);
