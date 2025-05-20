@@ -152,7 +152,7 @@ const songService = {
       const searchResponse = await axios.get(`${aiUrl}search-similar/`, {
         params: { user_id: userId, query: query },
       });
-      const matchedIds: number[] = searchResponse.data;
+      const matchedIds: number[] = searchResponse.data.map((id: string) => parseInt(id, 10));
       if (!matchedIds || matchedIds.length === 0) {
         console.warn('No matches found for the query.');
         return [];
