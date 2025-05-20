@@ -36,9 +36,12 @@ export default function FormToEnter({ buttonText, onSubmit ,register}: FormToEnt
           borderRadius: '20px', 
           padding: '10px 20px', 
           boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',         
+          color: 'white',
+          backgroundColor: 'blue',
+          fontWeight: 'bold',
           '&:hover': {
-            backgroundColor: 'rgba(63, 81, 181, 0.7)',
-            boxShadow: '0 6px 12px rgba(0, 0, 0, 0.3)',
+        backgroundColor: 'rgba(63, 81, 181, 0.7)',
+        boxShadow: '0 6px 12px rgba(0, 0, 0, 0.3)',
           }
         }} onClick={handleClickOpen}>
         {buttonText}
