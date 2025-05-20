@@ -72,7 +72,6 @@ const songService = {
         );
         const filepath =await S3Service.generatePresignedUrl(songDetails.filePath);
        
-        console.log("the generate file path",filepath)
        console.log("the post=================",
         {user_id:extractUserIdFromToken().toString(),
         song_id: songId.data.toString(),
