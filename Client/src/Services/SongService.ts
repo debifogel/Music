@@ -157,7 +157,8 @@ const songService = {
         console.warn('No matches found for the query.');
         return [];
       }
-
+      console.log("====================================")
+        console.log("matched ids",matchedIds)
       // Send the list of IDs to the second server
       const songsResponse = await api.get('/Songs/ids', {
         params: { ids: matchedIds },
