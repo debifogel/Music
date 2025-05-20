@@ -38,7 +38,7 @@ const AwsUpload = ({ callback }: { callback: (file: File, path: string) => void 
           setUploadProgress(progress);
         }
       );
-      callback(selectedFile, res.Key);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       callback(selectedFile, res.Key);
 
       setUploadStatus('✅ העלאה הצליחה!');

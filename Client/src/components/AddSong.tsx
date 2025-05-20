@@ -37,10 +37,9 @@ const AddSong = () => {
     setFormData({ ...formData, filePath: path })
     handleSubmit()
   }
-
+  
   const handleSubmit = async () => {
-    while (!addFile&&!formData.filePath) {
-      console.log("Waiting for file upload...")}
+    
       if (file) {
         await addSong(formData)
         route("/songs/all")
