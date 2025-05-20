@@ -163,7 +163,7 @@ const songService = {
         console.log("matched ids",matchedIds)
       // Send the list of IDs to the second server
       const songsResponse = await api.get('/Songs/ids', {
-        params: { ids: matchedIds },
+        params: { matchedIds },
       });
      console.log("songsResponse======",songsResponse)
       return songsResponse.data;
