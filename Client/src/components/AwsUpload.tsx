@@ -3,7 +3,7 @@ import { Button, CircularProgress, Input } from '@mui/material';
 import S3Service from '@/Services/awsService';
 import { UploadIcon } from 'lucide-react';
 
-const AwsUpload = ({ callback }: { callback: (file: File, path: string) => void }) => {
+const AwsUpload = ({ callback }: { callback: ( path: string) => void }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [uploadStatus, setUploadStatus] = useState<string>('');
@@ -38,9 +38,10 @@ const AwsUpload = ({ callback }: { callback: (file: File, path: string) => void 
           setUploadProgress(progress);
         }
       );
-      callback(selectedFile, res.Key);
-
+      console.log('הקובץ הועלה בהצלחה:', res);
       setUploadStatus('✅ העלאה הצליחה!');
+      callback(res.Key);
+
     } catch (error: any) {
       console.error('שגיאה בהעלאה:', error);
       setUploadError(error.message || 'שגיאה בהעלאה.');

@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { toast, ToastContainer } from "react-toastify"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -21,7 +21,6 @@ const AddSong = () => {
     filePath: "",
     isPrivate: false,
   })
-  const [file, setFile] = useState<File | null>(null)
   const [addFile, setAddFile] = useState(false)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,18 +30,34 @@ const AddSong = () => {
 
   const handleClick = () => setFormData({ ...formData, isPrivate: !formData.isPrivate })
 
-  const handleFile = async (file: File, path: string) => {
-    setFile(file)
-    setAddFile(true)
-    setFormData({ ...formData, filePath: path })
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+  const handleFile = async (path: string) => {
+    setAddFile(true);
+    console.log(path);
 
-    handleSubmit()
+    // עדכון הסטייט עם פונקציית חזרה
+    setFormData((prevFormData) => {
+        const updatedFormData = { ...prevFormData, filePath: path };
+        console.log(updatedFormData);
+        return updatedFormData;
+    });
+
+    // המתן עד שהסטייט יתעדכן
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    console.log(formData); // זה עדיין לא יתן לך את הערך המעודכן
+
+}
+useEffect(() => {
+  if (formData.filePath) {
+      handleSubmit(); // קריאה ל-handleSubmit כאשר filePath מתעדכן
+      console.log("File uploaded successfully");
   }
+}, [formData.filePath]); // ה-useEffect יפעל כש-filePath משתנה
+
   
   const handleSubmit = async () => {
     
-      if (file) {
+      if (addFile) {
         await addSong(formData)
         route("/songs/all")
       } else {
