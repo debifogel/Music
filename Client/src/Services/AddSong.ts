@@ -25,7 +25,6 @@ async function addSong(songDto: SongDto): Promise<void> {
         folder = data.find((f) => f.folderName === songDto.artist)||null;
     } catch (error) {
         
-            console.log(error)
     }
     
     if(folder==null)
@@ -33,14 +32,12 @@ async function addSong(songDto: SongDto): Promise<void> {
         try {
             folder= await folderService.addFolder({folderName:songDto.artist,parentFolderId:null})
         } catch (error) {
-            console.log(error)
+            console.error("Error creating folder:", error);
         }
     }
     //add the song to the folder
     try {
         if (folder) {
-            console.log("Folder found:", folder);
-            console.log("Adding song to folder:", songdata);
             await folderService.addSongToFolder(folder.folderId, songdata);
         } else {
             console.error("Folder is null. Cannot add song to folder.");

@@ -19,7 +19,6 @@ const SearchSong=()=>{
   
       const handleSearchKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
           if (event.key === "Enter") {
-            console.log("🔍 מחפש:", searchQuery)
             setAnchorEl(null)
             navigate(`/songs/search/${searchQuery}`)
             setSearchQuery("") // לנקות את תיבת החיפוש לאחר החיפוש

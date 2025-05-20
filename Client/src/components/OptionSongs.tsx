@@ -17,7 +17,6 @@ const OptionSongs = ({ song, inPlay }: { song: Song; inPlay: number}) => {
     const [edit, setEdit] = useState(false);
     const [editedSong, setEditedSong] = useState({ title: song.title, artist: song.artist,genre:song.genre });
     const route=useNavigate()
- console.log(song)
     useEffect(() => {
         const fetchPlaylists = async () => {
             try {
@@ -44,7 +43,6 @@ const OptionSongs = ({ song, inPlay }: { song: Song; inPlay: number}) => {
     const handleDelete = async () => {
         try {
             await S3Service.deleteFile(song.filePath);
-            console.log("delete file from s3")
             await songService.deleteSong(song.songId);
             await folderService.deleteFolder(song.songId);
             await folderService.removeEmptyFolder()          

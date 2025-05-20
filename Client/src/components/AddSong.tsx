@@ -35,14 +35,12 @@ const AddSong = () => {
     setFile(file)
     setAddFile(true)
     setFormData({ ...formData, filePath: path })
-    console.log("File uploaded successfully:", file)
-    await new Promise((resolve) => setTimeout(resolve,1500)); // Delay for 1 second
-    console.log("file",addFile)   
     handleSubmit()
   }
 
   const handleSubmit = async () => {
-    
+    while (!addFile&&!file) {
+      console.log("Waiting for file upload...")}
       if (file) {
         await addSong(formData)
         route("/songs/all")

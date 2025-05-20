@@ -12,7 +12,6 @@ const AudioPlayer = ({ audioUrl }: { audioUrl: string }) => {
   useEffect(() => {
     const fetchPresignedUrl = async () => {
       const url = await S3Service.generatePresignedUrl(audioUrl);
-      console.log(url)
       setPresignedUrl(url);
     };
     fetchPresignedUrl();
