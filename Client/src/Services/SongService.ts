@@ -165,7 +165,7 @@ const songService = {
       const songsResponse = await api.get('/Songs/ids', {
         params: { ids: matchedIds },
       });
-     console.log("songsResponse======",songsResponse.data)
+     console.log("songsResponse======",songsResponse)
       return songsResponse.data;
     } catch (error) {
       console.error('Error in searching and fetching songs:', error);
