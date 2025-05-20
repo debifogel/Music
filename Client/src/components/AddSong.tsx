@@ -35,6 +35,8 @@ const AddSong = () => {
     setFile(file)
     setAddFile(true)
     setFormData({ ...formData, filePath: path })
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
     handleSubmit()
   }
   
