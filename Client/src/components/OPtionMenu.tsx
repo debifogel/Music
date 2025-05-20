@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Menu, MenuItem, IconButton } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-interface Opt {
+export interface Opt {
   id: number;
   title: string;
   func:(id?:number)=>void;

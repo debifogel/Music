@@ -12,7 +12,6 @@ import { Plus } from "lucide-react";
 import type { Opt } from "./OPtionMenu";
 
 
-
 const OptionSongs = ({ song, inPlay }: { song: Song; inPlay: number}) => {
     const [playlists, setPlaylists] = useState<Opt[]>([]);
     const [edit, setEdit] = useState(false);
