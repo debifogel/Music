@@ -8,4 +8,4 @@ requests
 pinecone
 python-dotenv
 uvicorn
-numpy==1.21.2
+
