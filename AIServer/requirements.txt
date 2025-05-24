@@ -1,11 +1,8 @@
-sentence_transformers
 fastapi
-Flask==2.0.1
-gunicorn==20.1.0
-langchain-openai
+uvicorn
+numpy
 openai
 requests
-pinecone
+pinecone-client
 python-dotenv
-uvicorn
-
+sentence-transformers

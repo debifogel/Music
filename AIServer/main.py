@@ -147,7 +147,7 @@ def search_similar_songs(user_id, query_text, top_k=5):
         vector=query_embedding[0],  # Use the first embedding if it's a batch
         top_k=top_k,
         include_metadata=True,
-        filter={"user_id": user_id}  # Adjust the filter as needed
+        filter={"user_id": user_id,"score": {"$gte": 0.5}}  # Adjust the filter as needed
     )
     for match in results.get("matches", []):
         if isinstance(match, dict) and "values" in match:
