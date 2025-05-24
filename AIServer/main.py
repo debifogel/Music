@@ -161,12 +161,12 @@ def store_song(user_id, song_id, embeddings, metadata):
 def search_similar_songs(user_id, query_text, top_k=5):
     query_embedding = get_embedding(query_text)
     if isinstance(query_embedding, np.ndarray):
-        query_embedding = query_embedding.tolist()  # Ensure it's a list
+        query_embedding = query_embedding.tolist() 
     results = index.query(
         vector=query_embedding[0],  # Use the first embedding if it's a batch
         top_k=top_k,
         include_metadata=True,
-        filter={"user_id": user_id}
+        filter={"user_id": user_id,"score": {"$gte": 0.5}}  # Adjust the filter as needed
     )
     for match in results.get("matches", []):
         if isinstance(match, dict) and "values" in match:
