@@ -35,7 +35,6 @@ openai_api_key = os.getenv("OPENAI_API_KEY")
 openai.api_key = openai_api_key
 
 def check_status(transcription_id, api_key):
-    print("Checking status for transcription ID:", transcription_id)
     url = f"https://hebrew-ai.com/api/transcribe?id={transcription_id}"
     headers = {
         "Authorization": f"Bearer {api_key}"
@@ -44,15 +43,11 @@ def check_status(transcription_id, api_key):
         response = requests.get(url, headers=headers, verify=False)
         if response.status_code == 200:
             data = response.json()
-            print("Status:", data["status"])
             if data["status"] == "COMPLETED":
-                print("Transcribed text:", data["text"])
                 return data["text"]  # Return the transcribed text
             elif data["status"] == "FAILED":
-                print("Transcription failed.")
                 return None  # Return None if failed
         else:
-            print("Error:", response.status_code, response.text)
             return None
         time.sleep(5)
 
@@ -60,11 +55,9 @@ def transcribe_audio(file_path):
     url = "https://hebrew-ai.com/api/transcribe"
     api_key = os.getenv("IVRITAI_API_KEY")
     headers = {"Authorization": f"Bearer {api_key}"}
-    print("Transcribing audio file:", file_path)
     response = requests.get(file_path)
     response.raise_for_status()
     filename = os.path.basename(urlparse(file_path).path)
-    print("Downloading file:", filename)
     files = {
         "file": (filename, BytesIO(response.content), 'audio/mp3')
     }
@@ -75,13 +68,10 @@ def transcribe_audio(file_path):
     response = requests.post(url, headers=headers, files=files, data=data, verify=False)  # Ensure SSL verification
     if response.status_code == 200:
         data = response.json()
-        print("Transcription started successfully.", data)
         transcription_id = data.get("transcriptionId")
-        print("Transcription ID:", transcription_id)
         text = check_status(transcription_id, api_key)
         return text
     else:
-        print("Error:", response.status_code, response.text)
         return None
 
 def extract_lyrics(raw_text):
@@ -107,7 +97,6 @@ def analyze_song_content(lyrics):
         model="gpt-4",
         messages=[{"role": "user", "content": prompt}]
     )
-    print("Analysis response:", response)
     return response.choices[0].message.content.strip()
 
 def split_text(text, max_chunk_size=500):
@@ -123,17 +112,12 @@ def split_text(text, max_chunk_size=500):
             current_chunk = para + "\n\n"
 
     if current_chunk:
-        chunks.append(current_chunk.strip())
-        print("=====================================")
-    print("Number of chunks:", len(chunks))
-    print("chunks:",chunks) 
+        chunks.append(current_chunk.strip())    
     return chunks
 
 def get_embedding(text):
     text_chunks = split_text(text)
-    embeddings = embedding_model.encode(text_chunks)
-    print("Embeddings shape:", embeddings.shape)
-    print("================================")
+    embeddings = embedding_model.encode(text_chunks)   
     return embeddings
 
 def store_song(user_id, song_id, embeddings, metadata):
@@ -145,9 +129,7 @@ def store_song(user_id, song_id, embeddings, metadata):
             metric="cosine",
             spec=spec
         )
-    print("================================")
-    print("Storing song with ID:", f"{user_id}:{song_id}")   
-
+    
     for embedding in embeddings:  # Change this line to iterate directly over embeddings
         vectors.append({
             "id": f"{user_id}:{song_id}",
@@ -157,7 +139,6 @@ def store_song(user_id, song_id, embeddings, metadata):
 
     index.upsert(vectors)
 
-    print("Song stored successfully!", metadata)
 def search_similar_songs(user_id, query_text, top_k=5):
     query_embedding = get_embedding(query_text)
     if isinstance(query_embedding, np.ndarray):
@@ -171,12 +152,10 @@ def search_similar_songs(user_id, query_text, top_k=5):
     for match in results.get("matches", []):
         if isinstance(match, dict) and "values" in match:
             match.pop("values", None)  # Safely remove the 'values' field
-    print("Query results:", match)
     matches = [
         match["metadata"]["song_id"]
         for match in results.get("matches", [])       
     ]
-    print("Matches found:", matches)
     return matches
 
 app = FastAPI()
@@ -203,22 +182,16 @@ async def process_audio(request: AudioRequest):
             return {"error": "Transcription failed."}
         lyrics = extract_lyrics(data)
         analysis = analyze_song_content(lyrics)
-        print("Lyrics:", lyrics)
-        print("Analysis:", analysis)
         full_text = lyrics + "\n" + analysis
-        print("Full text for embedding:", full_text)
         embedding = get_embedding(full_text)
-        print("Embedding shape:", embedding.shape)
         metadata = {"user_id": user_id, "song_id": song_id}
         store_song(user_id, song_id, embedding, metadata)
         return {"message": "שיר נשמר בהצלחה"}
     except Exception as e:
-        print(f"Error processing audio: {e}")
         return {"error": "שגיאה בעיבוד השיר", "details": str(e)}
 @app.get("/search-similar/")
 def search_similar(user_id: str, query: str):
     matches = search_similar_songs(user_id, query)
-    print("Matches found:", matches)
     return matches
 @app.delete("/delete-song/")
 def delete_song(user_id: str, song_id: str):
@@ -226,7 +199,6 @@ def delete_song(user_id: str, song_id: str):
         index.delete(ids=[f"{user_id}:{song_id}"])
         return {"message": "השיר נמחק בהצלחה"}
     except Exception as e:
-        print(f"Error deleting song: {e}")
         return {"error": "שגיאה במחיקת השיר", "details": str(e)}
 @app.get("/")
 def read_root():
