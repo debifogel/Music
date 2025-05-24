@@ -3,6 +3,6 @@ uvicorn
 numpy
 openai
 requests
-pinecone-client
+pinecone
 python-dotenv
 sentence-transformers
