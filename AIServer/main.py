@@ -21,7 +21,7 @@ spec = ServerlessSpec(cloud="aws", region="us-east-1")
 existing_indexes = [index_info["name"] for index_info in pc.list_indexes()]
 index = pc.Index("musicfiles")
 pinecone_index_name = "musicfiles"
-embedding_model = SentenceTransformer('paraphrase-MiniLM-L6-v2')
+embedding_model = SentenceTransformer('all-MiniLM-L12-v2')
 time.sleep(1)
 pinecone = Pinecone(
     api_key=os.getenv("PINECONE_API_KEY"),
