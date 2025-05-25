@@ -3,14 +3,15 @@ from urllib.parse import urlparse
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import time
-import numpy as np
+from numpy import array  # ייבוא ספציפי של array
 import openai
 import requests
 from io import BytesIO
-from pinecone import Pinecone, ServerlessSpec
+from pinecone import Pinecone, ServerlessSpec  # ייבוא של Pinecone ו-Spec
 from dotenv import load_dotenv
-from sentence_transformers import SentenceTransformer
-from pydantic import BaseModel
+from sentence_transformers import SentenceTransformer  # ייבוא של SentenceTransformer
+from pydantic import BaseModel  # ייבוא של BaseModel
+
 
 load_dotenv()
 
@@ -20,7 +21,6 @@ spec = ServerlessSpec(cloud="aws", region="us-east-1")
 existing_indexes = [index_info["name"] for index_info in pc.list_indexes()]
 index = pc.Index("musicfiles")
 pinecone_index_name = "musicfiles"
-# embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
 embedding_model = SentenceTransformer('all-MiniLM-L12-v2')
 time.sleep(1)
 pinecone = Pinecone(
