@@ -1,7 +1,7 @@
 fastapi
 uvicorn
 numpy
-openai
+
 requests
 pinecone
 python-dotenv

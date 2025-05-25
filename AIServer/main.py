@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import time
 import numpy as np
-import openai
+# import openai
 import requests
 from io import BytesIO
 from pinecone import Pinecone, ServerlessSpec
@@ -31,8 +31,8 @@ spec = ServerlessSpec(
     cloud="aws",
     region="us-east-1"
 )
-openai_api_key = os.getenv("OPENAI_API_KEY")
-openai.api_key = openai_api_key
+# openai_api_key = os.getenv("OPENAI_API_KEY")
+# openai.api_key = openai_api_key
 
 def check_status(transcription_id, api_key):
     url = f"https://hebrew-ai.com/api/transcribe?id={transcription_id}"
@@ -70,34 +70,35 @@ def transcribe_audio(file_path):
         data = response.json()
         transcription_id = data.get("transcriptionId")
         text = check_status(transcription_id, api_key)
+        
         return text
     else:
         return None
 
-def extract_lyrics(raw_text):
-    prompt = f"""
-    הנה טקסט מתוך הקלטה של שיר. השאר רק את מילות השיר, הסר דיבורים חיצוניים:
-    ---
-    {raw_text}
-    ---
-    """
-    response = openai.chat.completions.create(
-        model="gpt-4.1",
-        messages=[{"role": "user", "content": prompt}]
-    )
-    return response.choices[0].message.content.strip()
+# def extract_lyrics(raw_text):
+#     prompt = f"""
+#     הנה טקסט מתוך הקלטה של שיר. השאר רק את מילות השיר, הסר דיבורים חיצוניים:
+#     ---
+#     {raw_text}
+#     ---
+#     """
+#     response = openai.chat.completions.create(
+#         model="gpt-4.1",
+#         messages=[{"role": "user", "content": prompt}]
+#     )
+#     return response.choices[0].message.content.strip()
 
-def analyze_song_content(lyrics):
-    prompt = f"""
-    נתח את השיר הבא והצג את הרגשות, המחשבות והרצונות שהוא מבטא:
-    ---
-    {lyrics}
-    """
-    response = openai.chat.completions.create(
-        model="gpt-4",
-        messages=[{"role": "user", "content": prompt}]
-    )
-    return response.choices[0].message.content.strip()
+# def analyze_song_content(lyrics):
+#     prompt = f"""
+#     נתח את השיר הבא והצג את הרגשות, המחשבות והרצונות שהוא מבטא:
+#     ---
+#     {lyrics}
+#     """
+#     response = openai.chat.completions.create(
+#         model="gpt-4",
+#         messages=[{"role": "user", "content": prompt}]
+#     )
+#     return response.choices[0].message.content.strip()
 
 def split_text(text, max_chunk_size=500):
     paragraphs = text.split("\n\n")
@@ -180,9 +181,9 @@ async def process_audio(request: AudioRequest):
         data = transcribe_audio(audio_url)
         if not data:  # Check if transcription failed
             return {"error": "Transcription failed."}
-        lyrics = extract_lyrics(data)
-        analysis = analyze_song_content(lyrics)
-        full_text = lyrics + "\n" + analysis
+        # lyrics = extract_lyrics(data)
+        # analysis = analyze_song_content(lyrics)
+        full_text = data#lyrics + "\n" + analysis
         embedding = get_embedding(full_text)
         metadata = {"user_id": user_id, "song_id": song_id}
         store_song(user_id, song_id, embedding, metadata)
