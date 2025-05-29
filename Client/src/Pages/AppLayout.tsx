@@ -84,6 +84,8 @@ export default function AppLayout() {
                 />
               </div>
                               <Home />
+                            <Outlet />
+
                               </>
 
           ) : (
